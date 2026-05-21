@@ -1,19 +1,20 @@
-%\documentclass[letterpaper,8pt,leqno,spanish]{book}
-%\usepackage[top=1in, left=0.9in, right=1.25in, bottom=1in]{geometry}
 \documentclass[8pt,leqno,pdflatex,spanish]{book}
-%\usepackage[es-noquoting]{babel}
+
 \usepackage{bachelorstitlepageUNAM}
-\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}          % solo una vez
+\usepackage[spanish, es-nodecimaldot, es-tabla, es-noshorthands]{babel}
+
+% xcolor PRIMERO, antes de tikz e hyperref
+\usepackage[dvipsnames,svgnames]{xcolor}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\usepackage{tikz-cd}
+
+% hyperref casi al final del preámbulo (regla general)
 \usepackage{hyperref}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[spanish,es-nodecimaldot,es-tabla]{babel}
-%\usepackage{graphicx}
-%\usepackage{tikz}
-%\usepackage{tocloft}
-%\graphicspath{{./figs/}}
-%\usepackage{setspace}
 \usepackage{minted}
 \usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,array}
 \usepackage{url}
@@ -31,9 +32,10 @@
 
 %para pintar arboles bonitos...
 \usepackage{tikz}
-\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
 \usetikzlibrary{positioning}
 %\usetikzlibrary{arrows}
+\usepackage{tikz-cd}
 
 
 \tikzset{
@@ -162,6 +164,8 @@ Huesca}}\\[.2in]
 
 
 \mainmatter
+
+\input{graficas}
 
 %FIXME agregar los archivos de cada capitulo 
 
