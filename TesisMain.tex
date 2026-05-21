@@ -2,20 +2,32 @@
 
 \usepackage{bachelorstitlepageUNAM}
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}          % solo una vez
+\usepackage[utf8]{inputenc}          
 \usepackage[spanish, es-nodecimaldot, es-tabla, es-noshorthands]{babel}
 
-% xcolor PRIMERO, antes de tikz e hyperref
 \usepackage[dvipsnames,svgnames]{xcolor}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning}
 \usepackage{tikz-cd}
 
-% hyperref casi al final del preámbulo (regla general)
 \usepackage{hyperref}
 
+\usepackage{fontspec}
+\setmonofont{JuliaMono}[Scale=MatchLowercase]
+
 \usepackage{minted}
+
+\usemintedstyle{tango} 
+
+\setminted[lean]{
+    linenos=false,       
+    breaklines=true,     
+    fontsize=\small,     
+    frame=none,          
+    xleftmargin=10pt,    
+}
+
 \usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,array}
 \usepackage{url}
 \usepackage{caption}
@@ -165,7 +177,10 @@ Huesca}}\\[.2in]
 
 \mainmatter
 
+
 \input{graficas}
+
+
 
 %FIXME agregar los archivos de cada capitulo 
 
