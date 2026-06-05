@@ -170,4 +170,15 @@ theorem Commute.symmetric : Symmetric (@Commute A)
 \end{leancode}
 \end{thm}
 
+\begin{thm}[Hindley-Rosen]
+Sean \lean{r₁} y \lean{r₂} dos relaciones sobre un mismo tipo. Si ambas son
+confluentes y conmutan entre sí, entonces su unión \lean{r₁ ⊔ r₂} es
+confluente.
+\begin{leancode}
+theorem Commute.join_confluent {r₁ r₂ : relation A} 
+  (c₁ : Confluent r₁) (c₂ : Confluent r₂) (comm : Commute r₁ r₂) : 
+    Confluent (r₁ ⊔ r₂)
+\end{leancode}
+
+\end{thm}
 
