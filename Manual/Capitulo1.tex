@@ -1,0 +1,173 @@
+\chapter{Relaciones}
+
+\section{Definiciones básicas}
+
+\begin{defn}
+Una relación binaria en un tipo \lean{X} es una función \lean{X → X → Prop},
+es decir, una proposición sobre pares de elementos de \lean{X}.
+\begin{leancode}
+def relation (X : Type) := X → X → Prop
+\end{leancode}
+\end{defn}
+
+\begin{defn}
+Sea \lean{r} una relación en \lean{A}. Entonces
+\lean{r} induce las siguientes relaciones binarias.
+
+\begin{enumerate}[(i)]
+\item \lean{ReflGen r} es la cerradura reflexiva de \lean{r}, 
+    definida inductivamente de la siguiente manera:
+\begin{leancode}
+inductive ReflGen {A : Type} (r : relation A) : relation A
+  | refl {a : A}: ReflGen r a a
+  | single {a b : A} : r a b → ReflGen r a b
+\end{leancode}
+\item \lean{ReflTransGen r} es la cerradura reflexiva y transitiva de \lean{r},
+    definida inductivamente de la siguiente manera:
+\begin{leancode}
+inductive ReflTransGen {A : Type} (r : relation A) : relation A
+  | refl {a : A} : ReflTransGen r a a
+  | tail {a b c : A} : ReflTransGen r a b → r b c → ReflTransGen r a c
+\end{leancode}
+\end{enumerate}
+\end{defn}
+
+De ahora en adelante escribimos \lean{variable {A : Type}},
+para evitar la repetición de \lean{{A : Type}}. Mientras que
+ en los diagramas escribimos $\to$ para \lean{r a b},
+$\to^=$ para \lean{ReflGen r a b} y
+$\twoheadrightarrow$ para \lean{ReflTransGen r a b}.
+
+\begin{defn}
+Sea \lean{r} una relación en \lean{A}.
+\begin{enumerate}[(i)]
+\item \lean{Join r} es una nueva relación en la que 
+dos términos están relacionados 
+si existe un tercer término con el que ambos se relacionen.
+
+\begin{leancode}
+def Join (r : relation A) : relation A := fun x y ↦ ∃ z, r x z ∧ r y z
+\end{leancode}
+
+\item Una relación tiene la \textit{propiedad del diamante}
+cuando todas las reducciones con un origen común se pueden unir.
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{leancode}
+def Diamond (r : relation A) := ∀ {a b c : A}, r a b → r a c → Join r b c
+\end{leancode}
+\end{enumerate}
+\end{defn}
+
+\subsection{Confluencia y Conmutación}
+
+\begin{defn}
+ Una relación es \textbf{confluente} cuando su cerradura 
+ reflexiva y transitiva tiene la propiedad del diamante.
+
+ \begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->>]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->>]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->>, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{leancode}
+def Confluent (r : relation A) := Diamond (ReflTransGen r)
+\end{leancode}
+\end{defn}
+
+\begin{thm}
+Si una relación tiene la propiedad del diamante, entonces es confluente.
+\begin{leancode}
+theorem Diamond.toConfluent (h : Diamond r) : Confluent r 
+\end{leancode}
+\end{thm}
+
+\begin{defn}
+Sean \lean{r₁} y \lean{r₂} dos relaciones en \lean{A}.
+
+\begin{enumerate}[(i)]
+
+\item \lean{r₁} y \lean{r₂} \textbf{conmutan} si:
+
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->>]         (A) -- node[above] {\lean{r₁}} (B);
+  \draw[->>]         (A) -- node[left]  {\lean{r₂}} (C);
+  \draw[->>, dashed] (B) -- node[right] {\lean{r₂}} (D);
+  \draw[->>, dashed] (C) -- node[below] {\lean{r₁}} (D);
+\end{tikzpicture}
+\end{center}
+
+\begin{leancode}
+def Commute (r₁ r₂ : relation A) := 
+  ∀ {x y₁ y₂}, ReflTransGen r₁ x y₁ → ReflTransGen r₂ x y₂ → 
+    ∃ z, ReflTransGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
+\end{leancode}
+
+
+\item \lean{r₁} y \lean{r₂} \textbf{conmutan fuertemente} si:
+
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->] (A) -- node[above] {\lean{r₁}}  (B);
+  \draw[->] (A) -- node[left] {\lean{r₂}} (C);
+  \draw[->, dashed] (B)-- node[right] {\lean{r₂}} node[left] {$=$} (D);
+  \draw[->>, dashed] (C)-- node[below]  {\lean{r₁}}  (D);
+\end{tikzpicture}
+\end{center}
+
+\begin{leancode}
+def StronglyCommute (r₁ r₂ : relation A) :=
+  ∀ {x y₁ y₂}, r₁ x y₁ → r₂ x y₂ → ∃ z, ReflGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
+\end{leancode}
+
+\end{enumerate}
+
+\end{defn}
+
+\begin{thm}
+Si \lean{r₁} y \lean{r₂} conmutan fuertemente, entonces también conmutan.
+\begin{leancode}
+theorem StronglyCommute.toCommute {r₁ r₂ : relation A} (h : StronglyCommute r₁ r₂) : 
+  Commute r₁ r₂ 
+\end{leancode}
+\end{thm}
+
+\begin{thm}
+La conmutación entre relaciones es simétrica, es decir, 
+si \lean{r₁} y \lean{r₂} conmutan, 
+entonces \lean{r₂} y \lean{r₁} también.
+\begin{leancode}
+theorem Commute.symmetric : Symmetric (@Commute A)
+\end{leancode}
+\end{thm}
+
+

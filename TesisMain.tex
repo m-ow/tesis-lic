@@ -12,21 +12,14 @@
 \usepackage{tikz-cd}
 
 \usepackage{hyperref}
+\usepackage{enumerate}   
 
-% \usepackage{fontspec}
-% \setmonofont{JuliaMono}[Scale=MatchLowercase]
-
+\usepackage{fontspec}
+\setmonofont{JuliaMono}[Scale=MatchLowercase]
 \usepackage{minted}
-
-\usemintedstyle{tango} 
-
-\setminted[lean]{
-    linenos=false,       
-    breaklines=true,     
-    fontsize=\small,     
-    frame=none,          
-    xleftmargin=10pt,    
-}
+\newmintinline[lean]{lean4}{bgcolor=white}
+\newminted[leancode]{lean4}{fontsize=\footnotesize}
+\usemintedstyle{tango}  
 
 \usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,array}
 \usepackage{url}
@@ -178,7 +171,7 @@ Huesca}}\\[.2in]
 \mainmatter
 
 
-\input{graficas}
+\input{Manual/Capitulo1}
 
 
 
