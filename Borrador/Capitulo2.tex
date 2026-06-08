@@ -1,0 +1,43 @@
+\chapter{Cálculo $\lambda$}
+
+\begin{defn}
+Utilizamos una representación \textit{locally nameless} 
+para el cálculo $\lambda$, donde las variables ligadas se representan 
+como números naturales (índices de De Bruijn) y las variables libres como
+términos del tipo \lean{Var}. El tipo \lean{Var} representa nombres: 
+la igualdad es decidible en ellos (\lean{DecidableEq}) 
+y es posible generar uno nuevo para cualquier conjunto finito dado
+de nombres (\lean{HasFresh}).
+\begin{leancode}
+universe u
+variable {Var : Type u} [HasFresh Var] [DecidableEq Var]
+
+inductive Term (Var : Type u)
+  | bvar : ℕ → Term Var
+  | fvar : Var → Term Var
+  | abs  : Term Var → Term Var
+  | app  : Term Var → Term Var → Term Var
+\end{leancode}
+Por ejemplo, podemos representar la expresión ``$\lambda x. \, x \, y$'' de la siguiente manera.
+\begin{leancode}
+variable {y : Var}
+def ejemplo_rep := abs (app (bvar 0) (fvar y))
+\end{leancode}
+Lo cual también se puede escribir como ``$\lambda . \, 0 \, y$''. 
+\end{defn}
+
+\begin{defn}
+La substitución consiste en remplazar una variable libre por un término. 
+\begin{leancode}
+def subst (m : Term Var) (x : Var) (sub : Term Var) : Term Var :=
+  match m with
+  | bvar i  => bvar i
+  | fvar x' => if x = x' then sub else fvar x'
+  | app l r => app (l.subst x sub) (r.subst x sub)
+  | abs M   => abs <| M.subst x sub
+\end{leancode}
+Definimos una notación para la substitución de variables libres que imita la notación matemática estándar.
+\begin{leancode}
+scoped notation t:max "[" x ":=" t' "]" => subst t x t'
+\end{leancode}
+\end{defn}
