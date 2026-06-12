@@ -99,16 +99,16 @@ inductive LC : Term Var → Prop
 \end{defn}
 
 \begin{defn}
-Dada una relación \lean{R} en el tipo \lean{Term Var},
-se llama cerradura compatible de \lean{R} a la relación \lean{CompatGen R},
+Dada una relación \lean{r} en el tipo \lean{Term Var},
+se llama cerradura compatible de \lean{r} a la relación \lean{CompatGen r},
 definida de la siguiente manera.
 \begin{leancode}
-inductive CompatGen (R : Term Var → Term Var → Prop) : Term Var → Term Var → Prop
-  | base : R M N → CompatGen R M N
-  | appL : LC Z → CompatGen R M N → CompatGen R (app M Z) (app N Z)
-  | appR: LC Z → CompatGen R M N → CompatGen R (app Z M) (app Z N)
-  | xi (L : Finset Var) : (∀ x ∉ L, CompatGen R (M ^ fvar x) (N ^ fvar x)) →
-    CompatGen R (abs M) (abs N)
+inductive CompatGen (r : Term Var → Term Var → Prop) : Term Var → Term Var → Prop
+  | base : r M N → CompatGen r M N
+  | appL : LC Z → CompatGen r M N → CompatGen r (app M Z) (app N Z)
+  | appR: LC Z → CompatGen r M N → CompatGen r (app Z M) (app Z N)
+  | xi (L : Finset Var) : (∀ x ∉ L, CompatGen r (M ^ fvar x) (N ^ fvar x)) →
+    CompatGen r (abs M) (abs N)
 \end{leancode}
 \end{defn}
 

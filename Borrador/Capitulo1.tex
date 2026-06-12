@@ -73,9 +73,11 @@ def Diamond (r : relation A) := ∀ {a b c : A}, r a b → r a c → Join r b c
 
 \subsection{Confluencia y Conmutación}
 
-\begin{defn}
- Una relación es \textbf{confluente} cuando su cerradura 
- reflexiva y transitiva tiene la propiedad del diamante.
+\begin{defn} Sea \lean{r} una relación en \lean{A}.
+\begin{enumerate}[(i)]
+
+\item \lean{r} es \textbf{confluente} si su cerradura 
+reflexiva y transitiva tiene la propiedad del diamante.
 
  \begin{center}
 \begin{tikzpicture}
@@ -93,12 +95,34 @@ def Diamond (r : relation A) := ∀ {a b c : A}, r a b → r a c → Join r b c
 \begin{leancode}
 def Confluent (r : relation A) := Diamond (ReflTransGen r)
 \end{leancode}
+
+\item \lean{r} es \textbf{fuertemente confluente} si:
+ \begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{x}};
+  \node (b) at (2, 2) {\lean{y₁}};
+  \node (c) at (0, 0) {\lean{y₂}};
+  \node (d) at (2, 0) {\lean{z}};
+  \draw[->]         (a) -- node[above] {\lean{r}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{leancode}
+def StronglyConfluent (r : relation A) :=
+  ∀ {x y₁ y₂}, r x y₁ → r x y₂ → ∃ z, ReflGen r y₁ z ∧ ReflTransGen r y₂ z
+\end{leancode}
+
+\end{enumerate}
+
 \end{defn}
 
 \begin{thm}
-Si una relación tiene la propiedad del diamante, entonces es confluente.
+Si una relación es fuertemente confluente, entonces también es confluente.
 \begin{leancode}
-theorem Diamond.toConfluent (h : Diamond r) : Confluent r 
+theorem StronglyConfluent.toConfluent (h : StronglyConfluent r) : Confluent r 
 \end{leancode}
 \end{thm}
 
@@ -154,7 +178,7 @@ def StronglyCommute (r₁ r₂ : relation A) :=
 \end{defn}
 
 \begin{thm}
-Si \lean{r₁} y \lean{r₂} conmutan fuertemente, entonces también conmutan.
+Si dos relaciones conmutan fuertemente, entonces también conmutan.
 \begin{leancode}
 theorem StronglyCommute.toCommute {r₁ r₂ : relation A} (h : StronglyCommute r₁ r₂) : 
   Commute r₁ r₂ 
