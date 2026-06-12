@@ -97,3 +97,55 @@ inductive LC : Term Var → Prop
   | app {l r} : l.LC → r.LC → LC (app l r)
 \end{leancode}
 \end{defn}
+
+\begin{defn}
+Dada una relación \lean{R} en el tipo \lean{Term Var},
+se llama cerradura compatible de \lean{R} a la relación \lean{CompatGen R},
+definida de la siguiente manera.
+\begin{leancode}
+inductive CompatGen (R : Term Var → Term Var → Prop) : Term Var → Term Var → Prop
+  | base : R M N → CompatGen R M N
+  | appL : LC Z → CompatGen R M N → CompatGen R (app M Z) (app N Z)
+  | appR: LC Z → CompatGen R M N → CompatGen R (app Z M) (app Z N)
+  | xi (L : Finset Var) : (∀ x ∉ L, CompatGen R (M ^ fvar x) (N ^ fvar x)) →
+    CompatGen R (abs M) (abs N)
+\end{leancode}
+\end{defn}
+
+\begin{defn}
+Sea \lean{Beta} una relación en \lean{Term Var}, definida de la siguiente manera.
+\begin{leancode}
+inductive Beta : Term Var → Term Var → Prop
+  | beta : LC (abs A) → LC B → Beta (app (abs A) B) (A ^ B)
+\end{leancode}
+
+\begin{enumerate}[(i)]
+\item \textit{La reducción $\beta$ de un solo paso} es la cerradura compatible de \lean{Beta}.
+\begin{leancode}
+@[reduction_sys "βᶠ"]
+abbrev FullBeta : Term Var → Term Var → Prop := CompatGen Beta
+\end{leancode}
+\item \textit{La reducción $\beta$} es la cerradura reflexiva y transitiva de \lean{CompatGen Beta},
+es decir, \lean{ReflTransGen FullBeta}.
+\end{enumerate}
+
+\end{defn}
+
+\begin{defn}
+Sea \lean{Eta} una relación en \lean{Term Var}, definida de la siguiente manera.
+\begin{leancode}
+inductive Eta : Term Var → Term Var → Prop
+  | eta : LC M → Eta (abs (app M (bvar 0))) M
+\end{leancode}
+
+\begin{enumerate}[(i)]
+\item \textit{La reducción $\eta$ de un solo paso} es la cerradura compatible de \lean{Eta}.
+\begin{leancode}
+@[reduction_sys "ηᶠ"]
+abbrev FullEta : Term Var → Term Var → Prop := CompatGen Eta
+\end{leancode}
+\item \textit{La reducción $\eta$} es la cerradura reflexiva y transitiva de \lean{CompatGen Eta},
+esto es \lean{ReflTransGen FullEta}.
+\end{enumerate}
+
+\end{defn}
