@@ -1,0 +1,208 @@
+# Relaciones
+
+## 1.1. Definiciones básicas
+
+::: {.ndfn arguments="Definición 1.1.1"}
+Una relación binaria en un tipo `X` es una función `X → X → Prop`,
+es decir, una proposición sobre pares de elementos de `X`.
+
+```lean
+def relation (X : Type) := X → X → Prop
+```
+:::
+
+::: {.ndfn arguments="Definición 1.1.2"}
+Sea `r` una relación en `A`. 
+Entonces `r` induce las siguientes relaciones binarias.
+
+I\. `ReflGen r` es la cerradura reflexiva de `r`, 
+definida inductivamente de la siguiente manera:
+
+```lean
+inductive ReflGen {A : Type} (r : relation A) : relation A
+  | refl {a : A}: ReflGen r a a
+  | single {a b : A} : r a b → ReflGen r a b
+```
+
+II\. `ReflTransGen r` es la cerradura reflexiva y transitiva de `r`,
+definida inductivamente de la siguiente manera:
+
+```lean
+inductive ReflTransGen {A : Type} (r : relation A) : relation A
+  | refl {a : A} : ReflTransGen r a a
+  | tail {a b c : A} : ReflTransGen r a b → r b c → ReflTransGen r a c
+```
+:::
+
+De ahora en adelante escribimos `variable {A : Type}`, para evitar la repetición de `{A : Type}`. Mientras que
+en los diagramas escribimos $\to$ para `r a b`, $\to^=$ para `ReflGen r a b` y
+$\twoheadrightarrow$ para `ReflTransGen r a b`.
+
+::: {.ndfn arguments="Definición 1.1.3"}
+Sea `r` una relación en `A`.
+
+I\. `Join r` es una nueva relación en la que 
+dos términos están relacionados 
+si existe un tercer término con el que ambos se relacionen.
+
+```lean
+def Join (r : relation A) : relation A := fun x y ↦ ∃ z, r x z ∧ r y z
+```
+
+II\. Una relación tiene la _propiedad del diamante_
+cuando todas las reducciones con un origen común se pueden unir.
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+def Diamond (r : relation A) := ∀ {a b c : A}, r a b → r a c → Join r b c
+```
+:::
+
+### Confluencia y Conmutación
+
+::: {.ndfn arguments="Definición 1.1.4"}
+Sea `r` una relación en `A`.
+
+I\. `r` es **confluente** si su cerradura 
+reflexiva y transitiva tiene la propiedad del diamante.
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->>]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->>]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->>, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+def Confluent (r : relation A) := Diamond (ReflTransGen r)
+```
+
+II\. `r` es **fuertemente confluente** si:
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{x}};
+  \node (b) at (2, 2) {\lean{y₁}};
+  \node (c) at (0, 0) {\lean{y₂}};
+  \node (d) at (2, 0) {\lean{z}};
+  \draw[->]         (a) -- node[above] {\lean{r}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+def StronglyConfluent (r : relation A) :=
+  ∀ {x y₁ y₂}, r x y₁ → r x y₂ → ∃ z, ReflGen r y₁ z ∧ ReflTransGen r y₂ z
+```
+:::
+
+::: {.nthm arguments="Teorema 1.1.1"}
+Si una relación es fuertemente confluente, entonces también es confluente.
+```lean
+theorem StronglyConfluent.toConfluent (h : StronglyConfluent r) : Confluent r 
+```
+:::
+
+::: {.ndfn arguments="Definición 1.1.5"}
+Sean `r₁` y `r₂` dos relaciones en `A`.
+
+I\. `r₁` y `r₂` **conmutan** si:
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->>]         (A) -- node[above] {\lean{r₁}} (B);
+  \draw[->>]         (A) -- node[left]  {\lean{r₂}} (C);
+  \draw[->>, dashed] (B) -- node[right] {\lean{r₂}} (D);
+  \draw[->>, dashed] (C) -- node[below] {\lean{r₁}} (D);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+def Commute (r₁ r₂ : relation A) := 
+  ∀ {x y₁ y₂}, ReflTransGen r₁ x y₁ → ReflTransGen r₂ x y₂ → 
+    ∃ z, ReflTransGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
+```
+
+
+II\. `r₁` y `r₂` **conmutan fuertemente** si:
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->] (A) -- node[above] {\lean{r₁}}  (B);
+  \draw[->] (A) -- node[left] {\lean{r₂}} (C);
+  \draw[->, dashed] (B)-- node[right] {\lean{r₂}} node[left] {$=$} (D);
+  \draw[->>, dashed] (C)-- node[below]  {\lean{r₁}}  (D);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+def StronglyCommute (r₁ r₂ : relation A) :=
+  ∀ {x y₁ y₂}, r₁ x y₁ → r₂ x y₂ → ∃ z, ReflGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
+```
+::: 
+
+::: {.nthm arguments="Teorema 1.1.2"}
+Si dos relaciones conmutan fuertemente, entonces también conmutan.
+```lean
+theorem StronglyCommute.toCommute {r₁ r₂ : relation A} (h : StronglyCommute r₁ r₂) : 
+  Commute r₁ r₂ 
+```
+:::
+
+::: {.nthm arguments="Teorema 1.1.3"}
+La conmutación entre relaciones es simétrica, es decir, 
+si `r₁` y `r₂` conmutan, 
+entonces `r₂` y `r₁` también.
+```lean
+theorem Commute.symmetric : Symmetric (@Commute A)
+```
+:::
+
+::: {.nthm arguments="Teorema 1.1.4 (Hindley-Rosen)"}
+Sean `r₁` y `r₂` dos relaciones sobre un mismo tipo. Si ambas son
+confluentes y conmutan entre sí, entonces su unión `r₁ ⊔ r₂` es
+confluente.
+```lean
+theorem Commute.join_confluent {r₁ r₂ : relation A} 
+  (c₁ : Confluent r₁) (c₂ : Confluent r₂) (comm : Commute r₁ r₂) : 
+    Confluent (r₁ ⊔ r₂)
+```
+:::

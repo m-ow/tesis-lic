@@ -1,0 +1,146 @@
+# Cálculo $\lambda$
+
+## 2.1. La representación *locally nameless*
+
+::: {.ndfn arguments="Definición 2.1.1"}
+Utilizamos una representación *locally nameless*
+para el cálculo $\lambda$, donde las variables ligadas se representan 
+como números naturales (índices de De Bruijn) y las variables libres como
+términos del tipo `Var`. El tipo `Var` representa nombres: 
+la igualdad es decidible en ellos (`DecidableEq`) 
+y es posible generar uno nuevo para cualquier conjunto finito dado
+de nombres (`HasFresh`).
+```lean
+universe u
+variable {Var : Type u} [HasFresh Var] [DecidableEq Var]
+
+inductive Term (Var : Type u)
+  | bvar : ℕ → Term Var
+  | fvar : Var → Term Var
+  | abs  : Term Var → Term Var
+  | app  : Term Var → Term Var → Term Var
+```
+Por ejemplo, podemos representar la expresión "$\lambda x. \, x \, y$" de la siguiente manera.
+```lean
+variable {y : Var}
+def ejemplo_rep := abs (app (bvar 0) (fvar y))
+```
+Lo cual también se puede escribir como "$\lambda . \, 0 \, y$". 
+:::
+
+::: {.ndfn arguments="Definición 2.1.2"}
+La sustitución consiste en remplazar una variable libre por un término. 
+```lean
+def subst (m : Term Var) (x : Var) (sub : Term Var) : Term Var :=
+  match m with
+  | bvar i  => bvar i
+  | fvar x' => if x = x' then sub else fvar x'
+  | app l r => app (l.subst x sub) (r.subst x sub)
+  | abs M   => abs <| M.subst x sub
+```
+Definimos una notación para la sustitución de variables libres que imita la notación matemática estándar.
+```lean
+scoped notation t:max "[" x ":=" t' "]" => subst t x t'
+```
+::: 
+
+::: {.ndfn arguments="Definición 2.1.3"}
+La función `fv`, definida a continuación, 
+calcula el conjunto de variables libres de una expresión. 
+Dado que utilizamos una representación *locally nameless*, 
+donde las variables ligadas se representan como índices, 
+cualquier nombre que veamos es una variable libre de un término.
+```lean
+def fv : Term Var → Finset Var
+  | bvar _ => {}
+  | fvar x => {x}
+  | abs e1 => e1.fv
+  | app l r => l.fv ∪ r.fv
+```
+El tipo `Finset Var` representa un conjunto finito 
+de elementos del tipo `Var`. 
+:::
+
+::: {.ndfn arguments="Definición 2.1.4"}
+La operación de apertura sustituye un índice por un término. 
+```lean
+def openRec (i : ℕ) (sub : Term Var) : Term Var → Term Var
+  | bvar i' => if i = i' then sub else bvar i'
+  | fvar x  => fvar x
+  | app l r => app (openRec i sub l) (openRec i sub r)
+  | abs M   => abs <| openRec (i+1) sub M
+```
+También definimos una notación para `openRec`.
+```lean
+scoped notation:68 e "⟦" i " ↝ " sub "⟧" => openRec i sub e
+```
+Las aplicaciones habituales de esta función sustituyen el índice 
+cero por una variable o un término $\lambda$. La siguiente definición 
+es una forma práctica de indicar estos usos.
+```lean
+def open' {X} (e u) := @openRec X 0 u e  
+ 
+scoped infixr:80 " ^ " => open'
+```
+Así, `(e ^ x)` puede leerse como 
+"reemplaza el índice $0$ por la variable `x` en `e`"
+o "abre `e` con la variable `x`". 
+:::
+
+::: {.ndfn arguments="Definición 2.1.5 (Local closure)"}
+Un término se denomina "localmente cerrado"
+cuando no contiene índices no ligados.
+La proposición `LC e` se cumple cuando una expresión `e` 
+es localmente cerrada.
+```lean
+inductive LC : Term Var → Prop
+  | fvar (x : Var)  : LC (fvar x)
+  | abs (L : Finset Var) (e : Term Var) : (∀ x ∉ L, LC (e ^ fvar x)) → LC (abs e)
+  | app {l r} : l.LC → r.LC → LC (app l r)
+```
+:::
+
+::: {.ndfn arguments="Definición 2.1.6"}
+Dada una relación `r` en el tipo `Term Var`,
+se llama cerradura compatible de `r` a la relación `CompatGen r`,
+definida de la siguiente manera.
+```lean
+inductive CompatGen (r : Term Var → Term Var → Prop) : Term Var → Term Var → Prop
+  | base : r M N → CompatGen r M N
+  | appL : LC Z → CompatGen r M N → CompatGen r (app M Z) (app N Z)
+  | appR: LC Z → CompatGen r M N → CompatGen r (app Z M) (app Z N)
+  | xi (L : Finset Var) : (∀ x ∉ L, CompatGen r (M ^ fvar x) (N ^ fvar x)) →
+    CompatGen r (abs M) (abs N)
+```
+:::
+
+::: {.ndfn arguments="Definición 2.1.7"}
+Sea `Beta` una relación en `Term Var`, definida de la siguiente manera.
+```lean
+inductive Beta : Term Var → Term Var → Prop
+  | beta : LC (abs A) → LC B → Beta (app (abs A) B) (A ^ B)
+```
+
+I\. *La reducción $\beta$ de un solo paso* es la cerradura compatible de `Beta`.
+```lean
+@[reduction_sys "βᶠ"]
+abbrev FullBeta : Term Var → Term Var → Prop := CompatGen Beta
+```
+II\. *La reducción $\beta$* es la cerradura reflexiva y transitiva de `CompatGen Beta`,
+es decir, `ReflTransGen FullBeta`.
+:::
+
+::: {.ndfn arguments="Definición 2.1.8"}
+Sea `Eta` una relación en `Term Var`, definida de la siguiente manera.
+```lean
+inductive Eta : Term Var → Term Var → Prop
+  | eta : LC M → Eta (abs (app M (bvar 0))) M
+```
+I\. *La reducción $\eta$ de un solo paso* es la cerradura compatible de `Eta`.
+```lean
+@[reduction_sys "ηᶠ"]
+abbrev FullEta : Term Var → Term Var → Prop := CompatGen Eta
+```
+II\. *La reducción $\eta$* es la cerradura reflexiva y transitiva de `CompatGen Eta`,
+esto es `ReflTransGen FullEta`.
+:::

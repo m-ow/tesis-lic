@@ -1,4 +1,8 @@
-TesisMain.blg
-TesisMain.log
-TesisMain.pdf
-TesisMain.synctex.gz
+# Quarto
+/.quarto/
+/_book/
+**/*.quarto_ipynb
+
+# Artefactos de compilación
+*.log
+*.synctex.gz

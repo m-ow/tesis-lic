@@ -1,0 +1,117 @@
+# Confluencia $\beta \eta$
+
+## 3.1. Confluencia fuerte de $\eta$
+
+::: {.nthm arguments="Teorema 3.1.1"}
+La reducción $\eta$ de un solo paso es fuertemente confluente.
+:::
+
+::: {.proof}
+Supongamos que `M`, `M₁` y `M₂` son términos lambda tal que 
+`M ⭢ηᶠ M₁` y `M ⭢ηᶠ M₂`. Entonces existe 
+un término lambda `z` tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
+
+Como la cerradura reflexiva está contenida en la reflexiva y transitiva, 
+basta con demostrar que `∃ z, ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z`.
+
+::: {.inout}
+::: {.inpt}
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+```
+:::
+
+::: {.outpt}
+```state
+M M₁ M₂ : Term Var
+h₁ : M ⭢ηᶠ M₁
+h₂ : M ⭢ηᶠ M₂
+⊢ ∃ z, ReflGen FullEta M₁ z 
+>>    ∧ ReflGen FullEta M₂ z
+```
+:::
+:::
+
+Por inducción sobre la definición de `M ⭢ηᶠ M₁`,
+demostraremos que, para toda `M₂`, si `M ⭢ηᶠ M₂`, entonces
+existe una `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
+Procedemos por casos según la última regla utilizada en la derivación de `M ⭢ηᶠ M₁`.
+
+II\. Si la última regla fue `appL`,
+entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para alguna `P`, `P₁` y `N`
+tales que `LC N` y `P ⭢ηᶠ P₁`.
+
+```lean
+theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case appL N P P₁ lc_N r_P_P₁ ih =>
+```
+
+```state
+M M₁ M₂ N P P₁ : Term Var
+lc_N : LC N
+r_P_P₁ : P ⭢ηᶠ P₁
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
+>>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+h₂ : app P N ⭢ηᶠ M₂
+⊢ ∃ z, ReflGen FullEta (app P₁ N) z ∧ ReflGen FullEta M₂ z
+```
+
+A continuación, procedemos por casos sobre la derivación de `app P N ⭢ηᶠ M₂`:
+
+(a)\ Si la última regla fue `appL`,
+entonces `M₂` $=$ `app P₂ N` tal que `P ⭢ηᶠ P₂` y `LC N`.
+Por la hipótesis de inducción aplicada sobre `P ⭢ηᶠ P₂`, 
+sabemos que existe un término `P₃` tal que `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`.
+Por lo tanto, tomamos `z` $=$ `app P₃ Z`.
+
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+    ⋮
+    case appL P₂ r_P_P₂ _ =>
+      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      use app P₃ N
+```
+
+```state
+M M₁ N P P₁ P₂ P₃ : Term Var
+lc_N : LC N
+r_P_P₁ : P ⭢ηᶠ P₁
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
+>>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+r_P_P₂ : P ⭢ηᶠ P₂
+refl_P₁_P₃ : ReflGen FullEta P₁ P₃
+refl_P₂_P₃ : ReflGen FullEta P₂ P₃
+⊢ ReflGen FullEta (app P₁ N) (app P₃ N) ∧ ReflGen FullEta (app P₂ N) (app P₃ N)
+```
+
+(b)\ Si la última regla fue `appR`,
+entonces `M₂` $=$ `app P N₁`, para alguna `N₁`
+donde `LC P` y `N ⭢ηᶠ N₁`. Así, tomamos `z` $=$ `app P₁ N₁`.
+
+```lean
+theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+    ⋮
+    case appR N₁ lc_P r_N_N₁ =>
+      use app P₁ N₁
+```
+
+```state
+M M₁ N N₁ P P₁ : Term Var
+lc_N : LC N
+r_P_P₁ : P ⭢ηᶠ P₁
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
+>>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+lc_P : LC P
+r_N_N₁ : N ⭢ηᶠ N₁
+⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
+```
+
+:::

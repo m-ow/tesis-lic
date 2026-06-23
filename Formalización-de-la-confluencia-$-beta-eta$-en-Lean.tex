@@ -1,0 +1,1002 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  spanish,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrreprt}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{0}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmonofont[]{JuliaMono}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\newcommand{\lean}[1]{\texttt{#1}}
+%\usepackage{twemojis}
+%\usepackage{myunixode}
+\usepackage[normalem]{ulem}
+\usepackage{scrlayer-scrpage}
+\usepackage[most]{tcolorbox}
+\automark{section}
+\setkomafont{pagefoot}{\upshape}
+\cfoot*{}
+\ofoot*{\pagemark}
+
+\makeatletter
+\def\redsquiggly{\bgroup \markoverwith{\textcolor{red}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\def\brownsquiggly{\bgroup \markoverwith{\textcolor[HTML]{B8860B}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\def\bluesquiggly{\bgroup \markoverwith{\textcolor[HTML]{1E90FF}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\makeatother
+
+\renewcommand{\NormalTok}[1]{\textcolor[HTML]{000000}{#1}}
+\renewcommand{\KeywordTok}[1]{\textcolor[HTML]{0000FF}{#1}}
+\renewcommand{\SpecialCharTok}[1]{}
+\renewcommand{\ErrorTok}[1]{\redsquiggly{#1}}
+\renewcommand{\WarningTok}[1]{\redsquiggly{\textcolor[HTML]{0000FF}{#1}}}
+\renewcommand{\StringTok}[1]{\textcolor[HTML]{A52A2A}{#1}}
+\renewcommand{\CommentTok}[1]{\textcolor[HTML]{008000}{#1}}
+\renewcommand{\InformationTok}[1]{\textcolor[HTML]{D2691E}{\textbf{#1}}}
+\renewcommand{\RegionMarkerTok}[1]{▼\:\textcolor[HTML]{008000}{\textbf{#1}}}
+\renewcommand{\SpecialStringTok}[1]{\textcolor[HTML]{4682B4}{\textbf{#1}}}
+\renewcommand{\ConstantTok}[1]{\textcolor[HTML]{DC143C}{#1}}
+\renewcommand{\AnnotationTok}[1]{\brownsquiggly{#1}}
+\renewcommand{\AlertTok}[1]{\brownsquiggly{\textcolor[HTML]{0000FF}{#1}}}
+\renewcommand{\OtherTok}[1]{\bluesquiggly{#1}}
+\renewcommand{\DocumentationTok}[1]{\bluesquiggly{\textcolor[HTML]{0000FF}{#1}}}
+
+\newenvironment{ind}
+	{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\relax}
+	{\end{list}}
+
+%redefines Shaded so it can't break
+\newcommand{\nobreakShaded}{\renewenvironment{Shaded}
+	{\begin{tcolorbox}[frame hidden, boxrule=0pt, colback=shadecolor,
+		sharp corners, left=0pt, right=0pt, top=0pt, bottom=0pt]}
+	{\end{tcolorbox}}}
+
+%Make end of environment ignore pars that come after it
+\def\useignorespacesandallpars#1\ignorespaces\fi{%
+#1\fi\ignorespacesandallpars}
+
+\makeatletter
+\def\ignorespacesandallpars{%
+  \@ifnextchar\par
+    {\expandafter\ignorespacesandallpars\@gobble}%
+    {}%
+}
+\makeatother
+
+\newenvironment{inpt}
+	{\nobreakShaded\noindent\begin{minipage}[t]{0.64\textwidth}
+		\uline{Lean File}}
+	{\end{minipage}\hfill\useignorespacesandallpars}
+
+\newenvironment{outpt}
+	{\nobreakShaded\begin{minipage}[t]{0.34\textwidth}
+		\uline{Tactic State in InfoView}}
+	{\end{minipage}\\}
+
+\newenvironment{bef}
+	{\nobreakShaded\noindent\begin{minipage}[t]{0.49\textwidth}
+		\uline{Tactic State Before Using Strategy}}
+	{\end{minipage}\hfill\useignorespacesandallpars}
+
+\newenvironment{aft}
+	{\nobreakShaded\begin{minipage}[t]{0.49\textwidth}
+		\uline{Tactic State After Using Strategy}}
+	{\end{minipage}\\}
+
+\newenvironment{numex}[1]
+	{\begin{minipage}[t]{0.04\textwidth}\vspace{3pt}{#1}.
+		\end{minipage}\nobreakShaded\begin{minipage}[t]{0.96\textwidth}\vspace{0pt}}
+	{\end{minipage}}
+
+\newenvironment{mdsk}
+	{\medskip}
+	{}
+
+\newenvironment{absnobreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+\newcommand{\excl}[1]{}
+\newcommand{\incl}[1]{#1}
+\newcommand{\lrg}[1]{{\Large #1}}
+
+\newcommand{\setmin}{\mathbin{\backslash}}
+\newcommand{\symmdiff}{\mathbin{∆}}
+
+\pagenumbering{roman}  %So front matter uses roman numerals.  Switch back to arabic at beginning of preface.
+
+
+%Adds gray background to inline code, but inline code won't break across lines.
+%\let\oldtexttt\texttt
+%\renewcommand{\texttt}[1]{\colorbox{shadecolor}{\oldtexttt{#1}}}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Tabla de contenidos}
+\else
+  \newcommand\contentsname{Tabla de contenidos}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Listado de Figuras}
+\else
+  \newcommand\listfigurename{Listado de Figuras}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Listado de Tablas}
+\else
+  \newcommand\listtablename{Listado de Tablas}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figura}
+\else
+  \newcommand\figurename{Figura}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabla}
+\else
+  \newcommand\tablename{Tabla}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listado}
+\newcommand*\listoflistings{\listof{codelisting}{Listado de Listados}}
+\usepackage{amsthm}
+\theoremstyle{remark}
+\AtBeginDocument{\renewcommand*{\proofname}{Demostración}}
+\newtheorem*{remark}{Observación}
+\newtheorem*{solution}{Solución}
+\newtheorem{refremark}{Observación}[chapter]
+\newtheorem{refsolution}{Solución}[chapter]
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Formalización de la confluencia \textbackslash beta\textbackslash eta en Lean},
+  pdfauthor={Maximiliano Onofre Martínez},
+  pdflang={es},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Formalización de la confluencia \(\beta\eta\) en Lean}
+\author{Maximiliano Onofre Martínez}
+\date{}
+\begin{document}
+\maketitle
+
+%Can't be in preamble because Quarto loads amsthm too late.
+\theoremstyle{plain}
+\newtheorem*{thm}{Theorem}
+\newcommand{\thmnm}{Theorem}
+\newtheorem*{namedthm}{\thmnm}
+\theoremstyle{definition}
+\newtheorem*{dfn}{Definition}
+\newcommand{\defnm}{Definition}
+\newtheorem*{nameddfn}{\defnm}
+
+\newenvironment{nthm}[1]
+  {\renewcommand{\thmnm}{#1}\begin{namedthm}}
+  {\end{namedthm}}
+
+\newenvironment{ndfn}[1]
+  {\renewcommand{\defnm}{#1}\begin{nameddfn}}
+  {\end{nameddfn}}
+
+\newenvironment{npf}[1]
+  {\begin{proof}[#1]}
+  {\end{proof}}
+
+% Usage:
+% ::: {.thm} will create an unnumbered thm environment with title Theorem.
+% ::: {.nthm arguments="Name of Theorem"} will create an unnumbered theorem whose title is Name of Theorem.
+
+\let\oldgreater\textgreater
+\renewcommand{\textgreater}{\null\oldgreater}   % To prevent => changing to double arrow
+
+\renewcommand*\contentsname{Tabla de contenidos}
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+
+\bookmarksetup{startatroot}
+
+\chapter*{Introducción}\label{introducciuxf3n}
+\addcontentsline{toc}{chapter}{Introducción}
+
+\markboth{Introducción}{Introducción}
+
+\pagenumbering{arabic}
+
+\bookmarksetup{startatroot}
+
+\chapter{Relaciones}\label{relaciones}
+
+\section{1.1. Definiciones básicas}\label{definiciones-buxe1sicas}
+
+\begin{ndfn}{Definición 1.1.1}
+
+Una relación binaria en un tipo \texttt{X} es una función
+\texttt{X\ →\ X\ →\ Prop}, es decir, una proposición sobre pares de
+elementos de \texttt{X}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ relation (X : }\KeywordTok{Type}\NormalTok{) := X → X → }\KeywordTok{Prop}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 1.1.2}
+
+Sea \texttt{r} una relación en \texttt{A}. Entonces \texttt{r} induce
+las siguientes relaciones binarias.
+
+I. \texttt{ReflGen\ r} es la cerradura reflexiva de \texttt{r}, definida
+inductivamente de la siguiente manera:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive ReflGen \{A : }\KeywordTok{Type}\NormalTok{\} (r : relation A) : relation A}
+\NormalTok{  | refl \{a : A\}: ReflGen r a a}
+\NormalTok{  | single \{a b : A\} : r a b → ReflGen r a b}
+\end{Highlighting}
+\end{Shaded}
+
+II. \texttt{ReflTransGen\ r} es la cerradura reflexiva y transitiva de
+\texttt{r}, definida inductivamente de la siguiente manera:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive ReflTransGen \{A : }\KeywordTok{Type}\NormalTok{\} (r : relation A) : relation A}
+\NormalTok{  | refl \{a : A\} : ReflTransGen r a a}
+\NormalTok{  | tail \{a b c : A\} : ReflTransGen r a b → r b c → ReflTransGen r a c}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+De ahora en adelante escribimos \texttt{variable\ \{A\ :\ Type\}}, para
+evitar la repetición de \texttt{\{A\ :\ Type\}}. Mientras que en los
+diagramas escribimos \(\to\) para \texttt{r\ a\ b}, \(\to^=\) para
+\texttt{ReflGen\ r\ a\ b} y \(\twoheadrightarrow\) para
+\texttt{ReflTransGen\ r\ a\ b}.
+
+\begin{ndfn}{Definición 1.1.3}
+
+Sea \texttt{r} una relación en \texttt{A}.
+
+I. \texttt{Join\ r} es una nueva relación en la que dos términos están
+relacionados si existe un tercer término con el que ambos se relacionen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ Join (r : relation A) : relation A := fun x y ↦ ∃ z, r x z ∧ r y z}
+\end{Highlighting}
+\end{Shaded}
+
+II. Una relación tiene la \emph{propiedad del diamante} cuando todas las
+reducciones con un origen común se pueden unir.
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ Diamond (r : relation A) := ∀ \{a b c : A\}, r a b → r a c → Join r b c}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\subsection{Confluencia y
+Conmutación}\label{confluencia-y-conmutaciuxf3n}
+
+\begin{ndfn}{Definición 1.1.4}
+
+Sea \texttt{r} una relación en \texttt{A}.
+
+I. \texttt{r} es \textbf{confluente} si su cerradura reflexiva y
+transitiva tiene la propiedad del diamante.
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{a}};
+  \node (b) at (2, 2) {\lean{b}};
+  \node (c) at (0, 0) {\lean{c}};
+  \node (d) at (2, 0) {\lean{d}};
+  \draw[->>]           (a) -- node[above] {\lean{r}} (b);
+  \draw[->>]           (a) -- node[left]  {\lean{r}} (c);
+  \draw[->>, dashed] (b) -- node[right] {\lean{r}} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ Confluent (r : relation A) := Diamond (ReflTransGen r)}
+\end{Highlighting}
+\end{Shaded}
+
+II. \texttt{r} es \textbf{fuertemente confluente} si:
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2) {\lean{x}};
+  \node (b) at (2, 2) {\lean{y₁}};
+  \node (c) at (0, 0) {\lean{y₂}};
+  \node (d) at (2, 0) {\lean{z}};
+  \draw[->]         (a) -- node[above] {\lean{r}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{r}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{r}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{r}} (d);
+\end{tikzpicture}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ StronglyConfluent (r : relation A) :=}
+\NormalTok{  ∀ \{x y₁ y₂\}, r x y₁ → r x y₂ → ∃ z, ReflGen r y₁ z ∧ ReflTransGen r y₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{nthm}{Teorema 1.1.1}
+
+Si una relación es fuertemente confluente, entonces también es
+confluente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ StronglyConfluent.toConfluent (h : StronglyConfluent r) : Confluent r }
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{ndfn}{Definición 1.1.5}
+
+Sean \texttt{r₁} y \texttt{r₂} dos relaciones en \texttt{A}.
+
+I. \texttt{r₁} y \texttt{r₂} \textbf{conmutan} si:
+
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->>]         (A) -- node[above] {\lean{r₁}} (B);
+  \draw[->>]         (A) -- node[left]  {\lean{r₂}} (C);
+  \draw[->>, dashed] (B) -- node[right] {\lean{r₂}} (D);
+  \draw[->>, dashed] (C) -- node[below] {\lean{r₁}} (D);
+\end{tikzpicture}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ Commute (r₁ r₂ : relation A) := }
+\NormalTok{  ∀ \{x y₁ y₂\}, ReflTransGen r₁ x y₁ → ReflTransGen r₂ x y₂ → }
+\NormalTok{    ∃ z, ReflTransGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+II. \texttt{r₁} y \texttt{r₂} \textbf{conmutan fuertemente} si:
+
+\begin{center}
+\begin{tikzpicture}
+  \node (A) at (0, 2) {\lean{x}};
+  \node (B) at (2, 2) {\lean{y₁}};
+  \node (C) at (0, 0) {\lean{y₂}};
+  \node (D) at (2, 0) {\lean{z}};
+  \draw[->] (A) -- node[above] {\lean{r₁}}  (B);
+  \draw[->] (A) -- node[left] {\lean{r₂}} (C);
+  \draw[->, dashed] (B)-- node[right] {\lean{r₂}} node[left] {$=$} (D);
+  \draw[->>, dashed] (C)-- node[below]  {\lean{r₁}}  (D);
+\end{tikzpicture}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ StronglyCommute (r₁ r₂ : relation A) :=}
+\NormalTok{  ∀ \{x y₁ y₂\}, r₁ x y₁ → r₂ x y₂ → ∃ z, ReflGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{nthm}{Teorema 1.1.2}
+
+Si dos relaciones conmutan fuertemente, entonces también conmutan.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ StronglyCommute.toCommute \{r₁ r₂ : relation A\} (h : StronglyCommute r₁ r₂) : }
+\NormalTok{  Commute r₁ r₂ }
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{nthm}{Teorema 1.1.3}
+
+La conmutación entre relaciones es simétrica, es decir, si \texttt{r₁} y
+\texttt{r₂} conmutan, entonces \texttt{r₂} y \texttt{r₁} también.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ Commute.symmetric : Symmetric (@Commute A)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{nthm}{Teorema 1.1.4 (Hindley-Rosen)}
+
+Sean \texttt{r₁} y \texttt{r₂} dos relaciones sobre un mismo tipo. Si
+ambas son confluentes y conmutan entre sí, entonces su unión
+\texttt{r₁\ ⊔\ r₂} es confluente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ Commute.join\_confluent \{r₁ r₂ : relation A\} }
+\NormalTok{  (c₁ : Confluent r₁) (c₂ : Confluent r₂) (comm : Commute r₁ r₂) : }
+\NormalTok{    Confluent (r₁ ⊔ r₂)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\bookmarksetup{startatroot}
+
+\chapter{\texorpdfstring{Cálculo
+\(\lambda\)}{Cálculo \textbackslash lambda}}\label{cuxe1lculo-lambda}
+
+\section{\texorpdfstring{2.1. La representación \emph{locally
+nameless}}{2.1. La representación locally nameless}}\label{la-representaciuxf3n-locally-nameless}
+
+\begin{ndfn}{Definición 2.1.1}
+Utilizamos una representación \emph{locally nameless} para el cálculo
+\(\lambda\), donde las variables ligadas se representan como números
+naturales (índices de De Bruijn) y las variables libres como términos
+del tipo \texttt{Var}. El tipo \texttt{Var} representa nombres: la
+igualdad es decidible en ellos (\texttt{DecidableEq}) y es posible
+generar uno nuevo para cualquier conjunto finito dado de nombres
+(\texttt{HasFresh}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{universe u}
+\NormalTok{variable \{Var : }\KeywordTok{Type}\NormalTok{ u\} [HasFresh Var] [DecidableEq Var]}
+
+\NormalTok{inductive Term (Var : }\KeywordTok{Type}\NormalTok{ u)}
+\NormalTok{  | bvar : ℕ → Term Var}
+\NormalTok{  | fvar : Var → Term Var}
+\NormalTok{  | abs  : Term Var → Term Var}
+\NormalTok{  | app  : Term Var → Term Var → Term Var}
+\end{Highlighting}
+\end{Shaded}
+
+Por ejemplo, podemos representar la expresión
+``\(\lambda x. \, x \, y\)'' de la siguiente manera.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{variable \{y : Var\}}
+\KeywordTok{def}\NormalTok{ ejemplo\_rep := abs (app (bvar 0) (fvar y))}
+\end{Highlighting}
+\end{Shaded}
+
+Lo cual también se puede escribir como ``\(\lambda . \, 0 \, y\)''.
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.2}
+
+La sustitución consiste en remplazar una variable libre por un término.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ subst (m : Term Var) (x : Var) (sub : Term Var) : Term Var :=}
+  \KeywordTok{match}\NormalTok{ m }\KeywordTok{with}
+\NormalTok{  | bvar i  =\textgreater{} bvar i}
+\NormalTok{  | fvar x\textquotesingle{} =\textgreater{} if x = x\textquotesingle{} then sub else fvar x\textquotesingle{}}
+\NormalTok{  | app l r =\textgreater{} app (l.subst x sub) (r.subst x sub)}
+\NormalTok{  | abs M   =\textgreater{} abs \textless{}| M.subst x sub}
+\end{Highlighting}
+\end{Shaded}
+
+Definimos una notación para la sustitución de variables libres que imita
+la notación matemática estándar.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scoped }\KeywordTok{notation}\NormalTok{ t:max }\StringTok{"["}\NormalTok{ x }\StringTok{":="}\NormalTok{ t\textquotesingle{} }\StringTok{"]"}\NormalTok{ =\textgreater{} subst t x t\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.3}
+La función \texttt{fv}, definida a continuación, calcula el conjunto de
+variables libres de una expresión. Dado que utilizamos una
+representación \emph{locally nameless}, donde las variables ligadas se
+representan como índices, cualquier nombre que veamos es una variable
+libre de un término.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ fv : Term Var → Finset Var}
+\NormalTok{  | bvar \_ =\textgreater{} \{\}}
+\NormalTok{  | fvar x =\textgreater{} \{x\}}
+\NormalTok{  | abs e1 =\textgreater{} e1.fv}
+\NormalTok{  | app l r =\textgreater{} l.fv ∪ r.fv}
+\end{Highlighting}
+\end{Shaded}
+
+El tipo \texttt{Finset\ Var} representa un conjunto finito de elementos
+del tipo \texttt{Var}.
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.4}
+La operación de apertura sustituye un índice por un término.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ openRec (i : ℕ) (sub : Term Var) : Term Var → Term Var}
+\NormalTok{  | bvar i\textquotesingle{} =\textgreater{} if i = i\textquotesingle{} then sub else bvar i\textquotesingle{}}
+\NormalTok{  | fvar x  =\textgreater{} fvar x}
+\NormalTok{  | app l r =\textgreater{} app (openRec i sub l) (openRec i sub r)}
+\NormalTok{  | abs M   =\textgreater{} abs \textless{}| openRec (i+1) sub M}
+\end{Highlighting}
+\end{Shaded}
+
+También definimos una notación para \texttt{openRec}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scoped }\KeywordTok{notation}\NormalTok{:68 e }\StringTok{"⟦"}\NormalTok{ i }\StringTok{" ↝ "}\NormalTok{ sub }\StringTok{"⟧"}\NormalTok{ =\textgreater{} openRec i sub e}
+\end{Highlighting}
+\end{Shaded}
+
+Las aplicaciones habituales de esta función sustituyen el índice cero
+por una variable o un término \(\lambda\). La siguiente definición es
+una forma práctica de indicar estos usos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ open\textquotesingle{} \{X\} (e u) := @openRec X 0 u e  }
+ 
+\NormalTok{scoped infixr:80 }\StringTok{" \^{} "}\NormalTok{ =\textgreater{} open\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
+
+Así, \texttt{(e\ \^{}\ x)} puede leerse como ``reemplaza el índice \(0\)
+por la variable \texttt{x} en \texttt{e}'' o ``abre \texttt{e} con la
+variable \texttt{x}''.
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.5 (Local closure)}
+
+Un término se denomina ``localmente cerrado'' cuando no contiene índices
+no ligados. La proposición \texttt{LC\ e} se cumple cuando una expresión
+\texttt{e} es localmente cerrada.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive LC : Term Var → }\KeywordTok{Prop}
+\NormalTok{  | fvar (x : Var)  : LC (fvar x)}
+\NormalTok{  | abs (L : Finset Var) (e : Term Var) : (∀ x ∉ L, LC (e \^{} fvar x)) → LC (abs e)}
+\NormalTok{  | app \{l r\} : l.LC → r.LC → LC (app l r)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.6}
+
+Dada una relación \texttt{r} en el tipo \texttt{Term\ Var}, se llama
+cerradura compatible de \texttt{r} a la relación \texttt{CompatGen\ r},
+definida de la siguiente manera.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive CompatGen (r : Term Var → Term Var → }\KeywordTok{Prop}\NormalTok{) : Term Var → Term Var → }\KeywordTok{Prop}
+\NormalTok{  | base : r M N → CompatGen r M N}
+\NormalTok{  | appL : LC Z → CompatGen r M N → CompatGen r (app M Z) (app N Z)}
+\NormalTok{  | appR: LC Z → CompatGen r M N → CompatGen r (app Z M) (app Z N)}
+\NormalTok{  | xi (L : Finset Var) : (∀ x ∉ L, CompatGen r (M \^{} fvar x) (N \^{} fvar x)) →}
+\NormalTok{    CompatGen r (abs M) (abs N)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.7}
+Sea \texttt{Beta} una relación en \texttt{Term\ Var}, definida de la
+siguiente manera.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive Beta : Term Var → Term Var → }\KeywordTok{Prop}
+\NormalTok{  | beta : LC (abs A) → LC B → Beta (app (abs A) B) (A \^{} B)}
+\end{Highlighting}
+\end{Shaded}
+
+I. \emph{La reducción \(\beta\) de un solo paso} es la cerradura
+compatible de \texttt{Beta}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{@[reduction\_sys }\StringTok{"βᶠ"}\NormalTok{]}
+\NormalTok{abbrev FullBeta : Term Var → Term Var → }\KeywordTok{Prop}\NormalTok{ := CompatGen Beta}
+\end{Highlighting}
+\end{Shaded}
+
+II. \emph{La reducción \(\beta\)} es la cerradura reflexiva y transitiva
+de \texttt{CompatGen\ Beta}, es decir, \texttt{ReflTransGen\ FullBeta}.
+
+\end{ndfn}
+
+\begin{ndfn}{Definición 2.1.8}
+Sea \texttt{Eta} una relación en \texttt{Term\ Var}, definida de la
+siguiente manera.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive Eta : Term Var → Term Var → }\KeywordTok{Prop}
+\NormalTok{  | eta : LC M → Eta (abs (app M (bvar 0))) M}
+\end{Highlighting}
+\end{Shaded}
+
+I. \emph{La reducción \(\eta\) de un solo paso} es la cerradura
+compatible de \texttt{Eta}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{@[reduction\_sys }\StringTok{"ηᶠ"}\NormalTok{]}
+\NormalTok{abbrev FullEta : Term Var → Term Var → }\KeywordTok{Prop}\NormalTok{ := CompatGen Eta}
+\end{Highlighting}
+\end{Shaded}
+
+II. \emph{La reducción \(\eta\)} es la cerradura reflexiva y transitiva
+de \texttt{CompatGen\ Eta}, esto es \texttt{ReflTransGen\ FullEta}.
+
+\end{ndfn}
+
+\bookmarksetup{startatroot}
+
+\chapter{\texorpdfstring{Confluencia
+\(\beta \eta\)}{Confluencia \textbackslash beta \textbackslash eta}}\label{confluencia-beta-eta}
+
+\section{\texorpdfstring{3.1. Confluencia fuerte de
+\(\eta\)}{3.1. Confluencia fuerte de \textbackslash eta}}\label{confluencia-fuerte-de-eta}
+
+\begin{nthm}{Teorema 3.1.1}
+La reducción \(\eta\) de un solo paso es fuertemente confluente.
+
+\end{nthm}
+
+\begin{proof}
+Supongamos que \texttt{M}, \texttt{M₁} y \texttt{M₂} son términos lambda
+tal que \texttt{M\ ⭢ηᶠ\ M₁} y \texttt{M\ ⭢ηᶠ\ M₂}. Entonces existe un
+término lambda \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
+\texttt{M₂\ ↠ηᶠ\ z}.
+
+Como la cerradura reflexiva está contenida en la reflexiva y transitiva,
+basta con demostrar que
+\texttt{∃\ z,\ ReflGen\ FullEta\ M₁\ z\ ∧\ ReflGen\ FullEta\ M₂\ z}.
+
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ }\NormalTok{: Term Var}
+\InformationTok{h₁ }\NormalTok{: M ⭢ηᶠ M₁}
+\InformationTok{h₂ }\NormalTok{: M ⭢ηᶠ M₂}
+\NormalTok{⊢ ∃ z, ReflGen FullEta M₁ z }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta M₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
+
+Por inducción sobre la definición de \texttt{M\ ⭢ηᶠ\ M₁}, demostraremos
+que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂}, entonces existe una
+\texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
+\texttt{ReflGen\ FullEta\ M₂\ z}. Procedemos por casos según la última
+regla utilizada en la derivación de \texttt{M\ ⭢ηᶠ\ M₁}.
+
+II. Si la última regla fue \texttt{appL}, entonces \texttt{M} \(=\)
+\texttt{app\ P\ N} y \texttt{M₁} \(=\) \texttt{app\ P₁\ N}, para alguna
+\texttt{P}, \texttt{P₁} y \texttt{N} tales que \texttt{LC\ N} y
+\texttt{P\ ⭢ηᶠ\ P₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{h₂ }\NormalTok{: app P N ⭢ηᶠ M₂}
+\NormalTok{⊢ ∃ z, ReflGen FullEta (app P₁ N) z ∧ ReflGen FullEta M₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+A continuación, procedemos por casos sobre la derivación de
+\texttt{app\ P\ N\ ⭢ηᶠ\ M₂}:
+
+(a)~Si la última regla fue \texttt{appL}, entonces \texttt{M₂} \(=\)
+\texttt{app\ P₂\ N} tal que \texttt{P\ ⭢ηᶠ\ P₂} y \texttt{LC\ N}. Por la
+hipótesis de inducción aplicada sobre \texttt{P\ ⭢ηᶠ\ P₂}, sabemos que
+existe un término \texttt{P₃} tal que \texttt{ReflGen\ FullEta\ P₁\ P₃}
+y \texttt{ReflGen\ FullEta\ P₂\ P₃}. Por lo tanto, tomamos \texttt{z}
+\(=\) \texttt{app\ P₃\ Z}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{    ⋮}
+\NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
+      \KeywordTok{obtain}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
+\NormalTok{      use app P₃ N}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ N P P₁ P₂ P₃ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{r\_P\_P₂ }\NormalTok{: P ⭢ηᶠ P₂}
+\InformationTok{refl\_P₁\_P₃ }\NormalTok{: ReflGen FullEta P₁ P₃}
+\InformationTok{refl\_P₂\_P₃ }\NormalTok{: ReflGen FullEta P₂ P₃}
+\NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₃ N) ∧ ReflGen FullEta (app P₂ N) (app P₃ N)}
+\end{Highlighting}
+\end{Shaded}
+
+(b)~Si la última regla fue \texttt{appR}, entonces \texttt{M₂} \(=\)
+\texttt{app\ P\ N₁}, para alguna \texttt{N₁} donde \texttt{LC\ P} y
+\texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\) \texttt{app\ P₁\ N₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{    ⋮}
+\NormalTok{    case appR N₁ lc\_P r\_N\_N₁ =\textgreater{}}
+\NormalTok{      use app P₁ N₁}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ N N₁ P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{lc\_P }\NormalTok{: LC P}
+\InformationTok{r\_N\_N₁ }\NormalTok{: N ⭢ηᶠ N₁}
+\NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{proof}
+
+
+
+
+\end{document}

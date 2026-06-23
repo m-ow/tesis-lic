@@ -1,0 +1,29 @@
+project:
+  type: book
+
+book:
+  title: 'Formalización de la confluencia $\beta\eta$ en Lean'
+  author:
+    - name: "Maximiliano Onofre Martínez"
+  chapters:
+    - index.qmd
+    - Chap1.qmd
+    - Chap2.qmd
+    - Chap3.qmd
+lang: es
+format:
+  pdf:
+    pdf-engine: xelatex
+    documentclass: scrreprt
+    toc-depth: 2
+    number-depth: 0
+    syntax-definitions: [lean.xml,state.xml]
+    include-in-header: inpreamble.tex
+    include-before-body: thmdefs.tex
+    monofont: JuliaMono
+    keep-tex: true
+
+filters:
+  - latex-environment
+environments: [quote, ind, inpt, outpt, bef, aft, numex, mdsk, thm, nthm, dfn, ndfn, npf, absnobreak]
+commands: [excl, lrg]

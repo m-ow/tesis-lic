@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language name="lean" version="1.0" section="Sources" extensions="*.lean">
+<highlighting>
+<list name="keywords">
+<item>theorem</item>
+<item>example</item>
+<item>lemma</item>
+<item>def</item>
+<item>notation</item>
+<item>let</item>
+<item>set</item>
+<item>by</item>
+<item>with</item>
+<item>at</item>
+<item>from</item>
+<item>to</item>
+<item>on</item>
+<item>done</item>
+<item>mutual</item>
+<item>match</item>
+<item>end</item>
+<item>termination_by</item>
+<item>assume</item>
+<item>fix</item>
+<item>have</item>
+<item>show</item>
+<item>Prop</item>
+<item>Type</item>
+<item>Sum</item>
+<item>Prod</item>
+<item>exact</item>
+<item>apply</item>
+<item>apply?</item>
+<item>contrapos</item>
+<item>demorgan</item>
+<item>conditional</item>
+<item>double_neg</item>
+<item>quant_neg</item>
+<item>bicond_neg</item>
+<item>define</item>
+<item>def_step</item>
+<item>definition</item>
+<item>definition!</item>
+<item>by_cases</item>
+<item>by_contra</item>
+<item>by_induc</item>
+<item>by_strong_induc</item>
+<item>or_left</item>
+<item>or_right</item>
+<item>disj_syll</item>
+<item>contradict</item>
+<item>exists_unique</item>
+<item>obtain</item>
+<item>calc</item>
+<item>swap</item>
+<item>rewrite</item>
+<item>simp</item>
+<item>library_search</item>
+<item>rw</item>
+<item>rfl</item>
+<item>ring</item>
+<item>linarith</item>
+<item>norm_num</item>
+<item>decide</item>
+<item>rel</item>
+<item>positivity</item>
+<item>trivial</item>
+<item>interval_cases</item>
+<item>push</item>
+<item>#eval</item>
+<item>#check</item>
+<item>@[semireducible]</item>
+<item>noncomputable</item>
+<item>open</item>
+</list>
+<list name="sorry">
+<item>sorry</item>
+</list>
+<contexts>
+<context attribute="Normal Text" lineEndContext="#pop" name="Normal Text" >
+<keyword attribute="Keyword" context="#stay" String="keywords" />
+<keyword attribute="Sorry" context="#stay" String="sorry" />
+<DetectChar attribute="String" context="string" char="&quot;" />
+<Detect2Chars attribute="Comment" context="comment" char="-" char1="-" />
+<Detect2Chars attribute="Comment" context="multicomment" char="/" char1="-" />
+<Detect2Chars attribute="Error Delim" context="normerr" char="*" char1="*" />
+<Detect2Chars attribute="Error Delim" context="normalert" char="?" char1="?" />
+<Detect2Chars attribute="Error Delim" context="normoutput" char="+" char1="+" />
+</context>
+<context attribute="Normal Error" lineEndContext="#stay" name="normerr" >
+<keyword attribute="Keyword Error" context="#stay" String="keywords" />
+<Detect2Chars attribute="Error Delim" context="#pop" char=":" char1=":" />
+</context>
+<context attribute="Normal Alert" lineEndContext="#stay" name="normalert" >
+<keyword attribute="Keyword Alert" context="#stay" String="keywords" />
+<Detect2Chars attribute="Error Delim" context="#pop" char=":" char1=":" />
+</context>
+<context attribute="Normal Output" lineEndContext="#stay" name="normoutput" >
+<keyword attribute="Keyword Output" context="#stay" String="keywords" />
+<Detect2Chars attribute="Error Delim" context="#pop" char=":" char1=":" />
+</context>
+<context attribute="String" lineEndContext="#stay" name="string" >
+<DetectChar attribute="String" context="#pop" char="&quot;" />
+</context>
+<context attribute="Comment" lineEndContext="#pop" name="comment" >
+</context>
+<context attribute="Comment" lineEndContext="#stay" name="multicomment" >
+<Detect2Chars attribute="Comment" context="#pop" char="-" char1="/" />
+</context>
+</contexts>
+<itemDatas>
+<itemData name="Normal Text" defStyleNum="dsNormal" />
+<itemData name="Normal Error" defStyleNum="dsError"/>
+<itemData name="Error Delim" defStyleNum="dsSpecialChar"/>
+<itemData name="Keyword" defStyleNum="dsKeyword" />
+<itemData name="Keyword Error" defStyleNum="dsWarning" />
+<itemData name="String" defStyleNum="dsString" />
+<itemData name="Comment" defStyleNum="dsComment" />
+<itemData name="Sorry" defStyleNum="dsConstant" />
+<itemData name="Normal Output" defStyleNum="dsOthers" />
+<itemData name="Keyword Output" defStyleNum="dsDocumentation" />
+<itemData name="Normal Alert" defStyleNum="dsAnnotation" />
+<itemData name="Keyword Alert" defStyleNum="dsAlert" />
+</itemDatas>
+</highlighting>
+<general>
+<comments>
+<comment name="singleLine" start="--" />
+<comment name="multiLine" start="/-" end="-/" />
+</comments>
+<keywords weakDeliminator=".?@[]" />
+</general>
+</language>
