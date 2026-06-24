@@ -849,6 +849,18 @@ de \texttt{CompatGen\ Eta}, esto es \texttt{ReflTransGen\ FullEta}.
 
 \end{ndfn}
 
+\begin{nthm}{Teorema 2.1.1}
+
+El lado derecho de una reducción \(\eta\) es localmente cerrado.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ step\_lc\_r (step : M ⭢ηᶠ M\textquotesingle{}) : LC M\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
 \bookmarksetup{startatroot}
 
 \chapter{\texorpdfstring{Confluencia
@@ -967,6 +979,33 @@ y \texttt{ReflGen\ FullEta\ P₂\ P₃}. Por lo tanto, tomamos \texttt{z}
 \end{Highlighting}
 \end{Shaded}
 
+Para cerrar cada componente de la conjunción procedemos por casos sobre
+\texttt{refl\_P₁\_P₃\ :\ ReflGen\ FullEta\ P₁\ P₃} y
+\texttt{refl\_P₂\_P₃\ :\ ReflGen\ FullEta\ P₂\ P₃}, respectivamente: si
+son reflexivas, ambos lados ya coinciden; si constan de un paso,
+reducimos \texttt{P₁} a \texttt{P₃} en la primera y \texttt{P₂} a
+\texttt{P₃} en la segunda, dejando fija \texttt{N}, mediante la regla
+\texttt{appL}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{    ⋮}
+\NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
+      \KeywordTok{obtain}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
+\NormalTok{      use app P₃ N}
+\NormalTok{      constructor}
+\NormalTok{      · cases refl\_P₁\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appL lc\_N r\_P₁\_P₃)}
+\NormalTok{      · cases refl\_P₂\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appL lc\_N r\_P₂\_P₃)}
+\end{Highlighting}
+\end{Shaded}
+
 (b)~Si la última regla fue \texttt{appR}, entonces \texttt{M₂} \(=\)
 \texttt{app\ P\ N₁}, para alguna \texttt{N₁} donde \texttt{LC\ P} y
 \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\) \texttt{app\ P₁\ N₁}.
@@ -991,6 +1030,29 @@ y \texttt{ReflGen\ FullEta\ P₂\ P₃}. Por lo tanto, tomamos \texttt{z}
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{r\_N\_N₁ }\NormalTok{: N ⭢ηᶠ N₁}
 \NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)}
+\end{Highlighting}
+\end{Shaded}
+
+Cada componente de la conjunción se obtiene con una sola reducción: en
+la primera reducimos \texttt{N} a \texttt{N₁} dejando fija \texttt{P₁},
+y en la segunda reducimos \texttt{P} a \texttt{P₁} dejando fija
+\texttt{N₁}.
+
+Las premisas de cerradura local que piden las reglas \texttt{appR} y
+\texttt{appL} se obtienen del teorema 2.1.1 (\texttt{step\_lc\_r}): de
+\texttt{r\_P\_P₁} obtenemos \texttt{LC\ P₁} y de \texttt{r\_N\_N₁}
+obtenemos \texttt{LC\ N₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{    ⋮}
+\NormalTok{    case appR N₁ lc\_P r\_N\_N₁ =\textgreater{}}
+\NormalTok{      use app P₁ N₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_P\_P₁) r\_N\_N₁)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
 \end{Highlighting}
 \end{Shaded}
 

@@ -90,6 +90,28 @@ refl_P₁_P₃ : ReflGen FullEta P₁ P₃
 refl_P₂_P₃ : ReflGen FullEta P₂ P₃
 ⊢ ReflGen FullEta (app P₁ N) (app P₃ N) ∧ ReflGen FullEta (app P₂ N) (app P₃ N)
 ```
+Para cerrar cada componente de la conjunción procedemos por casos sobre 
+`refl_P₁_P₃ : ReflGen FullEta P₁ P₃` y `refl_P₂_P₃ : ReflGen FullEta P₂ P₃`, 
+respectivamente: si son reflexivas, ambos lados ya coinciden; 
+si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃` en la segunda, 
+dejando fija `N`, mediante la regla `appL`.
+
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+    ⋮
+    case appL P₂ r_P_P₂ _ =>
+      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      use app P₃ N
+      constructor
+      · cases refl_P₁_P₃
+        case refl => rfl
+        case single r_P₁_P₃ => exact .single (.appL lc_N r_P₁_P₃)
+      · cases refl_P₂_P₃
+        case refl => rfl
+        case single r_P₂_P₃ => exact .single (.appL lc_N r_P₂_P₃)
+```
 
 (b)\ Si la última regla fue `appR`,
 entonces `M₂` $=$ `app P N₁`, para alguna `N₁`
@@ -112,6 +134,24 @@ ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z,
 lc_P : LC P
 r_N_N₁ : N ⭢ηᶠ N₁
 ⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
+```
+
+Cada componente de la conjunción se obtiene con una sola reducción:
+en la primera reducimos `N` a `N₁` dejando fija `P₁`, y en la segunda reducimos `P` a `P₁` dejando fija `N₁`. 
+
+Las premisas de cerradura local que piden las reglas `appR` y `appL`
+se obtienen del teorema  2.1.1 (`step_lc_r`): de `r_P_P₁` 
+obtenemos `LC P₁` y de `r_N_N₁` obtenemos `LC N₁`.
+
+```lean
+theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+    ⋮
+    case appR N₁ lc_P r_N_N₁ =>
+      use app P₁ N₁
+      constructor
+      · exact .single (.appR (step_lc_r r_P_P₁) r_N_N₁)
+      · exact .single (.appL (step_lc_r r_N_N₁) r_P_P₁)
 ```
 
 :::

@@ -144,3 +144,10 @@ abbrev FullEta : Term Var → Term Var → Prop := CompatGen Eta
 II\. *La reducción $\eta$* es la cerradura reflexiva y transitiva de `CompatGen Eta`,
 esto es `ReflTransGen FullEta`.
 :::
+
+::: {.nthm arguments="Teorema 2.1.1"}
+El lado derecho de una reducción $\eta$ es localmente cerrado.
+```lean
+theorem step_lc_r (step : M ⭢ηᶠ M') : LC M'
+```
+:::
