@@ -880,10 +880,6 @@ tal que \texttt{M\ ⭢ηᶠ\ M₁} y \texttt{M\ ⭢ηᶠ\ M₂}. Entonces existe
 término lambda \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
 \texttt{M₂\ ↠ηᶠ\ z}.
 
-Como la cerradura reflexiva está contenida en la reflexiva y transitiva,
-basta con demostrar que
-\texttt{∃\ z,\ ReflGen\ FullEta\ M₁\ z\ ∧\ ReflGen\ FullEta\ M₂\ z}.
-
 \begin{inpt}
 
 \begin{Shaded}
@@ -891,7 +887,6 @@ basta con demostrar que
 \KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
 \NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
-\NormalTok{  ⋮}
 \end{Highlighting}
 \end{Shaded}
 
@@ -905,11 +900,15 @@ basta con demostrar que
 \InformationTok{h₁ }\NormalTok{: M ⭢ηᶠ M₁}
 \InformationTok{h₂ }\NormalTok{: M ⭢ηᶠ M₂}
 \NormalTok{⊢ ∃ z, ReflGen FullEta M₁ z }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta M₂ z}
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ M₂ ↠ηᶠ z}
 \end{Highlighting}
 \end{Shaded}
 
 \end{outpt}
+
+Como la cerradura reflexiva está contenida en la reflexiva y transitiva,
+basta con demostrar que
+\texttt{∃\ z,\ ReflGen\ FullEta\ M₁\ z\ ∧\ ReflGen\ FullEta\ M₂\ z}.
 
 Por inducción sobre la definición de \texttt{M\ ⭢ηᶠ\ M₁}, demostraremos
 que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂}, entonces existe una
@@ -917,9 +916,9 @@ que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂}, entonces existe una
 \texttt{ReflGen\ FullEta\ M₂\ z}. Procedemos por casos según la última
 regla utilizada en la derivación de \texttt{M\ ⭢ηᶠ\ M₁}.
 
-II. Si la última regla fue \texttt{appL}, entonces \texttt{M} \(=\)
-\texttt{app\ P\ N} y \texttt{M₁} \(=\) \texttt{app\ P₁\ N}, para alguna
-\texttt{P}, \texttt{P₁} y \texttt{N} tales que \texttt{LC\ N} y
+\textbf{II}. Si la última regla fue \texttt{appL}, entonces \texttt{M}
+\(=\) \texttt{app\ P\ N} y \texttt{M₁} \(=\) \texttt{app\ P₁\ N}, para
+alguna \texttt{P}, \texttt{P₁} y \texttt{N} tales que \texttt{LC\ N} y
 \texttt{P\ ⭢ηᶠ\ P₁}.
 
 \begin{Shaded}
@@ -946,19 +945,16 @@ II. Si la última regla fue \texttt{appL}, entonces \texttt{M} \(=\)
 A continuación, procedemos por casos sobre la derivación de
 \texttt{app\ P\ N\ ⭢ηᶠ\ M₂}:
 
-(a)~Si la última regla fue \texttt{appL}, entonces \texttt{M₂} \(=\)
-\texttt{app\ P₂\ N} tal que \texttt{P\ ⭢ηᶠ\ P₂} y \texttt{LC\ N}. Por la
-hipótesis de inducción aplicada sobre \texttt{P\ ⭢ηᶠ\ P₂}, sabemos que
-existe un término \texttt{P₃} tal que \texttt{ReflGen\ FullEta\ P₁\ P₃}
-y \texttt{ReflGen\ FullEta\ P₂\ P₃}. Por lo tanto, tomamos \texttt{z}
-\(=\) \texttt{app\ P₃\ Z}.
+\textbf{(a)}~Si la última regla fue \texttt{appL}, entonces \texttt{M₂}
+\(=\) \texttt{app\ P₂\ N} tal que \texttt{P\ ⭢ηᶠ\ P₂} y \texttt{LC\ N}.
+Por la hipótesis de inducción aplicada sobre \texttt{P\ ⭢ηᶠ\ P₂},
+sabemos que existe un término \texttt{P₃} tal que
+\texttt{ReflGen\ FullEta\ P₁\ P₃} y \texttt{ReflGen\ FullEta\ P₂\ P₃}.
+Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ Z}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
-\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
-\NormalTok{  intro M M₁ M₂ h₁ h₂}
-\NormalTok{    ⋮}
+\NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
 \NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
       \KeywordTok{obtain}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
 \NormalTok{      use app P₃ N}
@@ -989,10 +985,7 @@ reducimos \texttt{P₁} a \texttt{P₃} en la primera y \texttt{P₂} a
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
-\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
-\NormalTok{  intro M M₁ M₂ h₁ h₂}
-\NormalTok{    ⋮}
+\NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
 \NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
       \KeywordTok{obtain}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
 \NormalTok{      use app P₃ N}
@@ -1006,17 +999,17 @@ reducimos \texttt{P₁} a \texttt{P₃} en la primera y \texttt{P₂} a
 \end{Highlighting}
 \end{Shaded}
 
-(b)~Si la última regla fue \texttt{appR}, entonces \texttt{M₂} \(=\)
-\texttt{app\ P\ N₁}, para alguna \texttt{N₁} donde \texttt{LC\ P} y
-\texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\) \texttt{app\ P₁\ N₁}.
+\textbf{(b)}~Si la última regla fue \texttt{appR}, entonces \texttt{M₂}
+\(=\) \texttt{app\ P\ N₁}, para alguna \texttt{N₁} donde \texttt{LC\ P}
+y \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\)
+\texttt{app\ P₁\ N₁}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
-\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
 \NormalTok{    ⋮}
-\NormalTok{    case appR N₁ lc\_P r\_N\_N₁ =\textgreater{}}
-\NormalTok{      use app P₁ N₁}
+\NormalTok{    case appR N₁ \_ r\_N\_N₁ =\textgreater{}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1045,14 +1038,69 @@ obtenemos \texttt{LC\ N₁}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
-\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    case appL P₂ r\_P\_P₂ \_ =\textgreater{}}
 \NormalTok{    ⋮}
-\NormalTok{    case appR N₁ lc\_P r\_N\_N₁ =\textgreater{}}
+\NormalTok{    case appR N₁ \_ r\_N\_N₁ =\textgreater{}}
 \NormalTok{      use app P₁ N₁}
 \NormalTok{      constructor}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_P\_P₁) r\_N\_N₁)}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{III}. Si la última regla fue \texttt{appR}, entonces \texttt{M}
+\(=\) \texttt{app\ N\ P} y \texttt{M₁} \(=\) \texttt{app\ N\ P₁}, para
+alguna \texttt{N}, \texttt{P} y \texttt{P₁} tales que \texttt{LC\ N} y
+\texttt{P\ ⭢ηᶠ\ P₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appR N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{h₂ }\NormalTok{: app N P ⭢ηᶠ M₂}
+\NormalTok{⊢ ∃ z, ReflGen FullEta (app N P₁) z ∧ ReflGen FullEta M₂ z}
+\end{Highlighting}
+\end{Shaded}
+
+Este caso es análogo al anterior: basta intercambiar el argumento que se
+reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
+\texttt{appR}. La formalización es la siguiente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appR N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    cases h₂}
+\NormalTok{    case appL N₁ r\_N\_N₁ \_ =\textgreater{}}
+\NormalTok{      use app N₁ P₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r r\_P\_P₁) r\_N\_N₁)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
+\NormalTok{    case appR P₂ r\_P\_P₂ =\textgreater{}}
+      \KeywordTok{obtain}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
+\NormalTok{      use app N P₃}
+\NormalTok{      constructor}
+\NormalTok{      · cases refl\_P₁\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₁\_P₃)}
+\NormalTok{      · cases refl\_P₂\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₂\_P₃)}
 \end{Highlighting}
 \end{Shaded}
 

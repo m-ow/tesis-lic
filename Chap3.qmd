@@ -11,16 +11,12 @@ Supongamos que `M`, `M₁` y `M₂` son términos lambda tal que
 `M ⭢ηᶠ M₁` y `M ⭢ηᶠ M₂`. Entonces existe 
 un término lambda `z` tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
 
-Como la cerradura reflexiva está contenida en la reflexiva y transitiva, 
-basta con demostrar que `∃ z, ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z`.
-
 ::: {.inout}
 ::: {.inpt}
 ```lean
 theorem stronglyConfluent_eta :
     StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
-  ⋮
 ```
 :::
 
@@ -30,17 +26,20 @@ M M₁ M₂ : Term Var
 h₁ : M ⭢ηᶠ M₁
 h₂ : M ⭢ηᶠ M₂
 ⊢ ∃ z, ReflGen FullEta M₁ z 
->>    ∧ ReflGen FullEta M₂ z
+>>    ∧ M₂ ↠ηᶠ z
 ```
 :::
 :::
+
+Como la cerradura reflexiva está contenida en la reflexiva y transitiva, 
+basta con demostrar que `∃ z, ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z`.
 
 Por inducción sobre la definición de `M ⭢ηᶠ M₁`,
 demostraremos que, para toda `M₂`, si `M ⭢ηᶠ M₂`, entonces
 existe una `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
 Procedemos por casos según la última regla utilizada en la derivación de `M ⭢ηᶠ M₁`.
 
-II\. Si la última regla fue `appL`,
+**II**\. Si la última regla fue `appL`,
 entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para alguna `P`, `P₁` y `N`
 tales que `LC N` y `P ⭢ηᶠ P₁`.
 
@@ -63,17 +62,14 @@ h₂ : app P N ⭢ηᶠ M₂
 
 A continuación, procedemos por casos sobre la derivación de `app P N ⭢ηᶠ M₂`:
 
-(a)\ Si la última regla fue `appL`,
+**(a)**\ Si la última regla fue `appL`,
 entonces `M₂` $=$ `app P₂ N` tal que `P ⭢ηᶠ P₂` y `LC N`.
 Por la hipótesis de inducción aplicada sobre `P ⭢ηᶠ P₂`, 
 sabemos que existe un término `P₃` tal que `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`.
 Por lo tanto, tomamos `z` $=$ `app P₃ Z`.
 
 ```lean
-theorem stronglyConfluent_eta :
-    StronglyConfluent (@FullEta Var) := by
-  intro M M₁ M₂ h₁ h₂
-    ⋮
+  case appL N P P₁ lc_N r_P_P₁ ih =>
     case appL P₂ r_P_P₂ _ =>
       obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
       use app P₃ N
@@ -97,10 +93,7 @@ si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃`
 dejando fija `N`, mediante la regla `appL`.
 
 ```lean
-theorem stronglyConfluent_eta :
-    StronglyConfluent (@FullEta Var) := by
-  intro M M₁ M₂ h₁ h₂
-    ⋮
+  case appL N P P₁ lc_N r_P_P₁ ih =>
     case appL P₂ r_P_P₂ _ =>
       obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
       use app P₃ N
@@ -113,16 +106,15 @@ theorem stronglyConfluent_eta :
         case single r_P₂_P₃ => exact .single (.appL lc_N r_P₂_P₃)
 ```
 
-(b)\ Si la última regla fue `appR`,
+**(b)**\ Si la última regla fue `appR`,
 entonces `M₂` $=$ `app P N₁`, para alguna `N₁`
 donde `LC P` y `N ⭢ηᶠ N₁`. Así, tomamos `z` $=$ `app P₁ N₁`.
 
-```lean
-theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
-  intro M M₁ M₂ h₁ h₂
+```lean  
+  case appL N P P₁ lc_N r_P_P₁ ih =>
+    case appL P₂ r_P_P₂ _ =>
     ⋮
-    case appR N₁ lc_P r_N_N₁ =>
-      use app P₁ N₁
+    case appR N₁ _ r_N_N₁ =>
 ```
 
 ```state
@@ -143,15 +135,61 @@ Las premisas de cerradura local que piden las reglas `appR` y `appL`
 se obtienen del teorema  2.1.1 (`step_lc_r`): de `r_P_P₁` 
 obtenemos `LC P₁` y de `r_N_N₁` obtenemos `LC N₁`.
 
-```lean
-theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
-  intro M M₁ M₂ h₁ h₂
+```lean  
+  case appL N P P₁ lc_N r_P_P₁ ih =>
+    case appL P₂ r_P_P₂ _ =>
     ⋮
-    case appR N₁ lc_P r_N_N₁ =>
+    case appR N₁ _ r_N_N₁ =>
       use app P₁ N₁
       constructor
       · exact .single (.appR (step_lc_r r_P_P₁) r_N_N₁)
       · exact .single (.appL (step_lc_r r_N_N₁) r_P_P₁)
+```
+
+**III**\. Si la última regla fue `appR`, 
+entonces `M` $=$ `app N P` y `M₁` $=$ `app N P₁`, 
+para alguna `N`, `P` y `P₁` tales que `LC N` y `P ⭢ηᶠ P₁`.
+
+```lean
+theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case appR N P P₁ lc_N r_P_P₁ ih =>
+```
+
+```state
+M M₁ M₂ N P P₁ : Term Var
+lc_N : LC N
+r_P_P₁ : P ⭢ηᶠ P₁
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
+>>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+h₂ : app N P ⭢ηᶠ M₂
+⊢ ∃ z, ReflGen FullEta (app N P₁) z ∧ ReflGen FullEta M₂ z
+```
+
+Este caso es análogo al anterior: basta intercambiar el argumento que se reduce 
+con el que queda fijo y, con ellos, las reglas `appL` y `appR`. La formalización es la siguiente.
+```lean
+theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case appR N P P₁ lc_N r_P_P₁ ih =>
+    cases h₂
+    case appL N₁ r_N_N₁ _ =>
+      use app N₁ P₁
+      constructor
+      · exact .single (.appL (step_lc_r r_P_P₁) r_N_N₁)
+      · exact .single (.appR (step_lc_r r_N_N₁) r_P_P₁)
+    case appR P₂ r_P_P₂ =>
+      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      use app N P₃
+      constructor
+      · cases refl_P₁_P₃
+        case refl => rfl
+        case single r_P₁_P₃ => exact .single (.appR lc_N r_P₁_P₃)
+      · cases refl_P₂_P₃
+        case refl => rfl
+        case single r_P₂_P₃ => exact .single (.appR lc_N r_P₂_P₃)
 ```
 
 :::
