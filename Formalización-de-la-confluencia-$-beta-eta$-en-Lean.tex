@@ -950,7 +950,7 @@ A continuación, procedemos por casos sobre la derivación de
 Por la hipótesis de inducción aplicada sobre \texttt{P\ ⭢ηᶠ\ P₂},
 sabemos que existe un término \texttt{P₃} tal que
 \texttt{ReflGen\ FullEta\ P₁\ P₃} y \texttt{ReflGen\ FullEta\ P₂\ P₃}.
-Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ Z}.
+Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ N}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -975,13 +975,41 @@ Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ Z}.
 \end{Highlighting}
 \end{Shaded}
 
+\begin{center}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{P}};
+  \node (b) at (3, 3) {\lean{P₁}};
+  \node (c) at (0, 0) {\lean{P₂}};
+  \node (d) at (3, 0) {\lean{P₃}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P₁ N}};
+  \node (c) at (0, 0) {\lean{app P₂ N}};
+  \node (d) at (3, 0) {\lean{app P₃ N}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+
 Para cerrar cada componente de la conjunción procedemos por casos sobre
-\texttt{refl\_P₁\_P₃\ :\ ReflGen\ FullEta\ P₁\ P₃} y
-\texttt{refl\_P₂\_P₃\ :\ ReflGen\ FullEta\ P₂\ P₃}, respectivamente: si
-son reflexivas, ambos lados ya coinciden; si constan de un paso,
-reducimos \texttt{P₁} a \texttt{P₃} en la primera y \texttt{P₂} a
-\texttt{P₃} en la segunda, dejando fija \texttt{N}, mediante la regla
-\texttt{appL}.
+\texttt{ReflGen\ FullEta\ P₁\ P₃} y \texttt{ReflGen\ FullEta\ P₂\ P₃},
+respectivamente: si son reflexivas, ambos lados ya coinciden; si constan
+de un paso, reducimos \texttt{P₁} a \texttt{P₃} en la primera y
+\texttt{P₂} a \texttt{P₃} en la segunda, dejando fija \texttt{N},
+mediante la regla \texttt{appL}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1025,6 +1053,19 @@ y \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\)
 \NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P₁ N}};
+  \node (c) at (0, 0) {\lean{app P N₁}};
+  \node (d) at (3, 0) {\lean{app P₁ N₁}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{center}
 
 Cada componente de la conjunción se obtiene con una sola reducción: en
 la primera reducimos \texttt{N} a \texttt{N₁} dejando fija \texttt{P₁},

@@ -66,7 +66,8 @@ A continuación, procedemos por casos sobre la derivación de `app P N ⭢ηᶠ 
 entonces `M₂` $=$ `app P₂ N` tal que `P ⭢ηᶠ P₂` y `LC N`.
 Por la hipótesis de inducción aplicada sobre `P ⭢ηᶠ P₂`, 
 sabemos que existe un término `P₃` tal que `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`.
-Por lo tanto, tomamos `z` $=$ `app P₃ Z`.
+Por lo tanto, tomamos `z` $=$ `app P₃ N`.
+
 
 ```lean
   case appL N P P₁ lc_N r_P_P₁ ih =>
@@ -86,11 +87,44 @@ refl_P₁_P₃ : ReflGen FullEta P₁ P₃
 refl_P₂_P₃ : ReflGen FullEta P₂ P₃
 ⊢ ReflGen FullEta (app P₁ N) (app P₃ N) ∧ ReflGen FullEta (app P₂ N) (app P₃ N)
 ```
+
+```{=latex}
+\begin{center}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{P}};
+  \node (b) at (3, 3) {\lean{P₁}};
+  \node (c) at (0, 0) {\lean{P₂}};
+  \node (d) at (3, 0) {\lean{P₃}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P₁ N}};
+  \node (c) at (0, 0) {\lean{app P₂ N}};
+  \node (d) at (3, 0) {\lean{app P₃ N}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+```
+
 Para cerrar cada componente de la conjunción procedemos por casos sobre 
-`refl_P₁_P₃ : ReflGen FullEta P₁ P₃` y `refl_P₂_P₃ : ReflGen FullEta P₂ P₃`, 
+`ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`, 
 respectivamente: si son reflexivas, ambos lados ya coinciden; 
 si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃` en la segunda, 
 dejando fija `N`, mediante la regla `appL`.
+
 
 ```lean
   case appL N P P₁ lc_N r_P_P₁ ih =>
@@ -126,6 +160,21 @@ ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z,
 lc_P : LC P
 r_N_N₁ : N ⭢ηᶠ N₁
 ⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
+```
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P₁ N}};
+  \node (c) at (0, 0) {\lean{app P N₁}};
+  \node (d) at (3, 0) {\lean{app P₁ N₁}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{center}
 ```
 
 Cada componente de la conjunción se obtiene con una sola reducción:
