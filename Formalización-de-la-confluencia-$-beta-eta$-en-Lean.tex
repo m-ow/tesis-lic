@@ -1325,7 +1325,7 @@ reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
 \KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
-\NormalTok{  case appR N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
+\NormalTok{  case appR N\textquotesingle{} P P₁ lc\_N\textquotesingle{} r\_P\_P₁ ih =\textgreater{}}
 \NormalTok{    cases h₂}
 \NormalTok{    case appL N₁ r\_N\_N₁ \_ =\textgreater{}}
 \NormalTok{      use app N₁ P₁}
@@ -1334,14 +1334,14 @@ reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
 \NormalTok{    case appR P₂ r\_P\_P₂ =\textgreater{}}
       \KeywordTok{have}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
-\NormalTok{      use app N P₃}
+\NormalTok{      use app N\textquotesingle{} P₃}
 \NormalTok{      constructor}
 \NormalTok{      · cases refl\_P₁\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
-\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₁\_P₃)}
+\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N\textquotesingle{} r\_P₁\_P₃)}
 \NormalTok{      · cases refl\_P₂\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
-\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₂\_P₃)}
+\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N\textquotesingle{} r\_P₂\_P₃)}
 \end{Highlighting}
 \end{Shaded}
 

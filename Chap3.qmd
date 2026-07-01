@@ -331,7 +331,7 @@ con el que queda fijo y, con ellos, las reglas `appL` y `appR`. La formalizació
 theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
-  case appR N P P₁ lc_N r_P_P₁ ih =>
+  case appR N' P P₁ lc_N' r_P_P₁ ih =>
     cases h₂
     case appL N₁ r_N_N₁ _ =>
       use app N₁ P₁
@@ -340,14 +340,14 @@ theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
       · exact .single (.appR (step_lc_r r_N_N₁) r_P_P₁)
     case appR P₂ r_P_P₂ =>
       have ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
-      use app N P₃
+      use app N' P₃
       constructor
       · cases refl_P₁_P₃
         case refl => rfl
-        case single r_P₁_P₃ => exact .single (.appR lc_N r_P₁_P₃)
+        case single r_P₁_P₃ => exact .single (.appR lc_N' r_P₁_P₃)
       · cases refl_P₂_P₃
         case refl => rfl
-        case single r_P₂_P₃ => exact .single (.appR lc_N r_P₂_P₃)
+        case single r_P₂_P₃ => exact .single (.appR lc_N' r_P₂_P₃)
 ```
 
 :::
