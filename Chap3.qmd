@@ -39,6 +39,151 @@ demostraremos que, para toda `M₂`, si `M ⭢ηᶠ M₂`, entonces
 existe una `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
 Procedemos por casos según la última regla utilizada en la derivación de `M ⭢ηᶠ M₁`.
 
+**I**\. Si la última regla fue `base`, entonces `M` $=$ `abs (app P (bvar 0))` y `M₁` $=$ `P`, 
+para alguna `P` tal que `LC P`.
+
+::: {.inout}
+::: {.inpt}
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case base _ _ P' P e_P =>
+  have ⟨lc_P⟩ := e_P
+    cases h₂
+```
+:::
+
+::: {.outpt}
+```state
+M M₁ M₂ P' P : Term Var
+lc_P : LC P
+e_P : Eta P' P
+h₂ : abs (app P (bvar 0))
+>>    ⭢ηᶠ M₂
+⊢ ∃ z, ReflGen FullEta P z 
+>>    ∧ ReflGen FullEta M₂ z
+```
+:::
+:::
+
+Procedemos por casos sobre la derivación de `abs (app P (bvar 0)) ⭢ηᶠ M₂` y,
+como se trata de una abstracción, solo pueden aplicarse las reglas `base` o `xi`.
+
+**(a)**\ Si la última regla fue `base`, 
+entonces se aplicó la misma regla $\eta$ a `abs (app P (bvar 0))`, 
+así que `M₂` $=$ `P`. Basta tomar `z` $=$ `P`.
+
+```lean
+  case base _ _ P' P e_P =>
+    have ⟨lc_P⟩ := e_P
+    cases h₂
+    case base e_P_M₂ =>
+      have ⟨_⟩ := e_P_M₂
+      use P
+```
+
+```state
+M M₁ M₂ P' P : Term Var
+lc_P : LC P
+e_P : Eta P' P
+e_P_M₂ : Eta (abs (app P (bvar 0))) M₂
+⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta P z
+```
+
+**(b)**\ Si la última regla fue `xi`, entonces `M₂` $=$ `abs Q`, 
+ya que para toda variable `x` fuera de un conjunto finito `L`, 
+se cumple que `(app P (bvar 0)) ^ fvar x ⭢ηᶠ (Q ^ fvar x)`. 
+
+Sea `w` una variable nueva, se tiene `(app P (bvar 0)) ^ fvar w ⭢ηᶠ (Q ^ fvar w)`,
+ahora notemos que, por definición, la apertura se distribuye sobre la aplicación, 
+de modo que el lado izquierdo es `app (P⟦0 ↝ fvar w⟧) (fvar w)` y, por el teorema 2.1.1
+(`open_lc`) `P⟦0 ↝ fvar w⟧` es igual a `P`.
+
+```lean
+  case base _ _ P' P e_P =>
+    have ⟨lc_P⟩ := e_P
+    cases h₂
+    case base e_P_M₂ =>
+      have ⟨_⟩ := e_P_M₂
+      use P
+    case xi _ _ Q L h_xi =>
+      have ⟨w, hw⟩ := fresh_exists (free_union [fv] Var)
+      have step_w := h_xi w (by aesop)
+      change (app (P⟦0 ↝ fvar w⟧) (fvar w)) ⭢ηᶠ (Q ^ fvar w) at step_w
+      rw [← open_lc 0 (fvar w) P lc_P] at step_w
+```
+
+```state
+M M₁ P' P Q : Term Var
+lc_P : LC P
+L : Finset Var
+h_xi : ∀ x ∉ L, (app P (bvar 0)) ^ fvar x ⭢ηᶠ (Q ^ fvar x)
+w : Var
+hw : w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P' ∪ fv P ∪ fv Q ∪ L
+step_w : app P (fvar w) ⭢ηᶠ Q ^ fvar w
+⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta (abs Q) z
+```
+
+Por el teorema 2.1.4 (`invert_step_app_fvar`) aplicado a `step_w`,
+obtenemos un término `P₁` tal que `Q ^ fvar w = app P₁ (fvar w)` y `P ⭢ηᶠ P₁`.
+Como una reducción no introduce variables libres (teorema 2.1.5, `step_not_fv`), 
+se tiene `w ∉ fv P₁`, y por el teorema 2.1.2 (`open_eq_app`) 
+concluimos `Q` $=$ `app P₁ (bvar 0)`, esto es, `M₂` $=$ `abs (app P₁ (bvar 0))`.
+
+```lean
+    case xi _ _ Q L h_xi =>
+      ⋮
+      have ⟨P₁, h_eq, r_P_P₁⟩ := invert_step_app_fvar step_w
+      have h_fv : w ∉ fv P₁ := step_not_fv r_P_P₁ (by aesop)
+      rw [open_eq_app (by aesop) h_fv (step_lc_r r_P_P₁) h_eq]
+```
+
+```state
+M M₁ P' P P₁ Q : Term Var
+lc_P : LC P
+L : Finset Var
+h_xi : ∀ x ∉ L, (app P (bvar 0)) ^ fvar x ⭢ηᶠ (Q ^ fvar x)
+w : Var
+hw : w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P' ∪ fv P ∪ fv Q ∪ L
+step_w : app P (fvar w) ⭢ηᶠ Q ^ fvar w
+h_eq : Q ^ fvar w = app P₁ (fvar w)
+r_P_P₁ : P ⭢ηᶠ P₁
+h_fv : w ∉ fv P₁
+⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta (abs (app P₁ (bvar 0))) z
+```
+
+Tomamos `z` $=$ `P₁`: el primer componente es `P ⭢ηᶠ P₁`, 
+y el segundo es la reducción $\eta$ de `abs (app P₁ (bvar 0))` a `P₁`.
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2.5) {\lean{abs (app P (bvar 0))}};
+  \node (b) at (6, 2.5) {\lean{P}};
+  \node (c) at (0, 0)   {\lean{abs (app P₁ (bvar 0))}};
+  \node (d) at (6, 0)   {\lean{P₁}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{center}
+```
+
+```lean
+    case xi _ _ Q L h_xi =>
+      ⋮
+      use P₁
+      constructor
+      · exact .single r_P_P₁
+      · exact .single (.base (.eta (step_lc_r r_P_P₁)))
+```
+
+
+
+
 **II**\. Si la última regla fue `appL`,
 entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para alguna `P`, `P₁` y `N`
 tales que `LC N` y `P ⭢ηᶠ P₁`.
@@ -72,7 +217,7 @@ Por lo tanto, tomamos `z` $=$ `app P₃ N`.
 ```lean
   case appL N P P₁ lc_N r_P_P₁ ih =>
     case appL P₂ r_P_P₂ _ =>
-      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      have ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
       use app P₃ N
 ```
 
@@ -129,7 +274,7 @@ dejando fija `N`, mediante la regla `appL`.
 ```lean
   case appL N P P₁ lc_N r_P_P₁ ih =>
     case appL P₂ r_P_P₂ _ =>
-      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      have ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
       use app P₃ N
       constructor
       · cases refl_P₁_P₃
@@ -181,7 +326,7 @@ Cada componente de la conjunción se obtiene con una sola reducción:
 en la primera reducimos `N` a `N₁` dejando fija `P₁`, y en la segunda reducimos `P` a `P₁` dejando fija `N₁`. 
 
 Las premisas de cerradura local que piden las reglas `appR` y `appL`
-se obtienen del teorema  2.1.1 (`step_lc_r`): de `r_P_P₁` 
+se obtienen del teorema  2.1.3 (`step_lc_r`): de `r_P_P₁` 
 obtenemos `LC P₁` y de `r_N_N₁` obtenemos `LC N₁`.
 
 ```lean  
@@ -230,7 +375,7 @@ theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
       · exact .single (.appL (step_lc_r r_P_P₁) r_N_N₁)
       · exact .single (.appR (step_lc_r r_N_N₁) r_P_P₁)
     case appR P₂ r_P_P₂ =>
-      obtain ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
+      have ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
       use app N P₃
       constructor
       · cases refl_P₁_P₃
