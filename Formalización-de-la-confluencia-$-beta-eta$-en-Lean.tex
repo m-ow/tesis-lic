@@ -336,11 +336,10 @@
 \maketitle
 
 %Can't be in preamble because Quarto loads amsthm too late.
-\theoremstyle{plain}
+\theoremstyle{definition}
 \newtheorem*{thm}{Theorem}
 \newcommand{\thmnm}{Theorem}
 \newtheorem*{namedthm}{\thmnm}
-\theoremstyle{definition}
 \newtheorem*{dfn}{Definition}
 \newcommand{\defnm}{Definition}
 \newtheorem*{nameddfn}{\defnm}
@@ -910,7 +909,25 @@ libres.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ step\_not\_fv \{w : Var\} (step : M ⭢ηᶠ M\textquotesingle{}) (hw : w ∉ M.fv) : w ∉ M\textquotesingle{}.f}
+\KeywordTok{theorem}\NormalTok{ step\_not\_fv \{w : Var\} (step : M ⭢ηᶠ M\textquotesingle{}) (hw : w ∉ fv M) : w ∉ fv M\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{nthm}{Teorema 2.1.6}
+
+Una reducción de un solo paso desde \texttt{abs\ (app\ N\ (bvar\ 0))}
+produce \texttt{N}, o bien
+\texttt{abs\ (app\ N\textquotesingle{}\ (bvar\ 0))} para alguna
+\texttt{N\textquotesingle{}} tal que
+\texttt{N\ ⭢ηᶠ\ N\textquotesingle{}}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ invert\_step\_eta\_redex \{N M : Term Var\} (lc\_N : LC N)}
+\NormalTok{    (step : abs (app N (bvar 0)) ⭢ηᶠ M) :}
+\NormalTok{    M = N ∨ ∃ N\textquotesingle{}, N ⭢ηᶠ N\textquotesingle{} ∧ M = abs (app N\textquotesingle{} (bvar 0))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -984,8 +1001,8 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
 \NormalTok{  case base \_ \_ P\textquotesingle{} P e\_P =\textgreater{}}
-  \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
-\NormalTok{    cases h₂}
+    \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
+    \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_P h₂}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1007,115 +1024,55 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 
 \end{outpt}
 
-Procedemos por casos sobre la derivación de
-\texttt{abs\ (app\ P\ (bvar\ 0))\ ⭢ηᶠ\ M₂} y, como se trata de una
-abstracción, solo pueden aplicarse las reglas \texttt{base} o
-\texttt{xi}.
+Aplicando el teorema 2.1.6 (\texttt{invert\_step\_eta\_redex}) a
+\texttt{h₂} obtenemos dos posibilidades: \texttt{M₂} \(=\) \texttt{P}, o
+bien \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))} para alguna
+\texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}. Analizamos cada una.
 
-\textbf{(a)}~Si la última regla fue \texttt{base}, entonces se aplicó la
-misma regla \(\eta\) a \texttt{abs\ (app\ P\ (bvar\ 0))}, así que
-\texttt{M₂} \(=\) \texttt{P}. Basta tomar \texttt{z} \(=\) \texttt{P}.
+\textbf{(a)}~Si \texttt{M₂} \(=\) P, ambas derivaciones aplicaron la
+regla \(\eta\) a \texttt{abs\ (app\ P\ (bvar\ 0))} y llegaron al mismo
+término. Basta tomar \texttt{z} \(=\) \texttt{P}.
+
+\begin{inpt}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{  case base \_ \_ P\textquotesingle{} P e\_P =\textgreater{}}
     \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
-\NormalTok{    cases h₂}
-\NormalTok{    case base e\_P\_M₂ =\textgreater{}}
-      \KeywordTok{have}\NormalTok{ ⟨\_⟩ := e\_P\_M₂}
-\NormalTok{      use P}
+    \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_P h₂}
+\NormalTok{    cases h }\KeywordTok{with}
+\NormalTok{    | inl h\_eq =\textgreater{}}
+        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{        use P}
 \end{Highlighting}
 \end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \InformationTok{M M₁ M₂ P\textquotesingle{} P }\NormalTok{: Term Var}
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
-\InformationTok{e\_P\_M₂ }\NormalTok{: Eta (abs (app P (bvar 0))) M₂}
-\NormalTok{⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta P z}
+\InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0))}
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ⭢ηᶠ M₂}
+\InformationTok{h\_eq }\NormalTok{: M₂ = P}
+\NormalTok{⊢ ∃ z, ReflGen FullEta P z }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta P z}
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{(b)}~Si la última regla fue \texttt{xi}, entonces \texttt{M₂}
-\(=\) \texttt{abs\ Q}, ya que para toda variable \texttt{x} fuera de un
-conjunto finito \texttt{L}, se cumple que
-\texttt{(app\ P\ (bvar\ 0))\ \^{}\ fvar\ x\ ⭢ηᶠ\ (Q\ \^{}\ fvar\ x)}.
+\end{outpt}
 
-Sea \texttt{w} una variable nueva, se tiene
-\texttt{(app\ P\ (bvar\ 0))\ \^{}\ fvar\ w\ ⭢ηᶠ\ (Q\ \^{}\ fvar\ w)},
-ahora notemos que, por definición, la apertura se distribuye sobre la
-aplicación, de modo que el lado izquierdo es
-\texttt{app\ (P⟦0\ ↝\ fvar\ w⟧)\ (fvar\ w)} y, por el teorema 2.1.1
-(\texttt{open\_lc}) \texttt{P⟦0\ ↝\ fvar\ w⟧} es igual a \texttt{P}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{  case base \_ \_ P\textquotesingle{} P e\_P =\textgreater{}}
-    \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
-\NormalTok{    cases h₂}
-\NormalTok{    case base e\_P\_M₂ =\textgreater{}}
-      \KeywordTok{have}\NormalTok{ ⟨\_⟩ := e\_P\_M₂}
-\NormalTok{      use P}
-\NormalTok{    case xi \_ \_ Q L h\_xi =\textgreater{}}
-      \KeywordTok{have}\NormalTok{ ⟨w, hw⟩ := fresh\_exists (free\_union [fv] Var)}
-      \KeywordTok{have}\NormalTok{ step\_w := h\_xi w (}\KeywordTok{by}\NormalTok{ aesop)}
-\NormalTok{      change (app (P⟦0 ↝ fvar w⟧) (fvar w)) ⭢ηᶠ (Q \^{} fvar w) }\KeywordTok{at}\NormalTok{ step\_w}
-      \KeywordTok{rw}\NormalTok{ [← open\_lc 0 (fvar w) P lc\_P] }\KeywordTok{at}\NormalTok{ step\_w}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\InformationTok{M M₁ P\textquotesingle{} P Q }\NormalTok{: Term Var}
-\InformationTok{lc\_P }\NormalTok{: LC P}
-\InformationTok{L }\NormalTok{: Finset Var}
-\InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app P (bvar 0)) \^{} fvar x ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{w }\NormalTok{: Var}
-\InformationTok{hw }\NormalTok{: w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P\textquotesingle{} ∪ fv P ∪ fv Q ∪ L}
-\InformationTok{step\_w }\NormalTok{: app P (fvar w) ⭢ηᶠ Q \^{} fvar w}
-\NormalTok{⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta (abs Q) z}
-\end{Highlighting}
-\end{Shaded}
-
-Por el teorema 2.1.4 (\texttt{invert\_step\_app\_fvar}) aplicado a
-\texttt{step\_w}, obtenemos un término \texttt{P₁} tal que
-\texttt{Q\ \^{}\ fvar\ w\ =\ app\ P₁\ (fvar\ w)} y \texttt{P\ ⭢ηᶠ\ P₁}.
-Como una reducción no introduce variables libres (teorema 2.1.5,
-\texttt{step\_not\_fv}), se tiene \texttt{w\ ∉\ fv\ P₁}, y por el
-teorema 2.1.2 (\texttt{open\_eq\_app}) concluimos \texttt{Q} \(=\)
-\texttt{app\ P₁\ (bvar\ 0)}, esto es, \texttt{M₂} \(=\)
-\texttt{abs\ (app\ P₁\ (bvar\ 0))}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{    case xi \_ \_ Q L h\_xi =\textgreater{}}
-\NormalTok{      ⋮}
-      \KeywordTok{have}\NormalTok{ ⟨P₁, h\_eq, r\_P\_P₁⟩ := invert\_step\_app\_fvar step\_w}
-      \KeywordTok{have}\NormalTok{ h\_fv : w ∉ fv P₁ := step\_not\_fv r\_P\_P₁ (}\KeywordTok{by}\NormalTok{ aesop)}
-      \KeywordTok{rw}\NormalTok{ [open\_eq\_app (}\KeywordTok{by}\NormalTok{ aesop) h\_fv (step\_lc\_r r\_P\_P₁) h\_eq]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\InformationTok{M M₁ P\textquotesingle{} P P₁ Q }\NormalTok{: Term Var}
-\InformationTok{lc\_P }\NormalTok{: LC P}
-\InformationTok{L }\NormalTok{: Finset Var}
-\InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app P (bvar 0)) \^{} fvar x ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{w }\NormalTok{: Var}
-\InformationTok{hw }\NormalTok{: w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P\textquotesingle{} ∪ fv P ∪ fv Q ∪ L}
-\InformationTok{step\_w }\NormalTok{: app P (fvar w) ⭢ηᶠ Q \^{} fvar w}
-\InformationTok{h\_eq }\NormalTok{: Q \^{} fvar w = app P₁ (fvar w)}
-\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{h\_fv }\NormalTok{: w ∉ fv P₁}
-\NormalTok{⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta (abs (app P₁ (bvar 0))) z}
-\end{Highlighting}
-\end{Shaded}
-
-Tomamos \texttt{z} \(=\) \texttt{P₁}: el primer componente es
-\texttt{P\ ⭢ηᶠ\ P₁}, y el segundo es la reducción \(\eta\) de
-\texttt{abs\ (app\ P₁\ (bvar\ 0))} a \texttt{P₁}.
+\textbf{(b)}~Si \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))}
+para alguna \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}, tomamos \texttt{z}
+\(=\) \texttt{P₁}: el primer componente de la conjunción es
+\texttt{P\ ⭢ηᶠ\ P₁}, y el segundo se obtiene aplicando la regla \(\eta\)
+a \texttt{abs\ (app\ P₁\ (bvar\ 0))}, cuya premisa \texttt{LC\ P₁} se
+extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
+\texttt{r\_P\_P₁}.
 
 \begin{center}
 \begin{tikzpicture}
@@ -1132,12 +1089,30 @@ Tomamos \texttt{z} \(=\) \texttt{P₁}: el primer componente es
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{    case xi \_ \_ Q L h\_xi =\textgreater{}}
-\NormalTok{      ⋮}
-\NormalTok{      use P₁}
-\NormalTok{      constructor}
-\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single r\_P\_P₁}
-\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.base (.eta (step\_lc\_r r\_P\_P₁)))}
+\NormalTok{    cases h }\KeywordTok{with}
+\NormalTok{    | inl h\_eq =\textgreater{}}
+        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{        use P}
+\NormalTok{    | inr h =\textgreater{}}
+        \KeywordTok{have}\NormalTok{ ⟨P₁, r\_P\_P₁, h\_eq⟩ := h}
+        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{        use P₁}
+\NormalTok{        constructor}
+\NormalTok{        · }\KeywordTok{exact}\NormalTok{ .single r\_P\_P₁}
+\NormalTok{        · }\KeywordTok{exact}\NormalTok{ .single (.base (.eta (step\_lc\_r r\_P\_P₁)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ P\textquotesingle{} P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_P }\NormalTok{: LC P}
+\InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
+\InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0)) ⭢ηᶠ M₂}
+\InformationTok{h }\NormalTok{: ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
+\InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
+\InformationTok{h\_eq }\NormalTok{: M₂ = abs (app P₁ (bvar 0)) }
+\NormalTok{⊢ ReflGen FullEta P P₁ ∧ ReflGen FullEta (abs (app P₁ (bvar 0))) P₁}
 \end{Highlighting}
 \end{Shaded}
 

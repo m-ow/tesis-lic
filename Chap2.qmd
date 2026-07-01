@@ -178,6 +178,16 @@ theorem invert_step_app_fvar {x : Var} (step : (app M (fvar x)) ⭢ηᶠ N) :
 ::: {.nthm arguments="Teorema 2.1.5"}
 La reducción $\eta$ de un solo paso no introduce nuevas variables libres.
 ```lean
-theorem step_not_fv {w : Var} (step : M ⭢ηᶠ M') (hw : w ∉ M.fv) : w ∉ M'.f
+theorem step_not_fv {w : Var} (step : M ⭢ηᶠ M') (hw : w ∉ fv M) : w ∉ fv M'
+```
+:::
+
+::: {.nthm arguments="Teorema 2.1.6"}
+Una reducción de un solo paso desde `abs (app N (bvar 0))` produce `N`, o bien `abs (app N' (bvar 0))` 
+para alguna `N'` tal que `N ⭢ηᶠ N'`.
+```lean
+lemma invert_step_eta_redex {N M : Term Var} (lc_N : LC N)
+    (step : abs (app N (bvar 0)) ⭢ηᶠ M) :
+    M = N ∨ ∃ N', N ⭢ηᶠ N' ∧ M = abs (app N' (bvar 0))
 ```
 :::
