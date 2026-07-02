@@ -42,8 +42,6 @@ Procedemos por casos según la última regla utilizada en la derivación de `M �
 **I**\. Si la última regla fue `base`, entonces `M` $=$ `abs (app P (bvar 0))` y `M₁` $=$ `P`, 
 para alguna `P` tal que `LC P`.
 
-::: {.inout}
-::: {.inpt}
 ```lean
 theorem stronglyConfluent_eta :
     StronglyConfluent (@FullEta Var) := by
@@ -53,20 +51,16 @@ theorem stronglyConfluent_eta :
     have ⟨lc_P⟩ := e_P
     have h := invert_step_eta_redex lc_P h₂
 ```
-:::
 
-::: {.outpt}
 ```state
 M M₁ M₂ P' P : Term Var
 lc_P : LC P
 e_P : Eta P' P
-h₂ : abs (app P (bvar 0))
->>    ⭢ηᶠ M₂
-⊢ ∃ z, ReflGen FullEta P z 
->>    ∧ ReflGen FullEta M₂ z
+h₂ : abs (app P (bvar 0)) ⭢ηᶠ M₂
+h : M₂ = P ∨ ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
+⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta M₂ z
 ```
-:::
-:::
+
 
 Aplicando el teorema 2.1.6 (`invert_step_eta_redex`) a `h₂` 
 obtenemos dos posibilidades: `M₂` $=$ `P`, o bien `M₂` $=$ 
@@ -84,7 +78,7 @@ y llegaron al mismo término. Basta tomar `z` $=$ `P`.
     have h := invert_step_eta_redex lc_P h₂
     cases h with
     | inl h_eq =>
-        rw [h_eq]
+        rw [h_eq] -- ⊢
         use P
 ```
 :::
@@ -105,7 +99,7 @@ h_eq : M₂ = P
 
 **(b)**\ Si `M₂` $=$ `abs (app P₁ (bvar 0))` para alguna `P₁` con `P ⭢ηᶠ P₁`, tomamos `z` $=$ `P₁`: 
 el primer componente de la conjunción es `P ⭢ηᶠ P₁`, y el segundo se obtiene aplicando la regla $\eta$ 
-a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 (`step_lc_r`) aplicado a `r_P_P₁`.
+a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.3 (`step_lc_r`) aplicado a `r_P_P₁`.
 
 ```{=latex}
 \begin{center}
@@ -130,7 +124,7 @@ a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 
     | inr h =>
         have ⟨P₁, r_P_P₁, h_eq⟩ := h
         rw [h_eq]
-        use P₁
+        use P₁ -- ⊢
         constructor
         · exact .single r_P_P₁
         · exact .single (.base (.eta (step_lc_r r_P_P₁)))

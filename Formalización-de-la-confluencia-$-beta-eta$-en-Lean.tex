@@ -992,8 +992,6 @@ regla utilizada en la derivación de \texttt{M\ ⭢ηᶠ\ M₁}.
 \(=\) \texttt{abs\ (app\ P\ (bvar\ 0))} y \texttt{M₁} \(=\) \texttt{P},
 para alguna \texttt{P} tal que \texttt{LC\ P}.
 
-\begin{inpt}
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
@@ -1006,23 +1004,16 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 \end{Highlighting}
 \end{Shaded}
 
-\end{inpt}
-
-\begin{outpt}
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \InformationTok{M M₁ M₂ P\textquotesingle{} P }\NormalTok{: Term Var}
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
-\InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0))}
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ⭢ηᶠ M₂}
-\NormalTok{⊢ ∃ z, ReflGen FullEta P z }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta M₂ z}
+\InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0)) ⭢ηᶠ M₂}
+\InformationTok{h }\NormalTok{: M₂ = P ∨ ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
+\NormalTok{⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
 \end{Shaded}
-
-\end{outpt}
 
 Aplicando el teorema 2.1.6 (\texttt{invert\_step\_eta\_redex}) a
 \texttt{h₂} obtenemos dos posibilidades: \texttt{M₂} \(=\) \texttt{P}, o
@@ -1042,7 +1033,7 @@ término. Basta tomar \texttt{z} \(=\) \texttt{P}.
     \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_P h₂}
 \NormalTok{    cases h }\KeywordTok{with}
 \NormalTok{    | inl h\_eq =\textgreater{}}
-        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+        \KeywordTok{rw}\NormalTok{ [h\_eq] }\CommentTok{{-}{-} ⊢}
 \NormalTok{        use P}
 \end{Highlighting}
 \end{Shaded}
@@ -1071,7 +1062,7 @@ para alguna \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}, tomamos \texttt{z}
 \(=\) \texttt{P₁}: el primer componente de la conjunción es
 \texttt{P\ ⭢ηᶠ\ P₁}, y el segundo se obtiene aplicando la regla \(\eta\)
 a \texttt{abs\ (app\ P₁\ (bvar\ 0))}, cuya premisa \texttt{LC\ P₁} se
-extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
+extrae del teorema 2.1.3 (\texttt{step\_lc\_r}) aplicado a
 \texttt{r\_P\_P₁}.
 
 \begin{center}
@@ -1096,7 +1087,7 @@ extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
 \NormalTok{    | inr h =\textgreater{}}
         \KeywordTok{have}\NormalTok{ ⟨P₁, r\_P\_P₁, h\_eq⟩ := h}
         \KeywordTok{rw}\NormalTok{ [h\_eq]}
-\NormalTok{        use P₁}
+\NormalTok{        use P₁ }\CommentTok{{-}{-} ⊢}
 \NormalTok{        constructor}
 \NormalTok{        · }\KeywordTok{exact}\NormalTok{ .single r\_P\_P₁}
 \NormalTok{        · }\KeywordTok{exact}\NormalTok{ .single (.base (.eta (step\_lc\_r r\_P\_P₁)))}
