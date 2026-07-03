@@ -344,4 +344,92 @@ theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
         case single r_P₂_P₃ => exact .single (.appR lc_N' r_P₂_P₃)
 ```
 
+**IV**\. Si la última regla fue `xi`, entonces `M` $=$ `abs P` y `M₁` $=$ `abs Q`,
+para alguna `P` y `Q` tales que, para toda variable `x` fuera de un conjunto finito `L`,
+se cumple `(P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)`.
+
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case xi P Q L h_xi ih =>
+```
+
+```state
+M M₁ M₂ P Q : Term Var
+L : Finset Var
+h_xi : ∀ x ∉ L, (P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
+h₂ : abs P ⭢ηᶠ M₂
+⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z
+```
+
+Procedemos por casos sobre la derivación de `abs P ⭢ηᶠ M₂` y, como se trata de una
+abstracción, solo pueden aplicarse las reglas `base` o `xi`.
+
+**(a)**\ Si la última regla fue `base`, entonces `M₂` se obtuvo aplicando la regla $\eta$
+a `abs P`, lo cual exige que `P` $=$ `app M₂ (bvar 0)` y `LC M₂`.
+
+```lean
+  case xi P Q L h_xi ih =>
+    cases h₂
+    case base e_P =>
+      have h₁ := CompatGen.xi L h_xi
+      have ⟨lc_M₂⟩ := e_P
+      have h := invert_step_eta_redex lc_M₂ h₁ 
+```
+
+```state
+M M₁ M₂ P Q : Term Var
+L : Finset Var
+e_P : Eta (abs P) M₂
+lc_M₂ : LC M₂
+h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
+h₁ : abs (app M (bvar 0)) ⭢ηᶠ abs Q
+h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
+⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z
+```
+
+
+Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.6
+(`invert_step_eta_redex`) nos da dos posibilidades: `abs Q` $=$ `M₂`, o bien
+`abs Q` $=$ `abs (app R (bvar 0))` para alguna `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
+
+- Si `abs Q` $=$ `M₂`, ambas reducciones llegaron al mismo término y basta tomar `z` $=$ `M₂`.
+
+- Si `abs Q` $=$ `abs (app R (bvar 0))` con `M₂ ⭢ηᶠ R`, tomamos `z` $=$ `R`:
+el primer componente de la conjunción se obtiene aplicando la regla $\eta$ a
+`abs (app R (bvar 0))`, cuya premisa `LC R` se extrae del teorema 2.1.3 (`step_lc_r`)
+aplicado a `r_M₂_R`, y el segundo es la reducción `M₂ ⭢ηᶠ R`.
+
+```lean
+    case base e_P =>
+      ⋮
+      cases h with
+      | inl h_eq =>
+          rw [h_eq]
+          use M₂
+      | inr h =>
+          have ⟨R, r_M₂_R, h_eq⟩ := h
+          rw [h_eq]
+          use R -- ⊢
+          constructor
+          · exact .single (.base (.eta (step_lc_r r_M₂_R)))
+          · exact .single r_M₂_R
+```
+
+```state 
+M M₁ M₂ P Q R : Term Var
+L : Finset Var
+e_P : Eta (abs P) M₂
+lc_M₂ : LC M₂
+h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
+h₁ : abs (app M (bvar 0)) ⭢ηᶠ abs Q
+h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
+r_M₂_R : M₂ ⭢ηᶠ R
+h_eq : abs Q = abs (app R (bvar 0))
+⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R
+```
+
 :::
+
