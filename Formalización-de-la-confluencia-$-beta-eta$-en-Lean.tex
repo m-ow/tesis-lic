@@ -683,8 +683,8 @@ La sustitución consiste en remplazar una variable libre por un término.
   \KeywordTok{match}\NormalTok{ m }\KeywordTok{with}
 \NormalTok{  | bvar i  =\textgreater{} bvar i}
 \NormalTok{  | fvar x\textquotesingle{} =\textgreater{} if x = x\textquotesingle{} then sub else fvar x\textquotesingle{}}
-\NormalTok{  | app l r =\textgreater{} app (l.subst x sub) (r.subst x sub)}
-\NormalTok{  | abs M   =\textgreater{} abs (M.subst x sub)}
+\NormalTok{  | app l r =\textgreater{} app (subst l x sub) (subst r x sub)}
+\NormalTok{  | abs M   =\textgreater{} abs (subst M x sub)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -711,8 +711,8 @@ libre de un término.
 \KeywordTok{def}\NormalTok{ fv : Term Var → Finset Var}
 \NormalTok{  | bvar \_ =\textgreater{} \{\}}
 \NormalTok{  | fvar x =\textgreater{} \{x\}}
-\NormalTok{  | abs e1 =\textgreater{} e1.fv}
-\NormalTok{  | app l r =\textgreater{} l.fv ∪ r.fv}
+\NormalTok{  | abs e1 =\textgreater{} fv e1}
+\NormalTok{  | app l r =\textgreater{} fv l ∪ fv r}
 \end{Highlighting}
 \end{Shaded}
 
@@ -730,11 +730,11 @@ La operación de apertura sustituye un índice por un término.
 \NormalTok{  | bvar i\textquotesingle{} =\textgreater{} if i = i\textquotesingle{} then sub else bvar i\textquotesingle{}}
 \NormalTok{  | fvar x  =\textgreater{} fvar x}
 \NormalTok{  | app l r =\textgreater{} app (openRec i sub l) (openRec i sub r)}
-\NormalTok{  | abs M   =\textgreater{} abs \textless{}| openRec (i+1) sub M}
+\NormalTok{  | abs M   =\textgreater{} abs (openRec (i+1) sub M)}
 \end{Highlighting}
 \end{Shaded}
 
-También definimos una notación para \texttt{openRec}.
+Cuya notación es la siguiente.
 
 \begin{Shaded}
 \begin{Highlighting}[]

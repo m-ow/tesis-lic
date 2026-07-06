@@ -35,8 +35,8 @@ def subst (m : Term Var) (x : Var) (sub : Term Var) : Term Var :=
   match m with
   | bvar i  => bvar i
   | fvar x' => if x = x' then sub else fvar x'
-  | app l r => app (l.subst x sub) (r.subst x sub)
-  | abs M   => abs (M.subst x sub)
+  | app l r => app (subst l x sub) (subst r x sub)
+  | abs M   => abs (subst M x sub)
 ```
 Definimos una notación para la sustitución de variables libres que imita la notación matemática estándar.
 ```lean
@@ -54,8 +54,8 @@ cualquier nombre que veamos es una variable libre de un término.
 def fv : Term Var → Finset Var
   | bvar _ => {}
   | fvar x => {x}
-  | abs e1 => e1.fv
-  | app l r => l.fv ∪ r.fv
+  | abs e1 => fv e1
+  | app l r => fv l ∪ fv r
 ```
 El tipo `Finset Var` representa un conjunto finito 
 de elementos del tipo `Var`. 
@@ -68,9 +68,9 @@ def openRec (i : ℕ) (sub : Term Var) : Term Var → Term Var
   | bvar i' => if i = i' then sub else bvar i'
   | fvar x  => fvar x
   | app l r => app (openRec i sub l) (openRec i sub r)
-  | abs M   => abs <| openRec (i+1) sub M
+  | abs M   => abs (openRec (i+1) sub M)
 ```
-También definimos una notación para `openRec`.
+Cuya notación es la siguiente. 
 ```lean
 scoped notation:68 e "⟦" i " ↝ " sub "⟧" => openRec i sub e
 ```
