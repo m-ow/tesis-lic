@@ -555,8 +555,8 @@ con `P₁` en lugar de `Q`.
           exact .single (step_abs_close st (step_lc_r r_P_P₁))
 ```
 
-En cada uno de los casos encontramos el término z que buscábamos, 
-así que la reducción $\eta$ de un solo paso es fuertemente confluente.
+En cada caso encontramos un término al que `M₁` y `M₂` se reducen 
+en cero o un paso, lo que demuestra la confluencia fuerte de $\eta$.
 
 :::
 
