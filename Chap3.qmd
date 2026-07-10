@@ -62,7 +62,7 @@ h : M₂ = P ∨ ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
 ```
 
 
-Aplicando el teorema 2.1.6 (`invert_step_eta_redex`) a `h₂` 
+Aplicando el teorema 2.1.3 (`invert_step_eta_redex`) a `h₂` 
 obtenemos dos posibilidades: `M₂` $=$ `P`, o bien `M₂` $=$ 
 `abs (app P₁ (bvar 0))` para alguna `P₁` con `P ⭢ηᶠ P₁`. 
 Analizamos cada una.
@@ -99,7 +99,7 @@ h_eq : M₂ = P
 
 **(b)**\ Si `M₂` $=$ `abs (app P₁ (bvar 0))` para alguna `P₁` con `P ⭢ηᶠ P₁`, tomamos `z` $=$ `P₁`: 
 el primer componente de la conjunción es `P ⭢ηᶠ P₁`, y el segundo se obtiene aplicando la regla $\eta$ 
-a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.3 (`step_lc_r`) aplicado a `r_P_P₁`.
+a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 (`step_lc_r`) aplicado a `r_P_P₁`.
 
 ```{=latex}
 \begin{center}
@@ -284,8 +284,12 @@ Cada componente de la conjunción se obtiene con una sola reducción:
 en la primera reducimos `N` a `N₁` dejando fija `P₁`, y en la segunda reducimos `P` a `P₁` dejando fija `N₁`. 
 
 Las premisas de cerradura local que piden las reglas `appR` y `appL`
-se obtienen del teorema  2.1.3 (`step_lc_r`): de `r_P_P₁` 
+se obtienen del teorema 2.1.2 (`step_lc_r`): de `r_P_P₁` 
 obtenemos `LC P₁` y de `r_N_N₁` obtenemos `LC N₁`.
+
+**(c)**\ Si la última regla fue `base`, la regla $\eta$ se habría aplicado directamente
+a `app P N`, lo cual es imposible: la regla $\eta$ solo reduce abstracciones y este
+término es una aplicación. Así, no hay nada que demostrar.
 
 ```lean  
   case appL N P P₁ lc_N r_P_P₁ ih =>
@@ -296,6 +300,7 @@ obtenemos `LC P₁` y de `r_N_N₁` obtenemos `LC N₁`.
       constructor
       · exact .single (.appR (step_lc_r r_P_P₁) r_N_N₁)
       · exact .single (.appL (step_lc_r r_N_N₁) r_P_P₁)
+    case base => contradiction
 ```
 
 **III**\. Si la última regla fue `appR`, 
@@ -342,6 +347,7 @@ theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
       · cases refl_P₂_P₃
         case refl => rfl
         case single r_P₂_P₃ => exact .single (.appR lc_N' r_P₂_P₃)
+    case base => contradiction
 ```
 
 **IV**\. Si la última regla fue `xi`, entonces `M` $=$ `abs P` y `M₁` $=$ `abs Q`,
@@ -385,13 +391,13 @@ L : Finset Var
 e_P : Eta (abs P) M₂
 lc_M₂ : LC M₂
 h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
-h₁ : abs (app M (bvar 0)) ⭢ηᶠ abs Q
+h₁ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
 h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
 ⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z
 ```
 
 
-Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.6
+Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.3
 (`invert_step_eta_redex`) nos da dos posibilidades: `abs Q` $=$ `M₂`, o bien
 `abs Q` $=$ `abs (app R (bvar 0))` para alguna `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
 
@@ -399,7 +405,7 @@ Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app 
 
 - Si `abs Q` $=$ `abs (app R (bvar 0))` con `M₂ ⭢ηᶠ R`, tomamos `z` $=$ `R`:
 el primer componente de la conjunción se obtiene aplicando la regla $\eta$ a
-`abs (app R (bvar 0))`, cuya premisa `LC R` se extrae del teorema 2.1.3 (`step_lc_r`)
+`abs (app R (bvar 0))`, cuya premisa `LC R` se extrae del teorema 2.1.2 (`step_lc_r`)
 aplicado a `r_M₂_R`, y el segundo es la reducción `M₂ ⭢ηᶠ R`.
 
 ```lean
@@ -424,12 +430,132 @@ L : Finset Var
 e_P : Eta (abs P) M₂
 lc_M₂ : LC M₂
 h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
-h₁ : abs (app M (bvar 0)) ⭢ηᶠ abs Q
+h₁ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
 h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
 r_M₂_R : M₂ ⭢ηᶠ R
 h_eq : abs Q = abs (app R (bvar 0))
 ⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R
 ```
 
+**(b)**\ Si la última regla fue `xi`, entonces `M₂` $=$ `abs P₁`, para alguna `P₁` tal que,
+para toda variable `x` fuera de un conjunto finito `L'`, se cumple `(P ^ fvar x) ⭢ηᶠ (P₁ ^ fvar x)`.
+
+```lean
+  case xi P Q L h_xi ih =>
+    cases h₂
+    ⋮
+    case xi P₁ L' h_xi' =>
+```
+```state
+P P₁ Q : Term Var
+L L' : Finset Var
+ih : ∀ x ∉ L, ∀ {M₂ : Term Var}, (P ^ fvar x) ⭢ηᶠ M₂ → 
+>>     ∃ z, ReflGen FullEta (Q ^ fvar x) z ∧ ReflGen FullEta M₂ z
+h_xi : ∀ x ∉ L, (P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
+h_xi' : ∀ x ∉ L', (P ^ fvar x) ⭢ηᶠ (P₁ ^ fvar x)
+⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta (abs P₁) z
+```
+
+Sea `w` una variable nueva. De `h_xi'` aplicada a `w` se sigue `(P ^ fvar w) ⭢ηᶠ (P₁ ^ fvar w)` y,
+por la hipótesis de inducción, existe un término `P₂` tal que `ReflGen FullEta (Q ^ fvar w) P₂` y
+`ReflGen FullEta (P₁ ^ fvar w) P₂`. Por lo tanto, tomamos `z` $=$ `abs (P₂ ^* w)`.
+```lean
+    case xi P₁ L' h_xi' =>
+      have ⟨w, hw⟩ := fresh_exists (free_union [fv] Var)
+      have r_P_P₁ := h_xi' w (by aesop)
+      have ⟨P₂, refl_Q_P₂, refl_P₁_P₂⟩ := ih w (by aesop) r_P_P₁
+      use abs (P₂ ^* w)
+```
+
+```{=latex}
+\begin{center}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 2.2) {\lean{P \textasciicircum{} fvar w}};
+  \node (b) at (3.6, 2.2) {\lean{Q \textasciicircum{} fvar w}};
+  \node (c) at (0, 0) {\lean{P₁ \textasciicircum{} fvar w}};
+  \node (d) at (3.6, 0) {\lean{P₂}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 2.2) {\lean{abs P}};
+  \node (b) at (3.6, 2.2) {\lean{abs Q}};
+  \node (c) at (0, 0) {\lean{abs P₁}};
+  \node (d) at (3.6, 0) {\lean{abs (P₂ \textasciicircum* w)}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+```
+
+Para completar el primer componente de la conjunción procedemos por casos sobre
+`ReflGen FullEta (Q ^ fvar w) P₂`: 
+
+- Si la reducción es reflexiva, entonces `P₂` $=$ `Q ^ fvar w`, de modo que
+  `z` $=$ `abs ((Q ^ fvar w) ^* w)`. Por el teorema 2.1.1 (`open_close_var`) 
+  este término es `abs Q` y ambos lados coinciden.
+
+- Si la reducción consta de un paso `st : (Q ^ fvar w) ⭢ηᶠ P₂`, reescribimos `abs Q` como
+  `abs ((Q ^ fvar w) ^* w)` mediante el teorema 2.1.1 (`open_close_var`), así, basta
+  construir la reducción `abs ((Q ^ fvar w) ^* w) ⭢ηᶠ abs (P₂ ^* w)`. 
+  
+  De `h_xi` aplicada a `w` obtenemos `(P ^ fvar w) ⭢ηᶠ (Q ^ fvar w)`, que garantiza `LC (Q ^ fvar w)`,
+  con esta premisa, el teorema 2.1.4 (`step_abs_close`) aplicado a `st` produce la reducción buscada.
+
+```lean
+    case xi P₁ L' h_xi' =>
+      ⋮
+      constructor
+      · cases refl_Q_P₂
+        case refl => rw [← open_close_var w Q (by aesop)]
+        case single st =>
+          rw [open_close_var w Q (by aesop)]
+          have r_P_Q := h_xi w (by aesop) -- ⊢
+          exact .single (step_abs_close st (step_lc_r r_P_Q))
+```
+
+```state
+M M₁ P P₁ P₂ Q : Term Var
+L L' : Finset Var
+w : Var
+h_xi : ∀ x ∉ L, (P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
+hw : w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P ∪ fv P₁ ∪ fv Q ∪ L ∪ L'
+st : (Q ^ fvar w) ⭢ηᶠ P₂
+r_P_Q : (P ^ fvar w) ⭢ηᶠ (Q ^ fvar w)
+⊢ ReflGen FullEta (abs ((Q ^ fvar w) ^* w)) (abs (P₂ ^* w))
+```
+
+Para completar el segundo componente de la conjunción procedemos por casos sobre
+`ReflGen FullEta (P₁ ^ fvar w) P₂`, el cual es análogo al caso anterior, 
+con `P₁` en lugar de `Q`.
+```lean
+    case xi P₁ L' h_xi' =>
+      ⋮
+      constructor
+      · cases refl_Q_P₂
+        case refl => rw [← open_close_var w Q (by aesop)]
+        case single st =>
+          rw [open_close_var w Q (by aesop)]
+          have r_P_Q := h_xi w (by aesop) 
+          exact .single (step_abs_close st (step_lc_r r_P_Q))
+      · cases refl_P₁_P₂
+        case refl => rw [← open_close_var w P₁ (by aesop)]
+        case single st =>
+          rw [open_close_var w P₁ (by aesop)]
+          exact .single (step_abs_close st (step_lc_r r_P_P₁))
+```
+
 :::
+
+
 

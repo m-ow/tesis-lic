@@ -734,7 +734,7 @@ La operación de apertura sustituye un índice por un término.
 \end{Highlighting}
 \end{Shaded}
 
-Cuya notación es la siguiente.
+Su notación es la siguiente.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -760,7 +760,57 @@ variable \texttt{x}''.
 
 \end{ndfn}
 
-\begin{ndfn}{Definición 2.1.5 (Local closure)}
+\begin{ndfn}{Definición 2.1.5}
+
+La operación de cierre reemplaza la variable libre \texttt{x} por el
+índice \texttt{k}. Es la operación inversa de la apertura.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ closeRec (k : ℕ) (x : Var) : Term Var → Term Var}
+\NormalTok{  | fvar x\textquotesingle{} =\textgreater{} if x = x\textquotesingle{} then bvar k else fvar x\textquotesingle{}}
+\NormalTok{  | bvar i  =\textgreater{} bvar i}
+\NormalTok{  | app l r =\textgreater{} app (closeRec k x l) (closeRec k x r)}
+\NormalTok{  | abs t   =\textgreater{} abs (closeRec (k+1) x t)}
+\end{Highlighting}
+\end{Shaded}
+
+Cuya notación es la siguiente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scoped }\KeywordTok{notation}\NormalTok{:68 e }\StringTok{"⟦"}\NormalTok{ k }\StringTok{" ↜ "}\NormalTok{ x }\StringTok{"⟧"}\NormalTok{=\textgreater{} closeRec k x e}
+\end{Highlighting}
+\end{Shaded}
+
+Al igual que con la apertura, el uso habitual es sobre el índice cero.
+La siguiente definición trata ese caso.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ close (e u) := @closeRec Var \_ 0 u e}
+
+\NormalTok{scoped infixr:80 }\StringTok{" \^{}* "}\NormalTok{ =\textgreater{} close}
+\end{Highlighting}
+\end{Shaded}
+
+\end{ndfn}
+
+\begin{nthm}{Teorema 2.1.1}
+
+Abrir un término con una variable que no aparece libre en él y después
+cerrar sobre esa misma variable devuelve el término original.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ open\_close\_var (x : Var) (M : Term Var) (h : x ∉ fv M) : }
+\NormalTok{  M = (M \^{} fvar x) \^{}* x}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{ndfn}{Definición 2.1.6 (Local closure)}
 
 Un término se denomina ``localmente cerrado'' cuando no contiene índices
 no ligados. La proposición \texttt{LC\ e} se cumple cuando una expresión
@@ -777,34 +827,7 @@ no ligados. La proposición \texttt{LC\ e} se cumple cuando una expresión
 
 \end{ndfn}
 
-\begin{nthm}{Teorema 2.1.1}
-
-Un término localmente cerrado no se ve afectado por la operación de
-apertura.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ open\_lc (k : ℕ) (t e : Term Var) (lc\_e : LC e) : e = e⟦k ↝ t⟧}
-\end{Highlighting}
-\end{Shaded}
-
-\end{nthm}
-
-\begin{nthm}{Teorema 2.1.2}
-
-Si al abrir un término se obtiene \texttt{app\ m\ x}, entonces el
-término original era \texttt{app\ m\ (bvar\ 0)}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ open\_eq\_app \{x : Var\} \{m n : Term Var\} (hw\_n : x ∉ n.fv) (hw\_m : x ∉ m.fv) }
-\NormalTok{  (lc\_m : LC m) (h : n \^{} fvar x = app m (fvar x)) : n = app m (bvar 0)}
-\end{Highlighting}
-\end{Shaded}
-
-\end{nthm}
-
-\begin{ndfn}{Definición 2.1.6}
+\begin{ndfn}{Definición 2.1.7}
 
 Dada una relación \texttt{r} en el tipo \texttt{Term\ Var}, se llama
 cerradura compatible de \texttt{r} a la relación \texttt{CompatGen\ r},
@@ -823,7 +846,7 @@ definida de la siguiente manera.
 
 \end{ndfn}
 
-\begin{ndfn}{Definición 2.1.7}
+\begin{ndfn}{Definición 2.1.8}
 Sea \texttt{Beta} una relación en \texttt{Term\ Var}, definida de la
 siguiente manera.
 
@@ -849,7 +872,7 @@ de \texttt{CompatGen\ Beta}, es decir, \texttt{ReflTransGen\ FullBeta}.
 
 \end{ndfn}
 
-\begin{ndfn}{Definición 2.1.8}
+\begin{ndfn}{Definición 2.1.9}
 Sea \texttt{Eta} una relación en \texttt{Term\ Var}, definida de la
 siguiente manera.
 
@@ -875,47 +898,19 @@ de \texttt{CompatGen\ Eta}, esto es \texttt{ReflTransGen\ FullEta}.
 
 \end{ndfn}
 
-\begin{nthm}{Teorema 2.1.3}
+\begin{nthm}{Teorema 2.1.2}
 
 El lado derecho de una reducción \(\eta\) es localmente cerrado.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ step\_lc\_r (step : M ⭢ηᶠ M\textquotesingle{}) : LC M\textquotesingle{}}
+\KeywordTok{theorem}\NormalTok{ step\_lc\_r \{M M\textquotesingle{} : Term Var\} (step : M ⭢ηᶠ M\textquotesingle{}) : LC M\textquotesingle{}}
 \end{Highlighting}
 \end{Shaded}
 
 \end{nthm}
 
-\begin{nthm}{Teorema 2.1.4}
-
-La reducción de un solo paso \texttt{app\ M\ (fvar\ x)\ ⭢ηᶠ\ N} implica
-\texttt{N\ =\ app\ M\textquotesingle{}\ (fvar\ x)} para alguna
-\texttt{M}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ invert\_step\_app\_fvar \{x : Var\} (step : (app M (fvar x)) ⭢ηᶠ N) :}
-\NormalTok{    ∃ M\textquotesingle{}, N = app M\textquotesingle{} (fvar x) ∧ M ⭢ηᶠ M\textquotesingle{} }
-\end{Highlighting}
-\end{Shaded}
-
-\end{nthm}
-
-\begin{nthm}{Teorema 2.1.5}
-
-La reducción \(\eta\) de un solo paso no introduce nuevas variables
-libres.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ step\_not\_fv \{w : Var\} (step : M ⭢ηᶠ M\textquotesingle{}) (hw : w ∉ fv M) : w ∉ fv M\textquotesingle{}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{nthm}
-
-\begin{nthm}{Teorema 2.1.6}
+\begin{nthm}{Teorema 2.1.3}
 
 Una reducción de un solo paso desde \texttt{abs\ (app\ N\ (bvar\ 0))}
 produce \texttt{N}, o bien
@@ -925,9 +920,24 @@ produce \texttt{N}, o bien
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{lemma}\NormalTok{ invert\_step\_eta\_redex \{N M : Term Var\} (lc\_N : LC N)}
+\KeywordTok{theorem}\NormalTok{ invert\_step\_eta\_redex \{M N : Term Var\} (lc\_N : LC N)}
 \NormalTok{    (step : abs (app N (bvar 0)) ⭢ηᶠ M) :}
-\NormalTok{    M = N ∨ ∃ N\textquotesingle{}, N ⭢ηᶠ N\textquotesingle{} ∧ M = abs (app N\textquotesingle{} (bvar 0))}
+\NormalTok{  M = N ∨ ∃ N\textquotesingle{}, N ⭢ηᶠ N\textquotesingle{} ∧ M = abs (app N\textquotesingle{} (bvar 0))}
+\end{Highlighting}
+\end{Shaded}
+
+\end{nthm}
+
+\begin{nthm}{Teorema 2.1.4}
+
+Si \texttt{M\ ⭢ηᶠ\ M\textquotesingle{}}, entonces al cerrar ambos
+términos sobre una variable y abstraer se obtiene la reducción
+\texttt{abs\ (M\ \^{}*\ x)\ ⭢ηᶠ\ abs\ (M\textquotesingle{}\ \^{}*\ x)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ step\_abs\_close \{M M\textquotesingle{} : Term Var\} \{x : Var\} (step : M ⭢ηᶠ M\textquotesingle{}) (lc\_M : LC M) : }
+\NormalTok{  abs (M \^{}* x) ⭢ηᶠ abs (M\textquotesingle{} \^{}* x)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1015,7 +1025,7 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 \end{Highlighting}
 \end{Shaded}
 
-Aplicando el teorema 2.1.6 (\texttt{invert\_step\_eta\_redex}) a
+Aplicando el teorema 2.1.3 (\texttt{invert\_step\_eta\_redex}) a
 \texttt{h₂} obtenemos dos posibilidades: \texttt{M₂} \(=\) \texttt{P}, o
 bien \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))} para alguna
 \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}. Analizamos cada una.
@@ -1062,7 +1072,7 @@ para alguna \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}, tomamos \texttt{z}
 \(=\) \texttt{P₁}: el primer componente de la conjunción es
 \texttt{P\ ⭢ηᶠ\ P₁}, y el segundo se obtiene aplicando la regla \(\eta\)
 a \texttt{abs\ (app\ P₁\ (bvar\ 0))}, cuya premisa \texttt{LC\ P₁} se
-extrae del teorema 2.1.3 (\texttt{step\_lc\_r}) aplicado a
+extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
 \texttt{r\_P\_P₁}.
 
 \begin{center}
@@ -1264,9 +1274,14 @@ y en la segunda reducimos \texttt{P} a \texttt{P₁} dejando fija
 \texttt{N₁}.
 
 Las premisas de cerradura local que piden las reglas \texttt{appR} y
-\texttt{appL} se obtienen del teorema 2.1.3 (\texttt{step\_lc\_r}): de
+\texttt{appL} se obtienen del teorema 2.1.2 (\texttt{step\_lc\_r}): de
 \texttt{r\_P\_P₁} obtenemos \texttt{LC\ P₁} y de \texttt{r\_N\_N₁}
 obtenemos \texttt{LC\ N₁}.
+
+\textbf{(c)}~Si la última regla fue \texttt{base}, la regla \(\eta\) se
+habría aplicado directamente a \texttt{app\ P\ N}, lo cual es imposible:
+la regla \(\eta\) solo reduce abstracciones y este término es una
+aplicación. Así, no hay nada que demostrar.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1278,6 +1293,7 @@ obtenemos \texttt{LC\ N₁}.
 \NormalTok{      constructor}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_P\_P₁) r\_N\_N₁)}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
+\NormalTok{    case base =\textgreater{} contradiction}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1333,6 +1349,7 @@ reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
 \NormalTok{      · cases refl\_P₂\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
 \NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N\textquotesingle{} r\_P₂\_P₃)}
+\NormalTok{    case base =\textgreater{} contradiction}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1388,14 +1405,14 @@ que \texttt{P} \(=\) \texttt{app\ M₂\ (bvar\ 0)} y \texttt{LC\ M₂}.
 \InformationTok{e\_P }\NormalTok{: Eta (abs P) M₂}
 \InformationTok{lc\_M₂ }\NormalTok{: LC M₂}
 \InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app M₂ (bvar 0) \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{h₁ }\NormalTok{: abs (app M (bvar 0)) ⭢ηᶠ abs Q}
+\InformationTok{h₁ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
 \InformationTok{h }\NormalTok{: abs Q = M₂ ∨ ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
 \NormalTok{⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
 \end{Shaded}
 
 Estamos ante el mismo escenario del caso I-(b), ahora \texttt{h₁} parte
-de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.6
+de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
 (\texttt{invert\_step\_eta\_redex}) nos da dos posibilidades:
 \texttt{abs\ Q} \(=\) \texttt{M₂}, o bien \texttt{abs\ Q} \(=\)
 \texttt{abs\ (app\ R\ (bvar\ 0))} para alguna \texttt{R} con
@@ -1410,7 +1427,7 @@ de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.6
   \texttt{M₂\ ⭢ηᶠ\ R}, tomamos \texttt{z} \(=\) \texttt{R}: el primer
   componente de la conjunción se obtiene aplicando la regla \(\eta\) a
   \texttt{abs\ (app\ R\ (bvar\ 0))}, cuya premisa \texttt{LC\ R} se
-  extrae del teorema 2.1.3 (\texttt{step\_lc\_r}) aplicado a
+  extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
   \texttt{r\_M₂\_R}, y el segundo es la reducción \texttt{M₂\ ⭢ηᶠ\ R}.
 \end{itemize}
 
@@ -1439,11 +1456,160 @@ de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.6
 \InformationTok{e\_P }\NormalTok{: Eta (abs P) M₂}
 \InformationTok{lc\_M₂ }\NormalTok{: LC M₂}
 \InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app M₂ (bvar 0) \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{h₁ }\NormalTok{: abs (app M (bvar 0)) ⭢ηᶠ abs Q}
+\InformationTok{h₁ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
 \InformationTok{h }\NormalTok{: abs Q = M₂ ∨ ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
 \InformationTok{r\_M₂\_R }\NormalTok{: M₂ ⭢ηᶠ R}
 \InformationTok{h\_eq }\NormalTok{: abs Q = abs (app R (bvar 0))}
 \NormalTok{⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(b)}~Si la última regla fue \texttt{xi}, entonces \texttt{M₂}
+\(=\) \texttt{abs\ P₁}, para alguna \texttt{P₁} tal que, para toda
+variable \texttt{x} fuera de un conjunto finito
+\texttt{L\textquotesingle{}}, se cumple
+\texttt{(P\ \^{}\ fvar\ x)\ ⭢ηᶠ\ (P₁\ \^{}\ fvar\ x)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  case xi P Q L h\_xi ih =\textgreater{}}
+\NormalTok{    cases h₂}
+\NormalTok{    ⋮}
+\NormalTok{    case xi P₁ L\textquotesingle{} h\_xi\textquotesingle{} =\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{P P₁ Q }\NormalTok{: Term Var}
+\InformationTok{L L\textquotesingle{} }\NormalTok{: Finset Var}
+\InformationTok{ih }\NormalTok{: ∀ x ∉ L, ∀ \{M₂ : Term Var\}, (P \^{} fvar x) ⭢ηᶠ M₂ → }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ∃ z, ReflGen FullEta (Q \^{} fvar x) z ∧ ReflGen FullEta M₂ z}
+\InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (P \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
+\InformationTok{h\_xi\textquotesingle{} }\NormalTok{: ∀ x ∉ L\textquotesingle{}, (P \^{} fvar x) ⭢ηᶠ (P₁ \^{} fvar x)}
+\NormalTok{⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta (abs P₁) z}
+\end{Highlighting}
+\end{Shaded}
+
+Sea \texttt{w} una variable nueva. De \texttt{h\_xi\textquotesingle{}}
+aplicada a \texttt{w} se sigue
+\texttt{(P\ \^{}\ fvar\ w)\ ⭢ηᶠ\ (P₁\ \^{}\ fvar\ w)} y, por la
+hipótesis de inducción, existe un término \texttt{P₂} tal que
+\texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂} y
+\texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}. Por lo tanto,
+tomamos \texttt{z} \(=\) \texttt{abs\ (P₂\ \^{}*\ w)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    case xi P₁ L\textquotesingle{} h\_xi\textquotesingle{} =\textgreater{}}
+      \KeywordTok{have}\NormalTok{ ⟨w, hw⟩ := fresh\_exists (free\_union [fv] Var)}
+      \KeywordTok{have}\NormalTok{ r\_P\_P₁ := h\_xi\textquotesingle{} w (}\KeywordTok{by}\NormalTok{ aesop)}
+      \KeywordTok{have}\NormalTok{ ⟨P₂, refl\_Q\_P₂, refl\_P₁\_P₂⟩ := ih w (}\KeywordTok{by}\NormalTok{ aesop) r\_P\_P₁}
+\NormalTok{      use abs (P₂ \^{}* w)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 2.2) {\lean{P \textasciicircum{} fvar w}};
+  \node (b) at (3.6, 2.2) {\lean{Q \textasciicircum{} fvar w}};
+  \node (c) at (0, 0) {\lean{P₁ \textasciicircum{} fvar w}};
+  \node (d) at (3.6, 0) {\lean{P₂}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 2.2) {\lean{abs P}};
+  \node (b) at (3.6, 2.2) {\lean{abs Q}};
+  \node (c) at (0, 0) {\lean{abs P₁}};
+  \node (d) at (3.6, 0) {\lean{abs (P₂ \textasciicircum* w)}};
+  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
+  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
+  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+
+Para completar el primer componente de la conjunción procedemos por
+casos sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
+
+\begin{itemize}
+\item
+  Si la reducción es reflexiva, entonces \texttt{P₂} \(=\)
+  \texttt{Q\ \^{}\ fvar\ w}, de modo que \texttt{z} \(=\)
+  \texttt{abs\ ((Q\ \^{}\ fvar\ w)\ \^{}*\ w)}. Por el teorema 2.1.1
+  (\texttt{open\_close\_var}) este término es \texttt{abs\ Q} y ambos
+  lados coinciden.
+\item
+  Si la reducción consta de un paso
+  \texttt{st\ :\ (Q\ \^{}\ fvar\ w)\ ⭢ηᶠ\ P₂}, reescribimos
+  \texttt{abs\ Q} como \texttt{abs\ ((Q\ \^{}\ fvar\ w)\ \^{}*\ w)}
+  mediante el teorema 2.1.1 (\texttt{open\_close\_var}), así, basta
+  construir la reducción
+  \texttt{abs\ ((Q\ \^{}\ fvar\ w)\ \^{}*\ w)\ ⭢ηᶠ\ abs\ (P₂\ \^{}*\ w)}.
+
+  De \texttt{h\_xi} aplicada a \texttt{w} obtenemos
+  \texttt{(P\ \^{}\ fvar\ w)\ ⭢ηᶠ\ (Q\ \^{}\ fvar\ w)}, que garantiza
+  \texttt{LC\ (Q\ \^{}\ fvar\ w)}, con esta premisa, el teorema 2.1.4
+  (\texttt{step\_abs\_close}) aplicado a \texttt{st} produce la
+  reducción buscada.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    case xi P₁ L\textquotesingle{} h\_xi\textquotesingle{} =\textgreater{}}
+\NormalTok{      ⋮}
+\NormalTok{      constructor}
+\NormalTok{      · cases refl\_Q\_P₂}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rw}\NormalTok{ [← open\_close\_var w Q (}\KeywordTok{by}\NormalTok{ aesop)]}
+\NormalTok{        case single st =\textgreater{}}
+          \KeywordTok{rw}\NormalTok{ [open\_close\_var w Q (}\KeywordTok{by}\NormalTok{ aesop)]}
+          \KeywordTok{have}\NormalTok{ r\_P\_Q := h\_xi w (}\KeywordTok{by}\NormalTok{ aesop) }\CommentTok{{-}{-} ⊢}
+          \KeywordTok{exact}\NormalTok{ .single (step\_abs\_close st (step\_lc\_r r\_P\_Q))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ P P₁ P₂ Q }\NormalTok{: Term Var}
+\InformationTok{L L\textquotesingle{} }\NormalTok{: Finset Var}
+\InformationTok{w }\NormalTok{: Var}
+\InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (P \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
+\InformationTok{hw }\NormalTok{: w ∉ ∅ ∪ fv M ∪ fv M₁ ∪ fv P ∪ fv P₁ ∪ fv Q ∪ L ∪ L\textquotesingle{}}
+\InformationTok{st }\NormalTok{: (Q \^{} fvar w) ⭢ηᶠ P₂}
+\InformationTok{r\_P\_Q }\NormalTok{: (P \^{} fvar w) ⭢ηᶠ (Q \^{} fvar w)}
+\NormalTok{⊢ ReflGen FullEta (abs ((Q \^{} fvar w) \^{}* w)) (abs (P₂ \^{}* w))}
+\end{Highlighting}
+\end{Shaded}
+
+Para completar el segundo componente de la conjunción procedemos por
+casos sobre \texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}, el cual
+es análogo al caso anterior, con \texttt{P₁} en lugar de \texttt{Q}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    case xi P₁ L\textquotesingle{} h\_xi\textquotesingle{} =\textgreater{}}
+\NormalTok{      ⋮}
+\NormalTok{      constructor}
+\NormalTok{      · cases refl\_Q\_P₂}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rw}\NormalTok{ [← open\_close\_var w Q (}\KeywordTok{by}\NormalTok{ aesop)]}
+\NormalTok{        case single st =\textgreater{}}
+          \KeywordTok{rw}\NormalTok{ [open\_close\_var w Q (}\KeywordTok{by}\NormalTok{ aesop)]}
+          \KeywordTok{have}\NormalTok{ r\_P\_Q := h\_xi w (}\KeywordTok{by}\NormalTok{ aesop) }
+          \KeywordTok{exact}\NormalTok{ .single (step\_abs\_close st (step\_lc\_r r\_P\_Q))}
+\NormalTok{      · cases refl\_P₁\_P₂}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rw}\NormalTok{ [← open\_close\_var w P₁ (}\KeywordTok{by}\NormalTok{ aesop)]}
+\NormalTok{        case single st =\textgreater{}}
+          \KeywordTok{rw}\NormalTok{ [open\_close\_var w P₁ (}\KeywordTok{by}\NormalTok{ aesop)]}
+          \KeywordTok{exact}\NormalTok{ .single (step\_abs\_close st (step\_lc\_r r\_P\_P₁))}
 \end{Highlighting}
 \end{Shaded}
 

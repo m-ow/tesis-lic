@@ -70,7 +70,7 @@ def openRec (i : ℕ) (sub : Term Var) : Term Var → Term Var
   | app l r => app (openRec i sub l) (openRec i sub r)
   | abs M   => abs (openRec (i+1) sub M)
 ```
-Cuya notación es la siguiente. 
+Su notación es la siguiente. 
 ```lean
 scoped notation:68 e "⟦" i " ↝ " sub "⟧" => openRec i sub e
 ```
@@ -87,7 +87,39 @@ Así, `(e ^ x)` puede leerse como
 o "abre `e` con la variable `x`". 
 :::
 
-::: {.ndfn arguments="Definición 2.1.5 (Local closure)"}
+::: {.ndfn arguments="Definición 2.1.5"}
+La operación de cierre reemplaza la variable libre `x` por el índice `k`. Es la operación inversa de la apertura.
+```lean
+def closeRec (k : ℕ) (x : Var) : Term Var → Term Var
+  | fvar x' => if x = x' then bvar k else fvar x'
+  | bvar i  => bvar i
+  | app l r => app (closeRec k x l) (closeRec k x r)
+  | abs t   => abs (closeRec (k+1) x t)
+```
+Cuya notación es la siguiente. 
+```lean
+scoped notation:68 e "⟦" k " ↜ " x "⟧"=> closeRec k x e
+```
+Al igual que con la apertura, el uso habitual es sobre el índice cero.
+La siguiente definición trata ese caso.
+```lean
+def close (e u) := @closeRec Var _ 0 u e
+
+scoped infixr:80 " ^* " => close
+```
+
+
+:::
+
+::: {.nthm arguments="Teorema 2.1.1"}
+Abrir un término con una variable que no aparece libre en él y después cerrar sobre esa misma variable devuelve el término original.
+```lean
+theorem open_close_var (x : Var) (M : Term Var) (h : x ∉ fv M) : 
+  M = (M ^ fvar x) ^* x
+```
+:::
+
+::: {.ndfn arguments="Definición 2.1.6 (Local closure)"}
 Un término se denomina "localmente cerrado"
 cuando no contiene índices no ligados.
 La proposición `LC e` se cumple cuando una expresión `e` 
@@ -100,22 +132,7 @@ inductive LC : Term Var → Prop
 ```
 :::
 
-::: {.nthm arguments="Teorema 2.1.1"}
-Un término localmente cerrado no se ve afectado por la operación de apertura.
-```lean
-theorem open_lc (k : ℕ) (t e : Term Var) (lc_e : LC e) : e = e⟦k ↝ t⟧
-```
-:::
-
-::: {.nthm arguments="Teorema 2.1.2"}
-Si al abrir un término se obtiene `app m x`, entonces el término original era `app m (bvar 0)`.
-```lean
-theorem open_eq_app {x : Var} {m n : Term Var} (hw_n : x ∉ n.fv) (hw_m : x ∉ m.fv) 
-  (lc_m : LC m) (h : n ^ fvar x = app m (fvar x)) : n = app m (bvar 0)
-```
-:::
-
-::: {.ndfn arguments="Definición 2.1.6"}
+::: {.ndfn arguments="Definición 2.1.7"}
 Dada una relación `r` en el tipo `Term Var`,
 se llama cerradura compatible de `r` a la relación `CompatGen r`,
 definida de la siguiente manera.
@@ -129,7 +146,7 @@ inductive CompatGen (r : Term Var → Term Var → Prop) : Term Var → Term Var
 ```
 :::
 
-::: {.ndfn arguments="Definición 2.1.7"}
+::: {.ndfn arguments="Definición 2.1.8"}
 Sea `Beta` una relación en `Term Var`, definida de la siguiente manera.
 ```lean
 inductive Beta : Term Var → Term Var → Prop
@@ -145,7 +162,7 @@ II\. *La reducción $\beta$* es la cerradura reflexiva y transitiva de `CompatGe
 es decir, `ReflTransGen FullBeta`.
 :::
 
-::: {.ndfn arguments="Definición 2.1.8"}
+::: {.ndfn arguments="Definición 2.1.9"}
 Sea `Eta` una relación en `Term Var`, definida de la siguiente manera.
 ```lean
 inductive Eta : Term Var → Term Var → Prop
@@ -160,34 +177,28 @@ II\. *La reducción $\eta$* es la cerradura reflexiva y transitiva de `CompatGen
 esto es `ReflTransGen FullEta`.
 :::
 
-::: {.nthm arguments="Teorema 2.1.3"}
+::: {.nthm arguments="Teorema 2.1.2"}
 El lado derecho de una reducción $\eta$ es localmente cerrado.
 ```lean
-theorem step_lc_r (step : M ⭢ηᶠ M') : LC M'
+theorem step_lc_r {M M' : Term Var} (step : M ⭢ηᶠ M') : LC M'
+```
+:::
+
+::: {.nthm arguments="Teorema 2.1.3"}
+Una reducción de un solo paso desde `abs (app N (bvar 0))` produce `N`, o bien `abs (app N' (bvar 0))`
+para alguna `N'` tal que `N ⭢ηᶠ N'`.
+```lean
+theorem invert_step_eta_redex {M N : Term Var} (lc_N : LC N)
+    (step : abs (app N (bvar 0)) ⭢ηᶠ M) :
+  M = N ∨ ∃ N', N ⭢ηᶠ N' ∧ M = abs (app N' (bvar 0))
 ```
 :::
 
 ::: {.nthm arguments="Teorema 2.1.4"}
-La reducción de un solo paso `app M (fvar x) ⭢ηᶠ N` implica `N = app M' (fvar x)` para alguna `M`. 
+Si `M ⭢ηᶠ M'`, entonces al cerrar ambos términos sobre una variable y abstraer se obtiene la reducción `abs (M ^* x) ⭢ηᶠ abs (M' ^* x)`.
 ```lean
-theorem invert_step_app_fvar {x : Var} (step : (app M (fvar x)) ⭢ηᶠ N) :
-    ∃ M', N = app M' (fvar x) ∧ M ⭢ηᶠ M' 
+theorem step_abs_close {M M' : Term Var} {x : Var} (step : M ⭢ηᶠ M') (lc_M : LC M) : 
+  abs (M ^* x) ⭢ηᶠ abs (M' ^* x)
 ```
-:::
 
-::: {.nthm arguments="Teorema 2.1.5"}
-La reducción $\eta$ de un solo paso no introduce nuevas variables libres.
-```lean
-theorem step_not_fv {w : Var} (step : M ⭢ηᶠ M') (hw : w ∉ fv M) : w ∉ fv M'
-```
-:::
-
-::: {.nthm arguments="Teorema 2.1.6"}
-Una reducción de un solo paso desde `abs (app N (bvar 0))` produce `N`, o bien `abs (app N' (bvar 0))` 
-para alguna `N'` tal que `N ⭢ηᶠ N'`.
-```lean
-lemma invert_step_eta_redex {N M : Term Var} (lc_N : LC N)
-    (step : abs (app N (bvar 0)) ⭢ηᶠ M) :
-    M = N ∨ ∃ N', N ⭢ηᶠ N' ∧ M = abs (app N' (bvar 0))
-```
 :::
