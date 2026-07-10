@@ -222,7 +222,7 @@ refl_P₂_P₃ : ReflGen FullEta P₂ P₃
 \end{center}
 ```
 
-Para cerrar cada componente de la conjunción procedemos por casos sobre 
+Para demostrar cada componente de la conjunción procedemos por casos sobre 
 `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`, 
 respectivamente: si son reflexivas, ambos lados ya coinciden; 
 si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃` en la segunda, 
@@ -498,7 +498,7 @@ por la hipótesis de inducción, existe un término `P₂` tal que `ReflGen Full
 \end{center}
 ```
 
-Para completar el primer componente de la conjunción procedemos por casos sobre
+Para probar el primer componente de la conjunción procedemos por casos sobre
 `ReflGen FullEta (Q ^ fvar w) P₂`: 
 
 - Si la reducción es reflexiva, entonces `P₂` $=$ `Q ^ fvar w`, de modo que
@@ -535,7 +535,7 @@ r_P_Q : (P ^ fvar w) ⭢ηᶠ (Q ^ fvar w)
 ⊢ ReflGen FullEta (abs ((Q ^ fvar w) ^* w)) (abs (P₂ ^* w))
 ```
 
-Para completar el segundo componente de la conjunción procedemos por casos sobre
+Para probar el segundo componente de la conjunción procedemos por casos sobre
 `ReflGen FullEta (P₁ ^ fvar w) P₂`, el cual es análogo al caso anterior, 
 con `P₁` en lugar de `Q`.
 ```lean
@@ -554,6 +554,9 @@ con `P₁` en lugar de `Q`.
           rw [open_close_var w P₁ (by aesop)]
           exact .single (step_abs_close st (step_lc_r r_P_P₁))
 ```
+
+En cada uno de los casos encontramos el término z que buscábamos, 
+así que la reducción $\eta$ de un solo paso es fuertemente confluente.
 
 :::
 
