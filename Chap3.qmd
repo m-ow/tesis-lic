@@ -7,9 +7,9 @@ La reducción $\eta$ de un solo paso es fuertemente confluente.
 :::
 
 ::: {.proof}
-Supongamos que `M`, `M₁` y `M₂` son términos lambda tal que 
-`M ⭢ηᶠ M₁` y `M ⭢ηᶠ M₂`. Entonces existe 
-un término lambda `z` tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
+Supongamos que `M`, `M₁` y `M₂` son términos lambda tales que
+`M ⭢ηᶠ M₁` y `M ⭢ηᶠ M₂`. Entonces existe un término lambda `z`
+tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
 
 ::: {.inout}
 ::: {.inpt}
@@ -31,13 +31,47 @@ h₂ : M ⭢ηᶠ M₂
 :::
 :::
 
-Como la cerradura reflexiva está contenida en la reflexiva y transitiva, 
-basta con demostrar que `∃ z, ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z`.
+Por el teorema 1.1.1 (`ReflGen.to_reflTransGen`), 
+basta encontrar un término `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
 
-Por inducción sobre la derivación de `h₁ : M ⭢ηᶠ M₁`,
-demostraremos que, para toda `M₂`, si `M ⭢ηᶠ M₂`, entonces
-existe una `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
-Procedemos por casos según la última regla empleada en la derivación de `h₁`.
+::: {.inout}
+::: {.inpt}
+```lean
+theorem stronglyConfluent_eta :
+    StronglyConfluent (@FullEta Var) := by
+  intro M M₁ M₂ h₁ h₂
+  suffices h : ∃ z,
+      ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z by
+    have ⟨n, hn₁, hn₂⟩ := h
+    use n -- ⊢
+    constructor
+    · exact hn₁
+    · apply ReflGen.to_reflTransGen
+      exact hn₂
+  induction h₁ generalizing M₂
+```
+:::
+
+::: {.outpt}
+```state
+M M₁ M₂ n : Term Var
+h₁ : M ⭢ηᶠ M₁
+h₂ : M ⭢ηᶠ M₂
+h : ∃ z, 
+>>    ReflGen FullEta M₁ z 
+>>    ∧ ReflGen FullEta M₂ z
+hn₁ : ReflGen FullEta M₁ n
+hn₂ : ReflGen FullEta M₂ n
+⊢ ReflGen FullEta M₁ n 
+>>    ∧ M₂ ↠ηᶠ n
+```
+:::
+:::
+
+Encontraremos dicho término por inducción sobre la derivación de `h₁ : M ⭢ηᶠ M₁`.
+
+Demostraremos que, para todo término `M₂`, si `M ⭢ηᶠ M₂`, entonces existe un término `z` tal que 
+`ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`. Procedemos por casos según la última regla empleada en la derivación de `h₁`.
 
 **I**\. Si la última regla fue `base`, entonces `M` $=$ `abs (app P (bvar 0))` y `M₁` $=$ `P`, 
 para alguna `P` tal que `LC P`.

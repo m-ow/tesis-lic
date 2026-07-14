@@ -215,7 +215,7 @@ la unión de todas las variables, todos los conjuntos finitos y las variables li
 de todos los términos presentes en la demostración. 
 
 Por ejemplo, supongamos que en una demostración figuran una variable `x`, un conjunto
-finito `L` y un término `M`. La siguiente línea aplica el teorema anterior. 
+finito `L` y un término `M`. La siguiente línea aplica el teorema anterior: 
 
 ```lean
 have ⟨w, hw⟩ := fresh_exists (free_union [fv] Var)

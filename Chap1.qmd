@@ -3,54 +3,63 @@
 ## 1.1. Definiciones básicas
 
 ::: {.ndfn arguments="Definición 1.1.1"}
-Una relación binaria en un tipo `X` es una función `X → X → Prop`,
-es decir, una proposición sobre pares de elementos de `X`.
-
-```lean
-def relation (X : Type) := X → X → Prop
-```
+Una relación binaria sobre un tipo `α` es una función `α → α → Prop`,
+es decir, una proposición sobre pares de elementos de `α`.
 :::
+ 
+```lean
+variable {α : Type} {r : α → α → Prop}
+```
 
 ::: {.ndfn arguments="Definición 1.1.2"}
-Sea `r` una relación en `A`. 
+Sea `r` una relación en `α`.
 Entonces `r` induce las siguientes relaciones binarias.
 
 I\. `ReflGen r` es la cerradura reflexiva de `r`, 
 definida inductivamente de la siguiente manera:
 
 ```lean
-inductive ReflGen {A : Type} (r : relation A) : relation A
-  | refl {a : A}: ReflGen r a a
-  | single {a b : A} : r a b → ReflGen r a b
+inductive ReflGen {α : Type} (r : α → α → Prop) : α → α → Prop
+  | refl {a : α}: ReflGen r a a
+  | single {a b : α} : r a b → ReflGen r a b
 ```
 
 II\. `ReflTransGen r` es la cerradura reflexiva y transitiva de `r`,
 definida inductivamente de la siguiente manera:
 
 ```lean
-inductive ReflTransGen {A : Type} (r : relation A) : relation A
-  | refl {a : A} : ReflTransGen r a a
-  | tail {a b c : A} : ReflTransGen r a b → r b c → ReflTransGen r a c
+inductive ReflTransGen {α : Type} (r : α → α → Prop) : α → α → Prop
+  | refl {a : α} : ReflTransGen r a a
+  | tail {a b c : α} : ReflTransGen r a b → r b c → ReflTransGen r a c
 ```
 :::
 
-De ahora en adelante escribimos `variable {A : Type}`, para evitar la repetición de `{A : Type}`. Mientras que
-en los diagramas escribimos $\to$ para `r a b`, $\to^=$ para `ReflGen r a b` y
-$\twoheadrightarrow$ para `ReflTransGen r a b`.
+::: {.nthm arguments="Teorema 1.1.1"}
+Si dos términos están relacionados por la cerradura reflexiva de `r`, 
+entonces también lo están por su cerradura reflexiva y transitiva.
+```lean
+theorem ReflGen.to_reflTransGen :
+  ∀ {a b : α}, ReflGen r a b → ReflTransGen r a b
+```
+:::
+
+Las relaciones anteriores pueden describirse mediante caminos de `a` a `b`:
+
+- `r a b` indica la existencia de un camino de longitud 1. 
+- `ReflGen r a b`, de un camino de longitud 0 o 1. 
+- `ReflTransGen r a b`, de un camino de longitud $n$, para algún $n \in \mathbb{N}$.
+
+Representamos estas relaciones mediante 
+`a` $\to$ `b`, `a` $\to^{=}$ `b` y `a` $\twoheadrightarrow$ `b`, respectivamente.
+
 
 ::: {.ndfn arguments="Definición 1.1.3"}
-Sea `r` una relación en `A`.
+Sea `r` una relación en `α`. 
 
-I\. `Join r` es una nueva relación en la que 
-dos términos están relacionados 
-si existe un tercer término con el que ambos se relacionen.
-
-```lean
-def Join (r : relation A) : relation A := fun x y ↦ ∃ z, r x z ∧ r y z
-```
-
-II\. Una relación tiene la _propiedad del diamante_
-cuando todas las reducciones con un origen común se pueden unir.
+Decimos que `r` tiene la _propiedad del diamante_
+si, para cualesquiera `a`, `b` y `c` tales que `a` $\to$ `b` y `a` $\to$ `c`,
+existe un elemento `d` tal que `b` $\to$ `d` y `c` $\to$ `d`. 
+Visualmente, esta propiedad afirma que el siguiente diagrama siempre puede completarse:
 
 ```{=latex}
 \begin{center}
@@ -68,14 +77,15 @@ cuando todas las reducciones con un origen común se pueden unir.
 ```
 
 ```lean
-def Diamond (r : relation A) := ∀ {a b c : A}, r a b → r a c → Join r b c
+def Diamond (r : α → α → Prop) :=
+  ∀ {a b c : α}, r a b → r a c → ∃ d, r b d ∧ r c d
 ```
 :::
 
 ### Confluencia y Conmutación
 
 ::: {.ndfn arguments="Definición 1.1.4"}
-Sea `r` una relación en `A`.
+Sea `r` una relación en `α`.
 
 I\. `r` es **confluente** si su cerradura 
 reflexiva y transitiva tiene la propiedad del diamante.
@@ -96,7 +106,7 @@ reflexiva y transitiva tiene la propiedad del diamante.
 ```
 
 ```lean
-def Confluent (r : relation A) := Diamond (ReflTransGen r)
+def Confluent (r : α → α → Prop) := Diamond (ReflTransGen r)
 ```
 
 II\. `r` es **fuertemente confluente** si:
@@ -117,12 +127,12 @@ II\. `r` es **fuertemente confluente** si:
 ```
 
 ```lean
-def StronglyConfluent (r : relation A) :=
+def StronglyConfluent (r : α → α → Prop) :=
   ∀ {x y₁ y₂}, r x y₁ → r x y₂ → ∃ z, ReflGen r y₁ z ∧ ReflTransGen r y₂ z
 ```
 :::
 
-::: {.nthm arguments="Teorema 1.1.1"}
+::: {.nthm arguments="Teorema 1.1.2"}
 Si una relación es fuertemente confluente, entonces también es confluente.
 ```lean
 theorem StronglyConfluent.toConfluent (h : StronglyConfluent r) : Confluent r 
@@ -130,7 +140,7 @@ theorem StronglyConfluent.toConfluent (h : StronglyConfluent r) : Confluent r
 :::
 
 ::: {.ndfn arguments="Definición 1.1.5"}
-Sean `r₁` y `r₂` dos relaciones en `A`.
+Sean `r₁` y `r₂` dos relaciones en `α`.
 
 I\. `r₁` y `r₂` **conmutan** si:
 
@@ -150,7 +160,7 @@ I\. `r₁` y `r₂` **conmutan** si:
 ```
 
 ```lean
-def Commute (r₁ r₂ : relation A) := 
+def Commute (r₁ r₂ : α → α → Prop) :=
   ∀ {x y₁ y₂}, ReflTransGen r₁ x y₁ → ReflTransGen r₂ x y₂ → 
     ∃ z, ReflTransGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
 ```
@@ -174,34 +184,34 @@ II\. `r₁` y `r₂` **conmutan fuertemente** si:
 ```
 
 ```lean
-def StronglyCommute (r₁ r₂ : relation A) :=
+def StronglyCommute (r₁ r₂ : α → α → Prop) :=
   ∀ {x y₁ y₂}, r₁ x y₁ → r₂ x y₂ → ∃ z, ReflGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z
 ```
 ::: 
 
-::: {.nthm arguments="Teorema 1.1.2"}
+::: {.nthm arguments="Teorema 1.1.3"}
 Si dos relaciones conmutan fuertemente, entonces también conmutan.
 ```lean
-theorem StronglyCommute.toCommute {r₁ r₂ : relation A} (h : StronglyCommute r₁ r₂) : 
-  Commute r₁ r₂ 
+theorem StronglyCommute.toCommute {r₁ r₂ : α → α → Prop} 
+  (h : StronglyCommute r₁ r₂) : Commute r₁ r₂ 
 ```
 :::
 
-::: {.nthm arguments="Teorema 1.1.3"}
+::: {.nthm arguments="Teorema 1.1.4"}
 La conmutación entre relaciones es simétrica, es decir, 
 si `r₁` y `r₂` conmutan, 
 entonces `r₂` y `r₁` también.
 ```lean
-theorem Commute.symmetric : Symmetric (@Commute A)
+theorem Commute.symmetric : Symmetric (@Commute α)
 ```
 :::
 
-::: {.nthm arguments="Teorema 1.1.4 (Hindley-Rosen)"}
+::: {.nthm arguments="Teorema 1.1.5 (Hindley-Rosen)"}
 Sean `r₁` y `r₂` dos relaciones sobre un mismo tipo. Si ambas son
 confluentes y conmutan entre sí, entonces su unión `r₁ ⊔ r₂` es
 confluente.
 ```lean
-theorem Commute.join_confluent {r₁ r₂ : relation A} 
+theorem Commute.join_confluent {r₁ r₂ : α → α → Prop}
   (c₁ : Confluent r₁) (c₂ : Confluent r₂) (comm : Commute r₁ r₂) : 
     Confluent (r₁ ⊔ r₂)
 ```

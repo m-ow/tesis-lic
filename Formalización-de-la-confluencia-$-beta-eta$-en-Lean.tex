@@ -385,22 +385,21 @@
 \section{1.1. Definiciones básicas}\label{definiciones-buxe1sicas}
 
 \begin{ndfn}{Definición 1.1.1}
-
-Una relación binaria en un tipo \texttt{X} es una función
-\texttt{X\ →\ X\ →\ Prop}, es decir, una proposición sobre pares de
-elementos de \texttt{X}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ relation (X : }\KeywordTok{Type}\NormalTok{) := X → X → }\KeywordTok{Prop}
-\end{Highlighting}
-\end{Shaded}
+Una relación binaria sobre un tipo \texttt{α} es una función
+\texttt{α\ →\ α\ →\ Prop}, es decir, una proposición sobre pares de
+elementos de \texttt{α}.
 
 \end{ndfn}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{variable \{α : }\KeywordTok{Type}\NormalTok{\} \{r : α → α → }\KeywordTok{Prop}\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{ndfn}{Definición 1.1.2}
 
-Sea \texttt{r} una relación en \texttt{A}. Entonces \texttt{r} induce
+Sea \texttt{r} una relación en \texttt{α}. Entonces \texttt{r} induce
 las siguientes relaciones binarias.
 
 I. \texttt{ReflGen\ r} es la cerradura reflexiva de \texttt{r}, definida
@@ -408,9 +407,9 @@ inductivamente de la siguiente manera:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{inductive ReflGen \{A : }\KeywordTok{Type}\NormalTok{\} (r : relation A) : relation A}
-\NormalTok{  | refl \{a : A\}: ReflGen r a a}
-\NormalTok{  | single \{a b : A\} : r a b → ReflGen r a b}
+\NormalTok{inductive ReflGen \{α : }\KeywordTok{Type}\NormalTok{\} (r : α → α → }\KeywordTok{Prop}\NormalTok{) : α → α → }\KeywordTok{Prop}
+\NormalTok{  | refl \{a : α\}: ReflGen r a a}
+\NormalTok{  | single \{a b : α\} : r a b → ReflGen r a b}
 \end{Highlighting}
 \end{Shaded}
 
@@ -419,35 +418,57 @@ II. \texttt{ReflTransGen\ r} es la cerradura reflexiva y transitiva de
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{inductive ReflTransGen \{A : }\KeywordTok{Type}\NormalTok{\} (r : relation A) : relation A}
-\NormalTok{  | refl \{a : A\} : ReflTransGen r a a}
-\NormalTok{  | tail \{a b c : A\} : ReflTransGen r a b → r b c → ReflTransGen r a c}
+\NormalTok{inductive ReflTransGen \{α : }\KeywordTok{Type}\NormalTok{\} (r : α → α → }\KeywordTok{Prop}\NormalTok{) : α → α → }\KeywordTok{Prop}
+\NormalTok{  | refl \{a : α\} : ReflTransGen r a a}
+\NormalTok{  | tail \{a b c : α\} : ReflTransGen r a b → r b c → ReflTransGen r a c}
 \end{Highlighting}
 \end{Shaded}
 
 \end{ndfn}
 
-De ahora en adelante escribimos \texttt{variable\ \{A\ :\ Type\}}, para
-evitar la repetición de \texttt{\{A\ :\ Type\}}. Mientras que en los
-diagramas escribimos \(\to\) para \texttt{r\ a\ b}, \(\to^=\) para
-\texttt{ReflGen\ r\ a\ b} y \(\twoheadrightarrow\) para
-\texttt{ReflTransGen\ r\ a\ b}.
+\begin{nthm}{Teorema 1.1.1}
 
-\begin{ndfn}{Definición 1.1.3}
-
-Sea \texttt{r} una relación en \texttt{A}.
-
-I. \texttt{Join\ r} es una nueva relación en la que dos términos están
-relacionados si existe un tercer término con el que ambos se relacionen.
+Si dos términos están relacionados por la cerradura reflexiva de
+\texttt{r}, entonces también lo están por su cerradura reflexiva y
+transitiva.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ Join (r : relation A) : relation A := fun x y ↦ ∃ z, r x z ∧ r y z}
+\KeywordTok{theorem}\NormalTok{ ReflGen.to\_reflTransGen :}
+\NormalTok{  ∀ \{a b : α\}, ReflGen r a b → ReflTransGen r a b}
 \end{Highlighting}
 \end{Shaded}
 
-II. Una relación tiene la \emph{propiedad del diamante} cuando todas las
-reducciones con un origen común se pueden unir.
+\end{nthm}
+
+Las relaciones anteriores pueden describirse mediante caminos de
+\texttt{a} a \texttt{b}:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{r\ a\ b} indica la existencia de un camino de longitud 1.
+\item
+  \texttt{ReflGen\ r\ a\ b}, de un camino de longitud 0 o 1.
+\item
+  \texttt{ReflTransGen\ r\ a\ b}, de un camino de longitud \(n\), para
+  algún \(n \in \mathbb{N}\).
+\end{itemize}
+
+Representamos estas relaciones mediante \texttt{a} \(\to\) \texttt{b},
+\texttt{a} \(\to^{=}\) \texttt{b} y \texttt{a} \(\twoheadrightarrow\)
+\texttt{b}, respectivamente.
+
+\begin{ndfn}{Definición 1.1.3}
+
+Sea \texttt{r} una relación en \texttt{α}.
+
+Decimos que \texttt{r} tiene la \emph{propiedad del diamante} si, para
+cualesquiera \texttt{a}, \texttt{b} y \texttt{c} tales que \texttt{a}
+\(\to\) \texttt{b} y \texttt{a} \(\to\) \texttt{c}, existe un elemento
+\texttt{d} tal que \texttt{b} \(\to\) \texttt{d} y \texttt{c} \(\to\)
+\texttt{d}. Visualmente, esta propiedad afirma que el siguiente diagrama
+siempre puede completarse:
 
 \begin{center}
 \begin{tikzpicture}
@@ -464,7 +485,8 @@ reducciones con un origen común se pueden unir.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ Diamond (r : relation A) := ∀ \{a b c : A\}, r a b → r a c → Join r b c}
+\KeywordTok{def}\NormalTok{ Diamond (r : α → α → }\KeywordTok{Prop}\NormalTok{) :=}
+\NormalTok{  ∀ \{a b c : α\}, r a b → r a c → ∃ d, r b d ∧ r c d}
 \end{Highlighting}
 \end{Shaded}
 
@@ -475,7 +497,7 @@ Conmutación}\label{confluencia-y-conmutaciuxf3n}
 
 \begin{ndfn}{Definición 1.1.4}
 
-Sea \texttt{r} una relación en \texttt{A}.
+Sea \texttt{r} una relación en \texttt{α}.
 
 I. \texttt{r} es \textbf{confluente} si su cerradura reflexiva y
 transitiva tiene la propiedad del diamante.
@@ -495,7 +517,7 @@ transitiva tiene la propiedad del diamante.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ Confluent (r : relation A) := Diamond (ReflTransGen r)}
+\KeywordTok{def}\NormalTok{ Confluent (r : α → α → }\KeywordTok{Prop}\NormalTok{) := Diamond (ReflTransGen r)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -516,14 +538,14 @@ II. \texttt{r} es \textbf{fuertemente confluente} si:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ StronglyConfluent (r : relation A) :=}
+\KeywordTok{def}\NormalTok{ StronglyConfluent (r : α → α → }\KeywordTok{Prop}\NormalTok{) :=}
 \NormalTok{  ∀ \{x y₁ y₂\}, r x y₁ → r x y₂ → ∃ z, ReflGen r y₁ z ∧ ReflTransGen r y₂ z}
 \end{Highlighting}
 \end{Shaded}
 
 \end{ndfn}
 
-\begin{nthm}{Teorema 1.1.1}
+\begin{nthm}{Teorema 1.1.2}
 
 Si una relación es fuertemente confluente, entonces también es
 confluente.
@@ -538,7 +560,7 @@ confluente.
 
 \begin{ndfn}{Definición 1.1.5}
 
-Sean \texttt{r₁} y \texttt{r₂} dos relaciones en \texttt{A}.
+Sean \texttt{r₁} y \texttt{r₂} dos relaciones en \texttt{α}.
 
 I. \texttt{r₁} y \texttt{r₂} \textbf{conmutan} si:
 
@@ -557,7 +579,7 @@ I. \texttt{r₁} y \texttt{r₂} \textbf{conmutan} si:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ Commute (r₁ r₂ : relation A) := }
+\KeywordTok{def}\NormalTok{ Commute (r₁ r₂ : α → α → }\KeywordTok{Prop}\NormalTok{) :=}
 \NormalTok{  ∀ \{x y₁ y₂\}, ReflTransGen r₁ x y₁ → ReflTransGen r₂ x y₂ → }
 \NormalTok{    ∃ z, ReflTransGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z}
 \end{Highlighting}
@@ -580,40 +602,40 @@ II. \texttt{r₁} y \texttt{r₂} \textbf{conmutan fuertemente} si:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def}\NormalTok{ StronglyCommute (r₁ r₂ : relation A) :=}
+\KeywordTok{def}\NormalTok{ StronglyCommute (r₁ r₂ : α → α → }\KeywordTok{Prop}\NormalTok{) :=}
 \NormalTok{  ∀ \{x y₁ y₂\}, r₁ x y₁ → r₂ x y₂ → ∃ z, ReflGen r₂ y₁ z ∧ ReflTransGen r₁ y₂ z}
 \end{Highlighting}
 \end{Shaded}
 
 \end{ndfn}
 
-\begin{nthm}{Teorema 1.1.2}
+\begin{nthm}{Teorema 1.1.3}
 
 Si dos relaciones conmutan fuertemente, entonces también conmutan.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ StronglyCommute.toCommute \{r₁ r₂ : relation A\} (h : StronglyCommute r₁ r₂) : }
-\NormalTok{  Commute r₁ r₂ }
+\KeywordTok{theorem}\NormalTok{ StronglyCommute.toCommute \{r₁ r₂ : α → α → }\KeywordTok{Prop}\NormalTok{\} }
+\NormalTok{  (h : StronglyCommute r₁ r₂) : Commute r₁ r₂ }
 \end{Highlighting}
 \end{Shaded}
 
 \end{nthm}
 
-\begin{nthm}{Teorema 1.1.3}
+\begin{nthm}{Teorema 1.1.4}
 
 La conmutación entre relaciones es simétrica, es decir, si \texttt{r₁} y
 \texttt{r₂} conmutan, entonces \texttt{r₂} y \texttt{r₁} también.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ Commute.symmetric : Symmetric (@Commute A)}
+\KeywordTok{theorem}\NormalTok{ Commute.symmetric : Symmetric (@Commute α)}
 \end{Highlighting}
 \end{Shaded}
 
 \end{nthm}
 
-\begin{nthm}{Teorema 1.1.4 (Hindley-Rosen)}
+\begin{nthm}{Teorema 1.1.5 (Hindley-Rosen)}
 
 Sean \texttt{r₁} y \texttt{r₂} dos relaciones sobre un mismo tipo. Si
 ambas son confluentes y conmutan entre sí, entonces su unión
@@ -621,7 +643,7 @@ ambas son confluentes y conmutan entre sí, entonces su unión
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ Commute.join\_confluent \{r₁ r₂ : relation A\} }
+\KeywordTok{theorem}\NormalTok{ Commute.join\_confluent \{r₁ r₂ : α → α → }\KeywordTok{Prop}\NormalTok{\}}
 \NormalTok{  (c₁ : Confluent r₁) (c₂ : Confluent r₂) (comm : Commute r₁ r₂) : }
 \NormalTok{    Confluent (r₁ ⊔ r₂)}
 \end{Highlighting}
@@ -964,7 +986,7 @@ presentes en la demostración.
 
 Por ejemplo, supongamos que en una demostración figuran una variable
 \texttt{x}, un conjunto finito \texttt{L} y un término \texttt{M}. La
-siguiente línea aplica el teorema anterior.
+siguiente línea aplica el teorema anterior:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1002,7 +1024,7 @@ La reducción \(\eta\) de un solo paso es fuertemente confluente.
 
 \begin{proof}
 Supongamos que \texttt{M}, \texttt{M₁} y \texttt{M₂} son términos lambda
-tal que \texttt{M\ ⭢ηᶠ\ M₁} y \texttt{M\ ⭢ηᶠ\ M₂}. Entonces existe un
+tales que \texttt{M\ ⭢ηᶠ\ M₁} y \texttt{M\ ⭢ηᶠ\ M₂}. Entonces existe un
 término lambda \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
 \texttt{M₂\ ↠ηᶠ\ z}.
 
@@ -1032,15 +1054,58 @@ término lambda \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
 
 \end{outpt}
 
-Como la cerradura reflexiva está contenida en la reflexiva y transitiva,
-basta con demostrar que
-\texttt{∃\ z,\ ReflGen\ FullEta\ M₁\ z\ ∧\ ReflGen\ FullEta\ M₂\ z}.
+Por el teorema 1.1.1 (\texttt{ReflGen.to\_reflTransGen}), basta
+encontrar un término \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z}
+y \texttt{ReflGen\ FullEta\ M₂\ z}.
 
-Por inducción sobre la derivación de \texttt{h₁\ :\ M\ ⭢ηᶠ\ M₁},
-demostraremos que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂},
-entonces existe una \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z}
-y \texttt{ReflGen\ FullEta\ M₂\ z}. Procedemos por casos según la última
-regla empleada en la derivación de \texttt{h₁}.
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  suffices h : ∃ z,}
+\NormalTok{      ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z }\KeywordTok{by}
+    \KeywordTok{have}\NormalTok{ ⟨n, hn₁, hn₂⟩ := h}
+\NormalTok{    use n }\CommentTok{{-}{-} ⊢}
+\NormalTok{    constructor}
+\NormalTok{    · }\KeywordTok{exact}\NormalTok{ hn₁}
+\NormalTok{    · }\KeywordTok{apply}\NormalTok{ ReflGen.to\_reflTransGen}
+      \KeywordTok{exact}\NormalTok{ hn₂}
+\NormalTok{  induction h₁ generalizing M₂}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ n }\NormalTok{: Term Var}
+\InformationTok{h₁ }\NormalTok{: M ⭢ηᶠ M₁}
+\InformationTok{h₂ }\NormalTok{: M ⭢ηᶠ M₂}
+\InformationTok{h }\NormalTok{: ∃ z, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ReflGen FullEta M₁ z }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta M₂ z}
+\InformationTok{hn₁ }\NormalTok{: ReflGen FullEta M₁ n}
+\InformationTok{hn₂ }\NormalTok{: ReflGen FullEta M₂ n}
+\NormalTok{⊢ ReflGen FullEta M₁ n }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ M₂ ↠ηᶠ n}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
+
+Encontraremos dicho término por inducción sobre la derivación de
+\texttt{h₁\ :\ M\ ⭢ηᶠ\ M₁}.
+
+Demostraremos que, para todo término \texttt{M₂}, si
+\texttt{M\ ⭢ηᶠ\ M₂}, entonces existe un término \texttt{z} tal que
+\texttt{ReflGen\ FullEta\ M₁\ z} y \texttt{ReflGen\ FullEta\ M₂\ z}.
+Procedemos por casos según la última regla empleada en la derivación de
+\texttt{h₁}.
 
 \textbf{I}. Si la última regla fue \texttt{base}, entonces \texttt{M}
 \(=\) \texttt{abs\ (app\ P\ (bvar\ 0))} y \texttt{M₁} \(=\) \texttt{P},
