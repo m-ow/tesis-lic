@@ -3,13 +3,11 @@
 ## 2.1. La representación *locally nameless*
 
 ::: {.ndfn arguments="Definición 2.1.1"}
-Utilizamos una representación *locally nameless*
-para el cálculo $\lambda$, donde las variables ligadas se representan 
-como números naturales (índices de De Bruijn) y las variables libres como
-términos del tipo `Var`. El tipo `Var` representa nombres: 
-la igualdad es decidible en ellos (`DecidableEq`) 
-y es posible generar uno nuevo para cualquier conjunto finito dado
-de nombres (`HasFresh`).
+Utilizamos una representación *locally nameless* para el cálculo $\lambda$, 
+donde las variables ligadas se representan como números naturales (índices de De Bruijn) 
+y las variables libres como términos del tipo `Var`. Sobre el tipo `Var` la igualdad 
+es decidible (`DecidableEq`) y es posible generar una variable 
+fuera de cualquier conjunto finito dado (`HasFresh`).
 ```lean
 universe u
 variable {Var : Type u} [HasFresh Var] [DecidableEq Var]
@@ -200,5 +198,37 @@ Si `M ⭢ηᶠ M'`, entonces al cerrar ambos términos sobre una variable y abst
 theorem step_abs_close {M M' : Term Var} {x : Var} (step : M ⭢ηᶠ M') (lc_M : LC M) : 
   abs (M ^* x) ⭢ηᶠ abs (M' ^* x)
 ```
-
 :::
+
+### Elección de variables nuevas
+
+Llamamos *nueva* a una variable que todavía no se usa en la demostración. Al pedir en la
+definición 2.1.1 que pueda generarse una variable fuera de cualquier conjunto finito, nos
+aseguramos de que siempre haya una variable nueva disponible cuando se necesite. 
+El teorema `fresh_exists` enuncia esta propiedad:
+
+```lean
+theorem fresh_exists (L : Finset Var) : ∃ x, x ∉ L
+```
+El conjunto al que lo aplicamos lo construye `free_union [fv] Var`: 
+la unión de todas las variables, todos los conjuntos finitos y las variables libres 
+de todos los términos presentes en la demostración. 
+
+Por ejemplo, supongamos que en una demostración figuran una variable `x`, un conjunto
+finito `L` y un término `M`. La siguiente línea aplica el teorema anterior. 
+
+```lean
+have ⟨w, hw⟩ := fresh_exists (free_union [fv] Var)
+```
+
+Esto produce una variable `w` junto con la hipótesis:
+
+```state
+hw : w ∉ ∅ ∪ {x} ∪ L ∪ fv M
+```
+
+En adelante, cuando escribamos "sea `w` una variable nueva",
+nos referimos a esta construcción. Las condiciones particulares que se necesiten después
+(`w ∉ L`, `w ∉ fv M`, etcétera) son consecuencias inmediatas de `hw`, y las resuelve
+la táctica `aesop` (*Automated Extensible Search for Obvious Proofs*), 
+un procedimiento que busca demostraciones de manera automática.

@@ -34,10 +34,10 @@ h₂ : M ⭢ηᶠ M₂
 Como la cerradura reflexiva está contenida en la reflexiva y transitiva, 
 basta con demostrar que `∃ z, ReflGen FullEta M₁ z ∧ ReflGen FullEta M₂ z`.
 
-Por inducción sobre la definición de `M ⭢ηᶠ M₁`,
+Por inducción sobre la derivación de `h₁ : M ⭢ηᶠ M₁`,
 demostraremos que, para toda `M₂`, si `M ⭢ηᶠ M₂`, entonces
 existe una `z` tal que `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`.
-Procedemos por casos según la última regla utilizada en la derivación de `M ⭢ηᶠ M₁`.
+Procedemos por casos según la última regla empleada en la derivación de `h₁`.
 
 **I**\. Si la última regla fue `base`, entonces `M` $=$ `abs (app P (bvar 0))` y `M₁` $=$ `P`, 
 para alguna `P` tal que `LC P`.

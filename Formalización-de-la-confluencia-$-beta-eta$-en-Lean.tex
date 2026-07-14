@@ -641,10 +641,9 @@ nameless}}{2.1. La representación locally nameless}}\label{la-representaciuxf3n
 Utilizamos una representación \emph{locally nameless} para el cálculo
 \(\lambda\), donde las variables ligadas se representan como números
 naturales (índices de De Bruijn) y las variables libres como términos
-del tipo \texttt{Var}. El tipo \texttt{Var} representa nombres: la
-igualdad es decidible en ellos (\texttt{DecidableEq}) y es posible
-generar uno nuevo para cualquier conjunto finito dado de nombres
-(\texttt{HasFresh}).
+del tipo \texttt{Var}. Sobre el tipo \texttt{Var} la igualdad es
+decidible (\texttt{DecidableEq}) y es posible generar una variable fuera
+de cualquier conjunto finito dado (\texttt{HasFresh}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -943,6 +942,51 @@ términos sobre una variable y abstraer se obtiene la reducción
 
 \end{nthm}
 
+\subsection{Elección de variables
+nuevas}\label{elecciuxf3n-de-variables-nuevas}
+
+Llamamos \emph{nueva} a una variable que todavía no se usa en la
+demostración. Al pedir en la definición 2.1.1 que pueda generarse una
+variable fuera de cualquier conjunto finito, nos aseguramos de que
+siempre haya una variable nueva disponible cuando se necesite. El
+teorema \texttt{fresh\_exists} enuncia esta propiedad:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ fresh\_exists (L : Finset Var) : ∃ x, x ∉ L}
+\end{Highlighting}
+\end{Shaded}
+
+El conjunto al que lo aplicamos lo construye
+\texttt{free\_union\ {[}fv{]}\ Var}: la unión de todas las variables,
+todos los conjuntos finitos y las variables libres de todos los términos
+presentes en la demostración.
+
+Por ejemplo, supongamos que en una demostración figuran una variable
+\texttt{x}, un conjunto finito \texttt{L} y un término \texttt{M}. La
+siguiente línea aplica el teorema anterior.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{have}\NormalTok{ ⟨w, hw⟩ := fresh\_exists (free\_union [fv] Var)}
+\end{Highlighting}
+\end{Shaded}
+
+Esto produce una variable \texttt{w} junto con la hipótesis:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{hw }\NormalTok{: w ∉ ∅ ∪ \{x\} ∪ L ∪ fv M}
+\end{Highlighting}
+\end{Shaded}
+
+En adelante, cuando escribamos ``sea \texttt{w} una variable nueva'',
+nos referimos a esta construcción. Las condiciones particulares que se
+necesiten después (\texttt{w\ ∉\ L}, \texttt{w\ ∉\ fv\ M}, etcétera) son
+consecuencias inmediatas de \texttt{hw}, y las resuelve la táctica
+\texttt{aesop} (\emph{Automated Extensible Search for Obvious Proofs}),
+un procedimiento que busca demostraciones de manera automática.
+
 \bookmarksetup{startatroot}
 
 \chapter{\texorpdfstring{Confluencia
@@ -992,11 +1036,11 @@ Como la cerradura reflexiva está contenida en la reflexiva y transitiva,
 basta con demostrar que
 \texttt{∃\ z,\ ReflGen\ FullEta\ M₁\ z\ ∧\ ReflGen\ FullEta\ M₂\ z}.
 
-Por inducción sobre la definición de \texttt{M\ ⭢ηᶠ\ M₁}, demostraremos
-que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂}, entonces existe una
-\texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
-\texttt{ReflGen\ FullEta\ M₂\ z}. Procedemos por casos según la última
-regla utilizada en la derivación de \texttt{M\ ⭢ηᶠ\ M₁}.
+Por inducción sobre la derivación de \texttt{h₁\ :\ M\ ⭢ηᶠ\ M₁},
+demostraremos que, para toda \texttt{M₂}, si \texttt{M\ ⭢ηᶠ\ M₂},
+entonces existe una \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z}
+y \texttt{ReflGen\ FullEta\ M₂\ z}. Procedemos por casos según la última
+regla empleada en la derivación de \texttt{h₁}.
 
 \textbf{I}. Si la última regla fue \texttt{base}, entonces \texttt{M}
 \(=\) \texttt{abs\ (app\ P\ (bvar\ 0))} y \texttt{M₁} \(=\) \texttt{P},
@@ -1205,12 +1249,12 @@ Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ N}.
 \end{minipage}
 \end{center}
 
-Para cerrar cada componente de la conjunción procedemos por casos sobre
-\texttt{ReflGen\ FullEta\ P₁\ P₃} y \texttt{ReflGen\ FullEta\ P₂\ P₃},
-respectivamente: si son reflexivas, ambos lados ya coinciden; si constan
-de un paso, reducimos \texttt{P₁} a \texttt{P₃} en la primera y
-\texttt{P₂} a \texttt{P₃} en la segunda, dejando fija \texttt{N},
-mediante la regla \texttt{appL}.
+Para demostrar cada componente de la conjunción procedemos por casos
+sobre \texttt{ReflGen\ FullEta\ P₁\ P₃} y
+\texttt{ReflGen\ FullEta\ P₂\ P₃}, respectivamente: si son reflexivas,
+ambos lados ya coinciden; si constan de un paso, reducimos \texttt{P₁} a
+\texttt{P₃} en la primera y \texttt{P₂} a \texttt{P₃} en la segunda,
+dejando fija \texttt{N}, mediante la regla \texttt{appL}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1538,8 +1582,8 @@ tomamos \texttt{z} \(=\) \texttt{abs\ (P₂\ \^{}*\ w)}.
 \end{minipage}
 \end{center}
 
-Para completar el primer componente de la conjunción procedemos por
-casos sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
+Para probar el primer componente de la conjunción procedemos por casos
+sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
 
 \begin{itemize}
 \item
@@ -1590,9 +1634,9 @@ casos sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
 \end{Highlighting}
 \end{Shaded}
 
-Para completar el segundo componente de la conjunción procedemos por
-casos sobre \texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}, el cual
-es análogo al caso anterior, con \texttt{P₁} en lugar de \texttt{Q}.
+Para probar el segundo componente de la conjunción procedemos por casos
+sobre \texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}, el cual es
+análogo al caso anterior, con \texttt{P₁} en lugar de \texttt{Q}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1613,6 +1657,9 @@ es análogo al caso anterior, con \texttt{P₁} en lugar de \texttt{Q}.
 \end{Highlighting}
 \end{Shaded}
 
+En cada caso encontramos un término al que \texttt{M₁} y \texttt{M₂} se
+reducen en cero o un paso, lo que demuestra la confluencia fuerte de
+\(\eta\).
 \end{proof}
 
 
