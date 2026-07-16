@@ -935,7 +935,7 @@ El lado derecho de una reducción \(\eta\) es localmente cerrado.
 
 Una reducción de un solo paso desde \texttt{abs\ (app\ N\ (bvar\ 0))}
 produce \texttt{N}, o bien
-\texttt{abs\ (app\ N\textquotesingle{}\ (bvar\ 0))} para alguna
+\texttt{abs\ (app\ N\textquotesingle{}\ (bvar\ 0))} para cierto término
 \texttt{N\textquotesingle{}} tal que
 \texttt{N\ ⭢ηᶠ\ N\textquotesingle{}}.
 
@@ -1109,7 +1109,7 @@ Procedemos por casos según la última regla empleada en la derivación de
 
 \textbf{I}. Si la última regla fue \texttt{base}, entonces \texttt{M}
 \(=\) \texttt{abs\ (app\ P\ (bvar\ 0))} y \texttt{M₁} \(=\) \texttt{P},
-para alguna \texttt{P} tal que \texttt{LC\ P}.
+para cierto término \texttt{P} tal que \texttt{LC\ P}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1136,8 +1136,8 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 
 Aplicando el teorema 2.1.3 (\texttt{invert\_step\_eta\_redex}) a
 \texttt{h₂} obtenemos dos posibilidades: \texttt{M₂} \(=\) \texttt{P}, o
-bien \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))} para alguna
-\texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}. Analizamos cada una.
+bien \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))} para cierto
+término \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}. Analizamos cada una.
 
 \textbf{(a)}~Si \texttt{M₂} \(=\) P, ambas derivaciones aplicaron la
 regla \(\eta\) a \texttt{abs\ (app\ P\ (bvar\ 0))} y llegaron al mismo
@@ -1177,8 +1177,8 @@ término. Basta tomar \texttt{z} \(=\) \texttt{P}.
 \end{outpt}
 
 \textbf{(b)}~Si \texttt{M₂} \(=\) \texttt{abs\ (app\ P₁\ (bvar\ 0))}
-para alguna \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}, tomamos \texttt{z}
-\(=\) \texttt{P₁}: el primer componente de la conjunción es
+para cierto término \texttt{P₁} con \texttt{P\ ⭢ηᶠ\ P₁}, tomamos
+\texttt{z} \(=\) \texttt{P₁}: el primer componente de la conjunción es
 \texttt{P\ ⭢ηᶠ\ P₁}, y el segundo se obtiene aplicando la regla \(\eta\)
 a \texttt{abs\ (app\ P₁\ (bvar\ 0))}, cuya premisa \texttt{LC\ P₁} se
 extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
@@ -1228,8 +1228,8 @@ extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
 
 \textbf{II}. Si la última regla fue \texttt{appL}, entonces \texttt{M}
 \(=\) \texttt{app\ P\ N} y \texttt{M₁} \(=\) \texttt{app\ P₁\ N}, para
-alguna \texttt{P}, \texttt{P₁} y \texttt{N} tales que \texttt{LC\ N} y
-\texttt{P\ ⭢ηᶠ\ P₁}.
+ciertos términos \texttt{P}, \texttt{P₁} y \texttt{N} tales que
+\texttt{LC\ N} y \texttt{P\ ⭢ηᶠ\ P₁}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1338,8 +1338,8 @@ dejando fija \texttt{N}, mediante la regla \texttt{appL}.
 \end{Shaded}
 
 \textbf{(b)}~Si la última regla fue \texttt{appR}, entonces \texttt{M₂}
-\(=\) \texttt{app\ P\ N₁}, para alguna \texttt{N₁} donde \texttt{LC\ P}
-y \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\)
+\(=\) \texttt{app\ P\ N₁}, para cierto término \texttt{N₁} donde
+\texttt{LC\ P} y \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\)
 \texttt{app\ P₁\ N₁}.
 
 \begin{Shaded}
@@ -1408,8 +1408,8 @@ aplicación. Así, no hay nada que demostrar.
 
 \textbf{III}. Si la última regla fue \texttt{appR}, entonces \texttt{M}
 \(=\) \texttt{app\ N\ P} y \texttt{M₁} \(=\) \texttt{app\ N\ P₁}, para
-alguna \texttt{N}, \texttt{P} y \texttt{P₁} tales que \texttt{LC\ N} y
-\texttt{P\ ⭢ηᶠ\ P₁}.
+ciertos términos \texttt{N}, \texttt{P} y \texttt{P₁} tales que
+\texttt{LC\ N} y \texttt{P\ ⭢ηᶠ\ P₁}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1463,9 +1463,9 @@ reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
 \end{Shaded}
 
 \textbf{IV}. Si la última regla fue \texttt{xi}, entonces \texttt{M}
-\(=\) \texttt{abs\ P} y \texttt{M₁} \(=\) \texttt{abs\ Q}, para alguna
-\texttt{P} y \texttt{Q} tales que, para toda variable \texttt{x} fuera
-de un conjunto finito \texttt{L}, se cumple
+\(=\) \texttt{abs\ P} y \texttt{M₁} \(=\) \texttt{abs\ Q}, para ciertos
+términos \texttt{P} y \texttt{Q} tales que, para toda variable
+\texttt{x} fuera de un conjunto finito \texttt{L}, se cumple
 \texttt{(P\ \^{}\ fvar\ x)\ ⭢ηᶠ\ (Q\ \^{}\ fvar\ x)}.
 
 \begin{Shaded}
@@ -1524,7 +1524,7 @@ Estamos ante el mismo escenario del caso I-(b), ahora \texttt{h₁} parte
 de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
 (\texttt{invert\_step\_eta\_redex}) nos da dos posibilidades:
 \texttt{abs\ Q} \(=\) \texttt{M₂}, o bien \texttt{abs\ Q} \(=\)
-\texttt{abs\ (app\ R\ (bvar\ 0))} para alguna \texttt{R} con
+\texttt{abs\ (app\ R\ (bvar\ 0))} para cierto término \texttt{R} con
 \texttt{M₂\ ⭢ηᶠ\ R}. Analizamos cada una.
 
 \begin{itemize}
@@ -1574,8 +1574,8 @@ de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
 \end{Shaded}
 
 \textbf{(b)}~Si la última regla fue \texttt{xi}, entonces \texttt{M₂}
-\(=\) \texttt{abs\ P₁}, para alguna \texttt{P₁} tal que, para toda
-variable \texttt{x} fuera de un conjunto finito
+\(=\) \texttt{abs\ P₁}, para cierto término \texttt{P₁} tal que, para
+toda variable \texttt{x} fuera de un conjunto finito
 \texttt{L\textquotesingle{}}, se cumple
 \texttt{(P\ \^{}\ fvar\ x)\ ⭢ηᶠ\ (P₁\ \^{}\ fvar\ x)}.
 
@@ -1735,6 +1735,54 @@ Las reducciones \(\eta\) y \(\beta\) de un solo paso conmutan
 fuertemente.
 
 \end{nthm}
+
+\begin{proof}
+Supongamos que \texttt{M}, \texttt{M₁} y \texttt{M₂} son términos lambda
+tales que \texttt{M\ ⭢ηᶠ\ M₁} y \texttt{M\ ⭢βᶠ\ M₂}. Entonces existe un
+término lambda \texttt{z} tal que \texttt{ReflGen\ FullBeta\ M₁\ z} y
+\texttt{M₂\ ↠ηᶠ\ z}.
+
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  induction h₂ generalizing M₁}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ }\NormalTok{: Term Var}
+\InformationTok{h₁ }\NormalTok{: M ⭢ηᶠ M₁}
+\InformationTok{h₂ }\NormalTok{: M ⭢βᶠ M₂}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta M₁ z }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ M₂ ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
+
+Por inducción sobre la derivación de \texttt{h₂\ :\ M\ ⭢βᶠ\ M₂},
+demostraremos que, para todo término \texttt{M₁}, si
+\texttt{M\ ⭢ηᶠ\ M₁}, entonces existe un término \texttt{z} tal que
+\texttt{ReflGen\ FullBeta\ M₁\ z} y \texttt{M₂\ ↠ηᶠ\ z}. Procedemos por
+casos según la última regla empleada en la derivación de \texttt{h₂}.
+
+\textbf{I}.
+
+\textbf{II}.
+
+\textbf{III}.
+
+\textbf{IV}.
+\end{proof}
 
 
 

@@ -3,3 +3,43 @@
 ::: {.nthm arguments="Teorema 3.2.1"}
 Las reducciones $\eta$ y $\beta$ de un solo paso conmutan fuertemente.
 :::
+
+::: {.proof}
+Supongamos que `M`, `M₁` y `M₂` son términos lambda tales que `M ⭢ηᶠ M₁` y `M ⭢βᶠ M₂`.
+Entonces existe un término lambda `z` tal que `ReflGen FullBeta M₁ z` y `M₂ ↠ηᶠ z`.
+
+::: {.inout}
+::: {.inpt}
+```lean
+theorem strong_commutation_eta_beta :
+    StronglyCommute (@FullEta Var) FullBeta := by
+  intro M M₁ M₂ h₁ h₂
+  induction h₂ generalizing M₁
+```
+:::
+
+::: {.outpt}
+```state
+M M₁ M₂ : Term Var
+h₁ : M ⭢ηᶠ M₁
+h₂ : M ⭢βᶠ M₂
+⊢ ∃ z, ReflGen FullBeta M₁ z 
+>>    ∧ M₂ ↠ηᶠ z
+```
+:::
+:::
+
+Por inducción sobre la derivación de `h₂ : M ⭢βᶠ M₂`, demostraremos que, para todo término `M₁`, 
+si `M ⭢ηᶠ M₁`, entonces existe un término `z` tal que `ReflGen FullBeta M₁ z` y `M₂ ↠ηᶠ z`.
+Procedemos por casos según la última regla empleada en la derivación de `h₂`.
+
+**I**\.
+
+**II**\.
+
+
+**III**\.
+
+**IV**\.
+
+:::
