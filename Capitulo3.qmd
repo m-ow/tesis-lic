@@ -1,0 +1,5 @@
+# Confluencia $\beta \eta$
+
+{{< include Capitulo3-1.qmd >}}
+
+{{< include Capitulo3-2.qmd >}}

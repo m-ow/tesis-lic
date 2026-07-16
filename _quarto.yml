@@ -9,8 +9,7 @@ book:
     - index.qmd
     - Capitulo1.qmd
     - Capitulo2.qmd
-    - Capitulo3-1.qmd
-    - Capitulo3-2.qmd
+    - Capitulo3.qmd
 lang: es
 format:
   pdf:
