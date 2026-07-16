@@ -14,7 +14,7 @@ tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
 ::: {.inout}
 ::: {.inpt}
 ```lean
-theorem stronglyConfluent_eta :
+theorem strong_confluence_eta :
     StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
 ```
@@ -37,7 +37,7 @@ basta encontrar un término `z` tal que `ReflGen FullEta M₁ z` y `ReflGen Full
 ::: {.inout}
 ::: {.inpt}
 ```lean
-theorem stronglyConfluent_eta :
+theorem strong_confluence_eta :
     StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   suffices h : ∃ z,
@@ -77,7 +77,7 @@ Demostraremos que, para todo término `M₂`, si `M ⭢ηᶠ M₂`, entonces exi
 para alguna `P` tal que `LC P`.
 
 ```lean
-theorem stronglyConfluent_eta :
+theorem strong_confluence_eta :
     StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
@@ -181,7 +181,7 @@ entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para alguna `P`, `P₁` y 
 tales que `LC N` y `P ⭢ηᶠ P₁`.
 
 ```lean
-theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
   case appL N P P₁ lc_N r_P_P₁ ih =>
@@ -342,7 +342,7 @@ entonces `M` $=$ `app N P` y `M₁` $=$ `app N P₁`,
 para alguna `N`, `P` y `P₁` tales que `LC N` y `P ⭢ηᶠ P₁`.
 
 ```lean
-theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
   case appR N P P₁ lc_N r_P_P₁ ih =>
@@ -361,7 +361,7 @@ h₂ : app N P ⭢ηᶠ M₂
 Este caso es análogo al anterior: basta intercambiar el argumento que se reduce 
 con el que queda fijo y, con ellos, las reglas `appL` y `appR`. La formalización es la siguiente.
 ```lean
-theorem stronglyConfluent_eta : StronglyConfluent (@FullEta Var) := by
+theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
   case appR N' P P₁ lc_N' r_P_P₁ ih =>
@@ -389,7 +389,7 @@ para alguna `P` y `Q` tales que, para toda variable `x` fuera de un conjunto fin
 se cumple `(P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)`.
 
 ```lean
-theorem stronglyConfluent_eta :
+theorem strong_confluence_eta :
     StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮

@@ -1032,7 +1032,7 @@ término lambda \texttt{z} tal que \texttt{ReflGen\ FullEta\ M₁\ z} y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta :}
 \NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \end{Highlighting}
@@ -1062,7 +1062,7 @@ y \texttt{ReflGen\ FullEta\ M₂\ z}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta :}
 \NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  suffices h : ∃ z,}
@@ -1113,7 +1113,7 @@ para alguna \texttt{P} tal que \texttt{LC\ P}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta :}
 \NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
@@ -1233,7 +1233,7 @@ alguna \texttt{P}, \texttt{P₁} y \texttt{N} tales que \texttt{LC\ N} y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
 \NormalTok{  case appL N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
@@ -1413,7 +1413,7 @@ alguna \texttt{N}, \texttt{P} y \texttt{P₁} tales que \texttt{LC\ N} y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
 \NormalTok{  case appR N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
@@ -1438,7 +1438,7 @@ reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
 \NormalTok{  case appR N\textquotesingle{} P P₁ lc\_N\textquotesingle{} r\_P\_P₁ ih =\textgreater{}}
@@ -1470,7 +1470,7 @@ de un conjunto finito \texttt{L}, se cumple
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{theorem}\NormalTok{ stronglyConfluent\_eta :}
+\KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta :}
 \NormalTok{    StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
