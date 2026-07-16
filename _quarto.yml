@@ -7,9 +7,10 @@ book:
     - name: "Maximiliano Onofre Martínez"
   chapters:
     - index.qmd
-    - Chap1.qmd
-    - Chap2.qmd
-    - Chap3.qmd
+    - Capitulo1.qmd
+    - Capitulo2.qmd
+    - Capitulo3-1.qmd
+    - Capitulo3-2.qmd
 lang: es
 format:
   pdf:

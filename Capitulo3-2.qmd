@@ -1,0 +1,5 @@
+## 3.2. Conmutación fuerte de $\eta$ y $\beta$
+
+::: {.nthm arguments="Teorema 3.2.1"}
+Las reducciones $\eta$ y $\beta$ de un solo paso conmutan fuertemente.
+:::
