@@ -72,7 +72,7 @@ Demostraremos que, para todo término `M₂`, si `M ⭢ηᶠ M₂`, entonces exi
 `ReflGen FullEta M₁ z` y `ReflGen FullEta M₂ z`. Procedemos por casos según la última regla empleada en la derivación de `h₁`.
 
 **I**\. Si la última regla fue `base`, entonces `M` $=$ `abs (app P (bvar 0))` y `M₁` $=$ `P`, 
-para alguna `P` tal que `LC P`.
+para cierto término `P` tal que `LC P`.
 
 ```lean
 theorem strong_confluence_eta :
@@ -96,7 +96,7 @@ h : M₂ = P ∨ ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
 
 Aplicando el teorema 2.1.3 (`invert_step_eta_redex`) a `h₂` 
 obtenemos dos posibilidades: `M₂` $=$ `P`, o bien `M₂` $=$ 
-`abs (app P₁ (bvar 0))` para alguna `P₁` con `P ⭢ηᶠ P₁`. 
+`abs (app P₁ (bvar 0))` para cierto término `P₁` con `P ⭢ηᶠ P₁`.
 Analizamos cada una.
 
 **(a)**\ Si `M₂` $=$ P, ambas derivaciones aplicaron la regla $\eta$ a `abs (app P (bvar 0))` 
@@ -129,7 +129,7 @@ h_eq : M₂ = P
 :::
 :::
 
-**(b)**\ Si `M₂` $=$ `abs (app P₁ (bvar 0))` para alguna `P₁` con `P ⭢ηᶠ P₁`, tomamos `z` $=$ `P₁`: 
+**(b)**\ Si `M₂` $=$ `abs (app P₁ (bvar 0))` para cierto término `P₁` con `P ⭢ηᶠ P₁`, tomamos `z` $=$ `P₁`:
 el primer componente de la conjunción es `P ⭢ηᶠ P₁`, y el segundo se obtiene aplicando la regla $\eta$ 
 a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 (`step_lc_r`) aplicado a `r_P_P₁`.
 
@@ -175,7 +175,7 @@ h_eq : M₂ = abs (app P₁ (bvar 0))
 
 
 **II**\. Si la última regla fue `appL`,
-entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para alguna `P`, `P₁` y `N`
+entonces `M` $=$ `app P N` y `M₁` $=$ `app P₁ N`, para ciertos términos `P`, `P₁` y `N`
 tales que `LC N` y `P ⭢ηᶠ P₁`.
 
 ```lean
@@ -276,7 +276,7 @@ dejando fija `N`, mediante la regla `appL`.
 ```
 
 **(b)**\ Si la última regla fue `appR`,
-entonces `M₂` $=$ `app P N₁`, para alguna `N₁`
+entonces `M₂` $=$ `app P N₁`, para cierto término `N₁`
 donde `LC P` y `N ⭢ηᶠ N₁`. Así, tomamos `z` $=$ `app P₁ N₁`.
 
 ```lean  
@@ -337,7 +337,7 @@ término es una aplicación. Así, no hay nada que demostrar.
 
 **III**\. Si la última regla fue `appR`, 
 entonces `M` $=$ `app N P` y `M₁` $=$ `app N P₁`, 
-para alguna `N`, `P` y `P₁` tales que `LC N` y `P ⭢ηᶠ P₁`.
+para ciertos términos `N`, `P` y `P₁` tales que `LC N` y `P ⭢ηᶠ P₁`.
 
 ```lean
 theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
@@ -383,7 +383,7 @@ theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
 ```
 
 **IV**\. Si la última regla fue `xi`, entonces `M` $=$ `abs P` y `M₁` $=$ `abs Q`,
-para alguna `P` y `Q` tales que, para toda variable `x` fuera de un conjunto finito `L`,
+para ciertos términos `P` y `Q` tales que, para toda variable `x` fuera de un conjunto finito `L`,
 se cumple `(P ^ fvar x) ⭢ηᶠ (Q ^ fvar x)`.
 
 ```lean
@@ -431,7 +431,7 @@ h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
 
 Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.3
 (`invert_step_eta_redex`) nos da dos posibilidades: `abs Q` $=$ `M₂`, o bien
-`abs Q` $=$ `abs (app R (bvar 0))` para alguna `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
+`abs Q` $=$ `abs (app R (bvar 0))` para cierto término `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
 
 - Si `abs Q` $=$ `M₂`, ambas reducciones llegaron al mismo término y basta tomar `z` $=$ `M₂`.
 
@@ -469,7 +469,7 @@ h_eq : abs Q = abs (app R (bvar 0))
 ⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R
 ```
 
-**(b)**\ Si la última regla fue `xi`, entonces `M₂` $=$ `abs P₁`, para alguna `P₁` tal que,
+**(b)**\ Si la última regla fue `xi`, entonces `M₂` $=$ `abs P₁`, para cierto término `P₁` tal que,
 para toda variable `x` fuera de un conjunto finito `L'`, se cumple `(P ^ fvar x) ⭢ηᶠ (P₁ ^ fvar x)`.
 
 ```lean

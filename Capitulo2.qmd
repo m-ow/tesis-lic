@@ -184,7 +184,7 @@ theorem step_lc_r {M M' : Term Var} (step : M ⭢ηᶠ M') : LC M'
 
 ::: {.nthm arguments="Teorema 2.1.3"}
 Una reducción de un solo paso desde `abs (app N (bvar 0))` produce `N`, o bien `abs (app N' (bvar 0))`
-para alguna `N'` tal que `N ⭢ηᶠ N'`.
+para cierto término `N'` tal que `N ⭢ηᶠ N'`.
 ```lean
 theorem invert_step_eta_redex {M N : Term Var} (lc_N : LC N)
     (step : abs (app N (bvar 0)) ⭢ηᶠ M) :
