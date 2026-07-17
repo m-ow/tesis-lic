@@ -488,9 +488,9 @@ h_xi' : ∀ x ∉ L', (P ^ fvar x) ⭢ηᶠ (P₁ ^ fvar x)
 ⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta (abs P₁) z
 ```
 
-Sea `w` una variable nueva. De `h_xi'` aplicada a `w` se sigue `(P ^ fvar w) ⭢ηᶠ (P₁ ^ fvar w)` y,
+Sea `w` una variable nueva, de `h_xi'` aplicada a `w` se sigue `(P ^ fvar w) ⭢ηᶠ (P₁ ^ fvar w)` y,
 por la hipótesis de inducción, existe un término `P₂` tal que `ReflGen FullEta (Q ^ fvar w) P₂` y
-`ReflGen FullEta (P₁ ^ fvar w) P₂`. Por lo tanto, tomamos `z` $=$ `abs (P₂ ^* w)`.
+`ReflGen FullEta (P₁ ^ fvar w) P₂`, por lo tanto, tomamos `z` $=$ `abs (P₂ ^* w)`.
 ```lean
     case xi P₁ L' h_xi' =>
       have ⟨w, hw⟩ := fresh_exists (free_union [fv] Var)
