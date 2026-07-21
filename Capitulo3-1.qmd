@@ -356,29 +356,30 @@ h₂ : app N P ⭢ηᶠ M₂
 ⊢ ∃ z, ReflGen FullEta (app N P₁) z ∧ ReflGen FullEta M₂ z
 ```
 
-Este caso es análogo al anterior: basta intercambiar el argumento que se reduce 
-con el que queda fijo y, con ellos, las reglas `appL` y `appR`. La formalización es la siguiente.
+Este caso repite el razonamiento del anterior, intercambiando las posiciones del argumento
+que se reduce y del que queda fijo, y con ellas las reglas `appL` y `appR`.
+La formalización es la siguiente.
 ```lean
 theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
   intro M M₁ M₂ h₁ h₂
   ⋮
-  case appR N' P P₁ lc_N' r_P_P₁ ih =>
+  case appR N P P₁ lc_N r_P_P₁ ih =>
     cases h₂
     case appL N₁ r_N_N₁ _ =>
       use app N₁ P₁
       constructor
       · exact .single (.appL (step_lc_r r_P_P₁) r_N_N₁)
       · exact .single (.appR (step_lc_r r_N_N₁) r_P_P₁)
-    case appR P₂ r_P_P₂ =>
+    case appR P₂ _ r_P_P₂ =>
       have ⟨P₃, refl_P₁_P₃, refl_P₂_P₃⟩ := ih r_P_P₂
-      use app N' P₃
+      use app N P₃
       constructor
       · cases refl_P₁_P₃
         case refl => rfl
-        case single r_P₁_P₃ => exact .single (.appR lc_N' r_P₁_P₃)
+        case single r_P₁_P₃ => exact .single (.appR lc_N r_P₁_P₃)
       · cases refl_P₂_P₃
         case refl => rfl
-        case single r_P₂_P₃ => exact .single (.appR lc_N' r_P₂_P₃)
+        case single r_P₂_P₃ => exact .single (.appR lc_N r_P₂_P₃)
     case base => contradiction
 ```
 
@@ -568,7 +569,7 @@ r_P_Q : (P ^ fvar w) ⭢ηᶠ (Q ^ fvar w)
 ```
 
 Para probar el segundo componente de la conjunción procedemos por casos sobre
-`ReflGen FullEta (P₁ ^ fvar w) P₂`, el cual es análogo al caso anterior, 
+`ReflGen FullEta (P₁ ^ fvar w) P₂`, repitiendo el razonamiento anterior
 con `P₁` en lugar de `Q`.
 ```lean
     case xi P₁ L' h_xi' =>

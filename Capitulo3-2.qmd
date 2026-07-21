@@ -184,7 +184,53 @@ e_N_N₁ : N ⭢ηᶠ N₁
 a `app P N`, lo cual es imposible: la regla $\eta$ solo reduce abstracciones y este
 término es una aplicación. Así, no hay nada que demostrar.
 
-**III**\.
+**III**\. Si la última regla fue `appR`, entonces `M` $=$ `app N P` y `M₂` $=$ `app N P₁`,
+para ciertos términos `N`, `P` y `P₁` tales que `LC N` y `P ⭢βᶠ P₁`.
+
+```lean
+theorem strong_commutation_eta_beta :
+    StronglyCommute (@FullEta Var) FullBeta := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case appR N P P₁ lc_N b_P_P₁ ih =>
+```
+
+```state
+M M₁ M₂ N P P₁ : Term Var
+lc_N : LC N
+b_P_P₁ : P ⭢βᶠ P₁
+ih : ∀ {M₁ : Term Var}, P ⭢ηᶠ M₁ → ∃ z, ReflGen FullBeta M₁ z ∧ P₁ ↠ηᶠ z
+h₁ : app N P ⭢ηᶠ M₁
+⊢ ∃ z, ReflGen FullBeta M₁ z ∧ app N P₁ ↠ηᶠ z
+```
+
+Este caso repite el razonamiento del anterior, intercambiando las posiciones del argumento
+que se reduce y del que queda fijo. En consecuencia se intercambian las reglas `appL` y `appR`,
+y el segundo componente se obtiene ahora del teorema 2.X.X (`redex_app_r_cong`).
+La formalización es la siguiente.
+
+```lean
+theorem strong_commutation_eta_beta :
+    StronglyCommute (@FullEta Var) FullBeta := by
+  intro M M₁ M₂ h₁ h₂
+  ⋮
+  case appR N P P₁ lc_N b_P_P₁ ih =>
+    cases h₁
+    case appL N₁ e_N_N₁ _ =>
+      use app N₁ P₁
+      constructor
+      · exact .single (.appR (step_lc_r e_N_N₁) b_P_P₁)
+      · exact .single (.appL (step_lc_r b_P_P₁) e_N_N₁)
+    case appR P₂ _ e_P_P₂ =>
+      have ⟨P₃, b_refl_P₂_P₃, e_multi_P₁_P₃⟩ := ih e_P_P₂
+      use app N P₃
+      constructor
+      · cases b_refl_P₂_P₃
+        case refl => rfl
+        case single b_P₂_P₃ => exact .single (.appR lc_N b_P₂_P₃)
+      · exact redex_app_r_cong e_multi_P₁_P₃ lc_N
+    case base => contradiction
+```
 
 **IV**\.
 

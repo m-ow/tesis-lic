@@ -1432,32 +1432,33 @@ ciertos términos \texttt{N}, \texttt{P} y \texttt{P₁} tales que
 \end{Highlighting}
 \end{Shaded}
 
-Este caso es análogo al anterior: basta intercambiar el argumento que se
-reduce con el que queda fijo y, con ellos, las reglas \texttt{appL} y
-\texttt{appR}. La formalización es la siguiente.
+Este caso repite el razonamiento del anterior, intercambiando las
+posiciones del argumento que se reduce y del que queda fijo, y con ellas
+las reglas \texttt{appL} y \texttt{appR}. La formalización es la
+siguiente.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{theorem}\NormalTok{ strong\_confluence\_eta : StronglyConfluent (@FullEta Var) := }\KeywordTok{by}
 \NormalTok{  intro M M₁ M₂ h₁ h₂}
 \NormalTok{  ⋮}
-\NormalTok{  case appR N\textquotesingle{} P P₁ lc\_N\textquotesingle{} r\_P\_P₁ ih =\textgreater{}}
+\NormalTok{  case appR N P P₁ lc\_N r\_P\_P₁ ih =\textgreater{}}
 \NormalTok{    cases h₂}
 \NormalTok{    case appL N₁ r\_N\_N₁ \_ =\textgreater{}}
 \NormalTok{      use app N₁ P₁}
 \NormalTok{      constructor}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r r\_P\_P₁) r\_N\_N₁)}
 \NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r r\_N\_N₁) r\_P\_P₁)}
-\NormalTok{    case appR P₂ r\_P\_P₂ =\textgreater{}}
+\NormalTok{    case appR P₂ \_ r\_P\_P₂ =\textgreater{}}
       \KeywordTok{have}\NormalTok{ ⟨P₃, refl\_P₁\_P₃, refl\_P₂\_P₃⟩ := ih r\_P\_P₂}
-\NormalTok{      use app N\textquotesingle{} P₃}
+\NormalTok{      use app N P₃}
 \NormalTok{      constructor}
 \NormalTok{      · cases refl\_P₁\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
-\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N\textquotesingle{} r\_P₁\_P₃)}
+\NormalTok{        case single r\_P₁\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₁\_P₃)}
 \NormalTok{      · cases refl\_P₂\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
-\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N\textquotesingle{} r\_P₂\_P₃)}
+\NormalTok{        case single r\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N r\_P₂\_P₃)}
 \NormalTok{    case base =\textgreater{} contradiction}
 \end{Highlighting}
 \end{Shaded}
@@ -1700,8 +1701,8 @@ sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
 \end{Shaded}
 
 Para probar el segundo componente de la conjunción procedemos por casos
-sobre \texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}, el cual es
-análogo al caso anterior, con \texttt{P₁} en lugar de \texttt{Q}.
+sobre \texttt{ReflGen\ FullEta\ (P₁\ \^{}\ fvar\ w)\ P₂}, repitiendo el
+razonamiento anterior con \texttt{P₁} en lugar de \texttt{Q}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1950,7 +1951,62 @@ habría aplicado directamente a \texttt{app\ P\ N}, lo cual es imposible:
 la regla \(\eta\) solo reduce abstracciones y este término es una
 aplicación. Así, no hay nada que demostrar.
 
-\textbf{III}.
+\textbf{III}. Si la última regla fue \texttt{appR}, entonces \texttt{M}
+\(=\) \texttt{app\ N\ P} y \texttt{M₂} \(=\) \texttt{app\ N\ P₁}, para
+ciertos términos \texttt{N}, \texttt{P} y \texttt{P₁} tales que
+\texttt{LC\ N} y \texttt{P\ ⭢βᶠ\ P₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appR N P P₁ lc\_N b\_P\_P₁ ih =\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{b\_P\_P₁ }\NormalTok{: P ⭢βᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₁ : Term Var\}, P ⭢ηᶠ M₁ → ∃ z, ReflGen FullBeta M₁ z ∧ P₁ ↠ηᶠ z}
+\InformationTok{h₁ }\NormalTok{: app N P ⭢ηᶠ M₁}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta M₁ z ∧ app N P₁ ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+Este caso repite el razonamiento del anterior, intercambiando las
+posiciones del argumento que se reduce y del que queda fijo. En
+consecuencia se intercambian las reglas \texttt{appL} y \texttt{appR}, y
+el segundo componente se obtiene ahora del teorema 2.X.X
+(\texttt{redex\_app\_r\_cong}). La formalización es la siguiente.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appR N P P₁ lc\_N b\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    cases h₁}
+\NormalTok{    case appL N₁ e\_N\_N₁ \_ =\textgreater{}}
+\NormalTok{      use app N₁ P₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appR (step\_lc\_r e\_N\_N₁) b\_P\_P₁)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single (.appL (step\_lc\_r b\_P\_P₁) e\_N\_N₁)}
+\NormalTok{    case appR P₂ \_ e\_P\_P₂ =\textgreater{}}
+      \KeywordTok{have}\NormalTok{ ⟨P₃, b\_refl\_P₂\_P₃, e\_multi\_P₁\_P₃⟩ := ih e\_P\_P₂}
+\NormalTok{      use app N P₃}
+\NormalTok{      constructor}
+\NormalTok{      · cases b\_refl\_P₂\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single b\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appR lc\_N b\_P₂\_P₃)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ redex\_app\_r\_cong e\_multi\_P₁\_P₃ lc\_N}
+\NormalTok{    case base =\textgreater{} contradiction}
+\end{Highlighting}
+\end{Shaded}
 
 \textbf{IV}.
 \end{proof}
