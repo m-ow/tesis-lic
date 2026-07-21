@@ -1316,10 +1316,10 @@ Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ N}.
 
 Para demostrar cada componente de la conjunción procedemos por casos
 sobre \texttt{ReflGen\ FullEta\ P₁\ P₃} y
-\texttt{ReflGen\ FullEta\ P₂\ P₃}, respectivamente: si son reflexivas,
-ambos lados ya coinciden; si constan de un paso, reducimos \texttt{P₁} a
-\texttt{P₃} en la primera y \texttt{P₂} a \texttt{P₃} en la segunda,
-dejando fija \texttt{N}, mediante la regla \texttt{appL}.
+\texttt{ReflGen\ FullEta\ P₂\ P₃}, respectivamente: si constan de cero
+pasos, ambos lados ya coinciden; si constan de un paso, reducimos
+\texttt{P₁} a \texttt{P₃} en la primera y \texttt{P₂} a \texttt{P₃} en
+la segunda, dejando fija \texttt{N}, mediante la regla \texttt{appL}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1652,7 +1652,7 @@ sobre \texttt{ReflGen\ FullEta\ (Q\ \^{}\ fvar\ w)\ P₂}:
 
 \begin{itemize}
 \item
-  Si la reducción es reflexiva, entonces \texttt{P₂} \(=\)
+  Si la reducción no consta de ningún paso, entonces \texttt{P₂} \(=\)
   \texttt{Q\ \^{}\ fvar\ w}, de modo que \texttt{z} \(=\)
   \texttt{abs\ ((Q\ \^{}\ fvar\ w)\ \^{}*\ w)}. Por el teorema 2.1.1
   (\texttt{open\_close\_var}) este término es \texttt{abs\ Q} y ambos
@@ -1777,7 +1777,178 @@ casos según la última regla empleada en la derivación de \texttt{h₂}.
 
 \textbf{I}.
 
-\textbf{II}.
+\textbf{II}. Si la última regla fue \texttt{appL}, entonces \texttt{M}
+\(=\) \texttt{app\ P\ N} y \texttt{M₂} \(=\) \texttt{app\ P₁\ N}, para
+ciertos términos \texttt{P}, \texttt{P₁} y \texttt{N} tales que
+\texttt{LC\ N} y \texttt{P\ ⭢βᶠ\ P₁}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  ⋮}
+\NormalTok{  case appL N P P₁ lc\_N b\_P\_P₁ ih =\textgreater{}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{b\_P\_P₁ }\NormalTok{: P ⭢βᶠ P₁}
+\InformationTok{ih }\NormalTok{: ∀ \{M₁ : Term Var\}, P ⭢ηᶠ M₁ → ∃ z, ReflGen FullBeta M₁ z ∧ P₁ ↠ηᶠ z}
+\InformationTok{h₁ }\NormalTok{: app P N ⭢ηᶠ M₁}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta M₁ z ∧ app P₁ N ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+A continuación, procedemos por casos sobre la derivación de
+\texttt{app\ P\ N\ ⭢ηᶠ\ M₁}:
+
+\textbf{(a)}~Si la última regla fue \texttt{appL}, entonces \texttt{M₁}
+\(=\) \texttt{app\ P₂\ N} para cierto término \texttt{P₂} con
+\texttt{P\ ⭢ηᶠ\ P₂}. Por la hipótesis de inducción aplicada sobre
+\texttt{P\ ⭢ηᶠ\ P₂}, sabemos que existe un término \texttt{P₃} tal que
+\texttt{ReflGen\ FullBeta\ P₂\ P₃} y \texttt{P₁\ ↠ηᶠ\ P₃}. Por lo tanto,
+tomamos \texttt{z} \(=\) \texttt{app\ P₃\ N}.
+
+\begin{center}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{P}};
+  \node (b) at (3, 3) {\lean{P₂}};
+  \node (c) at (0, 0) {\lean{P₁}};
+  \node (d) at (3, 0) {\lean{P₃}};
+  \draw[->]  (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]  (a) -- node[left]  {\lean{βᶠ}} (c);
+  \draw[->]  (b) -- node[right] {\lean{βᶠ}} node[left] {$=$} (d);
+  \draw[->>] (c) -- node[below] {\lean{ηᶠ}} (d);
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P₂ N}};
+  \node (c) at (0, 0) {\lean{app P₁ N}};
+  \node (d) at (3, 0) {\lean{app P₃ N}};
+  \draw[->]          (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]          (a) -- node[left]  {\lean{βᶠ}} (c);
+  \draw[->, dashed]  (b) -- node[right] {\lean{βᶠ}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{ηᶠ}} (d);
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  case appL N P P₁ lc\_N b\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    cases h₁}
+\NormalTok{    case appL P₂ e\_P\_P₂ \_ =\textgreater{}}
+      \KeywordTok{have}\NormalTok{ ⟨P₃, b\_refl\_P₂\_P₃, e\_multi\_P₁\_P₃⟩ := ih e\_P\_P₂}
+\NormalTok{      use app P₃ N}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N P P₁ P₂ P₃ }\NormalTok{: Term Var}
+\InformationTok{lc\_N }\NormalTok{: LC N}
+\InformationTok{b\_P\_P₁ }\NormalTok{: P ⭢βᶠ P₁}
+\InformationTok{e\_P\_P₂ }\NormalTok{: P ⭢ηᶠ P₂}
+\InformationTok{b\_refl\_P₂\_P₃ }\NormalTok{: ReflGen FullBeta P₂ P₃}
+\InformationTok{e\_multi\_P₁\_P₃ }\NormalTok{: P₁ ↠ηᶠ P₃}
+\NormalTok{⊢ ReflGen FullBeta (app P₂ N) (app P₃ N) ∧ app P₁ N ↠ηᶠ app P₃ N}
+\end{Highlighting}
+\end{Shaded}
+
+Para demostrar el primer componente de la conjunción procedemos por
+casos sobre \texttt{ReflGen\ FullBeta\ P₂\ P₃}: si no consta de ningún
+paso, ambos lados ya coinciden; si consta de un paso, reducimos
+\texttt{P₂} a \texttt{P₃} dejando fija \texttt{N}, mediante la regla
+\texttt{appL}. El segundo componente se obtiene del teorema 2.X.X
+(\texttt{redex\_app\_l\_cong}) aplicado a \texttt{P₁\ ↠ηᶠ\ P₃}, dejando
+fija \texttt{N}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{  case appL N P P₁ lc\_N b\_P\_P₁ ih =\textgreater{}}
+\NormalTok{    cases h₁}
+\NormalTok{    case appL P₂ e\_P\_P₂ \_ =\textgreater{}}
+      \KeywordTok{have}\NormalTok{ ⟨P₃, b\_refl\_P₂\_P₃, e\_multi\_P₁\_P₃⟩ := ih e\_P\_P₂}
+\NormalTok{      use app P₃ N}
+\NormalTok{      constructor}
+\NormalTok{      · cases b\_refl\_P₂\_P₃}
+\NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
+\NormalTok{        case single b\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appL lc\_N b\_P₂\_P₃)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ redex\_app\_l\_cong e\_multi\_P₁\_P₃ lc\_N}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(b)}~Si la última regla fue \texttt{appR}, entonces \texttt{M₁}
+\(=\) \texttt{app\ P\ N₁} para cierto término \texttt{N₁} donde
+\texttt{LC\ P} y \texttt{N\ ⭢ηᶠ\ N₁}. Así, tomamos \texttt{z} \(=\)
+\texttt{app\ P₁\ N₁}.
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 3) {\lean{app P N}};
+  \node (b) at (3, 3) {\lean{app P N₁}};
+  \node (c) at (0, 0) {\lean{app P₁ N}};
+  \node (d) at (3, 0) {\lean{app P₁ N₁}};
+  \draw[->]          (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]          (a) -- node[left]  {\lean{βᶠ}} (c);
+  \draw[->, dashed]  (b) -- node[right] {\lean{βᶠ}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{ηᶠ}} (d);
+\end{tikzpicture}
+\end{center}
+
+Cada componente de la conjunción se obtiene con una sola reducción: en
+el primero reducimos \texttt{P} a \texttt{P₁} dejando fija \texttt{N₁},
+y en el segundo reducimos \texttt{N} a \texttt{N₁} dejando fija
+\texttt{P₁}. Las premisas de cerradura local que piden las reglas
+\texttt{appL} y \texttt{appR} se obtienen del teorema 2.1.2
+(\texttt{step\_lc\_r}): de \texttt{e\_N\_N₁} obtenemos \texttt{LC\ N₁} y
+de \texttt{b\_P\_P₁} obtenemos \texttt{LC\ P₁}.
+
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    case appR N₁ \_ e\_N\_N₁ =\textgreater{}}
+\NormalTok{      use app P₁ N₁}
+\NormalTok{      constructor }\CommentTok{{-}{-} ⊢}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single }
+\NormalTok{          (.appL (step\_lc\_r e\_N\_N₁) b\_P\_P₁)}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ .single }
+\NormalTok{          (.appR (step\_lc\_r b\_P\_P₁) e\_N\_N₁)}
+\NormalTok{    case base =\textgreater{} contradiction}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ N N₁ P P₁ }\NormalTok{: Term Var}
+\InformationTok{b\_P\_P₁ }\NormalTok{: P ⭢βᶠ P₁}
+\InformationTok{e\_N\_N₁ }\NormalTok{: N ⭢ηᶠ N₁}
+\NormalTok{⊢ ReflGen FullBeta }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{  (app P N₁) (app P₁ N₁) }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{  ∧ app P₁ N ↠ηᶠ app P₁ N₁}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
+
+\textbf{(c)}~Si la última regla fue \texttt{base}, la regla \(\eta\) se
+habría aplicado directamente a \texttt{app\ P\ N}, lo cual es imposible:
+la regla \(\eta\) solo reduce abstracciones y este término es una
+aplicación. Así, no hay nada que demostrar.
 
 \textbf{III}.
 

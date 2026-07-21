@@ -256,8 +256,8 @@ refl_P₂_P₃ : ReflGen FullEta P₂ P₃
 
 Para demostrar cada componente de la conjunción procedemos por casos sobre 
 `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`, 
-respectivamente: si son reflexivas, ambos lados ya coinciden; 
-si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃` en la segunda, 
+respectivamente: si constan de cero pasos, ambos lados ya coinciden;
+si constan de un paso, reducimos `P₁` a `P₃` en la primera y `P₂` a `P₃` en la segunda,
 dejando fija `N`, mediante la regla `appL`.
 
 
@@ -533,7 +533,7 @@ por la hipótesis de inducción, existe un término `P₂` tal que `ReflGen Full
 Para probar el primer componente de la conjunción procedemos por casos sobre
 `ReflGen FullEta (Q ^ fvar w) P₂`: 
 
-- Si la reducción es reflexiva, entonces `P₂` $=$ `Q ^ fvar w`, de modo que
+- Si la reducción no consta de ningún paso, entonces `P₂` $=$ `Q ^ fvar w`, de modo que
   `z` $=$ `abs ((Q ^ fvar w) ^* w)`. Por el teorema 2.1.1 (`open_close_var`) 
   este término es `abs Q` y ambos lados coinciden.
 
