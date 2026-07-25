@@ -1119,7 +1119,7 @@ para cierto término \texttt{P} tal que \texttt{LC\ P}.
 \NormalTok{  ⋮}
 \NormalTok{  case base \_ \_ P\textquotesingle{} P e\_P =\textgreater{}}
     \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
-    \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_P h₂}
+    \KeywordTok{have}\NormalTok{ h\_inv := invert\_step\_eta\_redex lc\_P h₂}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1129,7 +1129,7 @@ para cierto término \texttt{P} tal que \texttt{LC\ P}.
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
 \InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0)) ⭢ηᶠ M₂}
-\InformationTok{h }\NormalTok{: M₂ = P ∨ ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
+\InformationTok{h\_inv }\NormalTok{: M₂ = P ∨ ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
 \NormalTok{⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
 \end{Shaded}
@@ -1149,10 +1149,10 @@ término. Basta tomar \texttt{z} \(=\) \texttt{P}.
 \begin{Highlighting}[]
 \NormalTok{  case base \_ \_ P\textquotesingle{} P e\_P =\textgreater{}}
     \KeywordTok{have}\NormalTok{ ⟨lc\_P⟩ := e\_P}
-    \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_P h₂}
-\NormalTok{    cases h }\KeywordTok{with}
-\NormalTok{    | inl h\_eq =\textgreater{}}
-        \KeywordTok{rw}\NormalTok{ [h\_eq] }\CommentTok{{-}{-} ⊢}
+    \KeywordTok{have}\NormalTok{ h\_inv := invert\_step\_eta\_redex lc\_P h₂}
+\NormalTok{    cases h\_inv }\KeywordTok{with}
+\NormalTok{    | inl eq\_M₂\_P =\textgreater{}}
+        \KeywordTok{rw}\NormalTok{ [eq\_M₂\_P] }\CommentTok{{-}{-} ⊢}
 \NormalTok{        use P}
 \end{Highlighting}
 \end{Shaded}
@@ -1168,7 +1168,7 @@ término. Basta tomar \texttt{z} \(=\) \texttt{P}.
 \InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
 \InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0))}
 \SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ⭢ηᶠ M₂}
-\InformationTok{h\_eq }\NormalTok{: M₂ = P}
+\InformationTok{eq\_M₂\_P }\NormalTok{: M₂ = P}
 \NormalTok{⊢ ∃ z, ReflGen FullEta P z }
 \SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ ReflGen FullEta P z}
 \end{Highlighting}
@@ -1199,13 +1199,13 @@ extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{    cases h }\KeywordTok{with}
-\NormalTok{    | inl h\_eq =\textgreater{}}
-        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{    cases h\_inv }\KeywordTok{with}
+\NormalTok{    | inl eq\_M₂\_P =\textgreater{}}
+        \KeywordTok{rw}\NormalTok{ [eq\_M₂\_P]}
 \NormalTok{        use P}
-\NormalTok{    | inr h =\textgreater{}}
-        \KeywordTok{have}\NormalTok{ ⟨P₁, r\_P\_P₁, h\_eq⟩ := h}
-        \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{    | inr h\_step =\textgreater{}}
+        \KeywordTok{have}\NormalTok{ ⟨P₁, r\_P\_P₁, eq\_M₂\_P₁⟩ := h\_step}
+        \KeywordTok{rw}\NormalTok{ [eq\_M₂\_P₁]}
 \NormalTok{        use P₁ }\CommentTok{{-}{-} ⊢}
 \NormalTok{        constructor}
 \NormalTok{        · }\KeywordTok{exact}\NormalTok{ .single r\_P\_P₁}
@@ -1219,9 +1219,9 @@ extrae del teorema 2.1.2 (\texttt{step\_lc\_r}) aplicado a
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{e\_P }\NormalTok{: Eta P\textquotesingle{} P}
 \InformationTok{h₂ }\NormalTok{: abs (app P (bvar 0)) ⭢ηᶠ M₂}
-\InformationTok{h }\NormalTok{: ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
+\InformationTok{h\_step }\NormalTok{: ∃ N\textquotesingle{}, P ⭢ηᶠ N\textquotesingle{} ∧ M₂ = abs (app N\textquotesingle{} (bvar 0))}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{h\_eq }\NormalTok{: M₂ = abs (app P₁ (bvar 0)) }
+\InformationTok{eq\_M₂\_P₁ }\NormalTok{: M₂ = abs (app P₁ (bvar 0)) }
 \NormalTok{⊢ ReflGen FullEta P P₁ ∧ ReflGen FullEta (abs (app P₁ (bvar 0))) P₁}
 \end{Highlighting}
 \end{Shaded}
@@ -1245,8 +1245,7 @@ ciertos términos \texttt{P}, \texttt{P₁} y \texttt{N} tales que
 \InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
 \InformationTok{lc\_N }\NormalTok{: LC N}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
 \InformationTok{h₂ }\NormalTok{: app P N ⭢ηᶠ M₂}
 \NormalTok{⊢ ∃ z, ReflGen FullEta (app P₁ N) z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
@@ -1276,8 +1275,7 @@ Por lo tanto, tomamos \texttt{z} \(=\) \texttt{app\ P₃\ N}.
 \InformationTok{M M₁ N P P₁ P₂ P₃ }\NormalTok{: Term Var}
 \InformationTok{lc\_N }\NormalTok{: LC N}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
 \InformationTok{r\_P\_P₂ }\NormalTok{: P ⭢ηᶠ P₂}
 \InformationTok{refl\_P₁\_P₃ }\NormalTok{: ReflGen FullEta P₁ P₃}
 \InformationTok{refl\_P₂\_P₃ }\NormalTok{: ReflGen FullEta P₂ P₃}
@@ -1356,8 +1354,7 @@ la segunda, dejando fija \texttt{N}, mediante la regla \texttt{appL}.
 \InformationTok{M M₁ N N₁ P P₁ }\NormalTok{: Term Var}
 \InformationTok{lc\_N }\NormalTok{: LC N}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
 \InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{r\_N\_N₁ }\NormalTok{: N ⭢ηᶠ N₁}
 \NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)}
@@ -1425,8 +1422,7 @@ ciertos términos \texttt{N}, \texttt{P} y \texttt{P₁} tales que
 \InformationTok{M M₁ M₂ N P P₁ }\NormalTok{: Term Var}
 \InformationTok{lc\_N }\NormalTok{: LC N}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
-\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, }
-\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
+\InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
 \InformationTok{h₂ }\NormalTok{: app N P ⭢ηᶠ M₂}
 \NormalTok{⊢ ∃ z, ReflGen FullEta (app N P₁) z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
@@ -1502,9 +1498,9 @@ que \texttt{P} \(=\) \texttt{app\ M₂\ (bvar\ 0)} y \texttt{LC\ M₂}.
 \NormalTok{  case xi P Q L h\_xi ih =\textgreater{}}
 \NormalTok{    cases h₂}
 \NormalTok{    case base e\_P =\textgreater{}}
-      \KeywordTok{have}\NormalTok{ h₁ := CompatGen.xi L h\_xi}
+      \KeywordTok{have}\NormalTok{ r\_absM₂\_absQ := CompatGen.xi L h\_xi}
       \KeywordTok{have}\NormalTok{ ⟨lc\_M₂⟩ := e\_P}
-      \KeywordTok{have}\NormalTok{ h := invert\_step\_eta\_redex lc\_M₂ h₁ }
+      \KeywordTok{have}\NormalTok{ h\_inv := invert\_step\_eta\_redex lc\_M₂ r\_absM₂\_absQ }
 \end{Highlighting}
 \end{Shaded}
 
@@ -1515,18 +1511,18 @@ que \texttt{P} \(=\) \texttt{app\ M₂\ (bvar\ 0)} y \texttt{LC\ M₂}.
 \InformationTok{e\_P }\NormalTok{: Eta (abs P) M₂}
 \InformationTok{lc\_M₂ }\NormalTok{: LC M₂}
 \InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app M₂ (bvar 0) \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{h₁ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
-\InformationTok{h }\NormalTok{: abs Q = M₂ ∨ ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
+\InformationTok{r\_absM₂\_absQ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
+\InformationTok{h\_inv }\NormalTok{: abs Q = M₂ ∨ ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
 \NormalTok{⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z}
 \end{Highlighting}
 \end{Shaded}
 
-Estamos ante el mismo escenario del caso I-(b), ahora \texttt{h₁} parte
-de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
-(\texttt{invert\_step\_eta\_redex}) nos da dos posibilidades:
-\texttt{abs\ Q} \(=\) \texttt{M₂}, o bien \texttt{abs\ Q} \(=\)
-\texttt{abs\ (app\ R\ (bvar\ 0))} para cierto término \texttt{R} con
-\texttt{M₂\ ⭢ηᶠ\ R}. Analizamos cada una.
+Estamos ante el mismo escenario del caso I-(b), ahora
+\texttt{r\_absM₂\_absQ} parte de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el
+teorema 2.1.3 (\texttt{invert\_step\_eta\_redex}) nos da dos
+posibilidades: \texttt{abs\ Q} \(=\) \texttt{M₂}, o bien \texttt{abs\ Q}
+\(=\) \texttt{abs\ (app\ R\ (bvar\ 0))} para cierto término \texttt{R}
+con \texttt{M₂\ ⭢ηᶠ\ R}. Analizamos cada una.
 
 \begin{itemize}
 \item
@@ -1545,13 +1541,13 @@ de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
 \begin{Highlighting}[]
 \NormalTok{    case base e\_P =\textgreater{}}
 \NormalTok{      ⋮}
-\NormalTok{      cases h }\KeywordTok{with}
-\NormalTok{      | inl h\_eq =\textgreater{}}
-          \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{      cases h\_inv }\KeywordTok{with}
+\NormalTok{      | inl eq\_absQ\_M₂ =\textgreater{}}
+          \KeywordTok{rw}\NormalTok{ [eq\_absQ\_M₂]}
 \NormalTok{          use M₂}
-\NormalTok{      | inr h =\textgreater{}}
-          \KeywordTok{have}\NormalTok{ ⟨R, r\_M₂\_R, h\_eq⟩ := h}
-          \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{      | inr h\_step =\textgreater{}}
+          \KeywordTok{have}\NormalTok{ ⟨R, r\_M₂\_R, eq\_absQ\_R⟩ := h\_step}
+          \KeywordTok{rw}\NormalTok{ [eq\_absQ\_R]}
 \NormalTok{          use R }\CommentTok{{-}{-} ⊢}
 \NormalTok{          constructor}
 \NormalTok{          · }\KeywordTok{exact}\NormalTok{ .single (.base (.eta (step\_lc\_r r\_M₂\_R)))}
@@ -1566,10 +1562,10 @@ de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el teorema 2.1.3
 \InformationTok{e\_P }\NormalTok{: Eta (abs P) M₂}
 \InformationTok{lc\_M₂ }\NormalTok{: LC M₂}
 \InformationTok{h\_xi }\NormalTok{: ∀ x ∉ L, (app M₂ (bvar 0) \^{} fvar x) ⭢ηᶠ (Q \^{} fvar x)}
-\InformationTok{h₁ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
-\InformationTok{h }\NormalTok{: abs Q = M₂ ∨ ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
+\InformationTok{r\_absM₂\_absQ }\NormalTok{: abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q}
+\InformationTok{h\_step }\NormalTok{: ∃ N\textquotesingle{}, M₂ ⭢ηᶠ N\textquotesingle{} ∧ abs Q = abs (app N\textquotesingle{} (bvar 0))}
 \InformationTok{r\_M₂\_R }\NormalTok{: M₂ ⭢ηᶠ R}
-\InformationTok{h\_eq }\NormalTok{: abs Q = abs (app R (bvar 0))}
+\InformationTok{eq\_absQ\_R }\NormalTok{: abs Q = abs (app R (bvar 0))}
 \NormalTok{⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R}
 \end{Highlighting}
 \end{Shaded}

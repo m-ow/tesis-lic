@@ -81,7 +81,7 @@ theorem strong_confluence_eta :
   ⋮
   case base _ _ P' P e_P =>
     have ⟨lc_P⟩ := e_P
-    have h := invert_step_eta_redex lc_P h₂
+    have h_inv := invert_step_eta_redex lc_P h₂
 ```
 
 ```state
@@ -89,7 +89,7 @@ M M₁ M₂ P' P : Term Var
 lc_P : LC P
 e_P : Eta P' P
 h₂ : abs (app P (bvar 0)) ⭢ηᶠ M₂
-h : M₂ = P ∨ ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
+h_inv : M₂ = P ∨ ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
 ⊢ ∃ z, ReflGen FullEta P z ∧ ReflGen FullEta M₂ z
 ```
 
@@ -107,10 +107,10 @@ y llegaron al mismo término. Basta tomar `z` $=$ `P`.
 ```lean
   case base _ _ P' P e_P =>
     have ⟨lc_P⟩ := e_P
-    have h := invert_step_eta_redex lc_P h₂
-    cases h with
-    | inl h_eq =>
-        rw [h_eq] -- ⊢
+    have h_inv := invert_step_eta_redex lc_P h₂
+    cases h_inv with
+    | inl eq_M₂_P =>
+        rw [eq_M₂_P] -- ⊢
         use P
 ```
 :::
@@ -122,7 +122,7 @@ lc_P : LC P
 e_P : Eta P' P
 h₂ : abs (app P (bvar 0))
 >>    ⭢ηᶠ M₂
-h_eq : M₂ = P
+eq_M₂_P : M₂ = P
 ⊢ ∃ z, ReflGen FullEta P z 
 >>    ∧ ReflGen FullEta P z
 ```
@@ -149,13 +149,13 @@ a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 
 ```
 
 ```lean
-    cases h with
-    | inl h_eq =>
-        rw [h_eq]
+    cases h_inv with
+    | inl eq_M₂_P =>
+        rw [eq_M₂_P]
         use P
-    | inr h =>
-        have ⟨P₁, r_P_P₁, h_eq⟩ := h
-        rw [h_eq]
+    | inr h_step =>
+        have ⟨P₁, r_P_P₁, eq_M₂_P₁⟩ := h_step
+        rw [eq_M₂_P₁]
         use P₁ -- ⊢
         constructor
         · exact .single r_P_P₁
@@ -167,9 +167,9 @@ M M₁ M₂ P' P P₁ : Term Var
 lc_P : LC P
 e_P : Eta P' P
 h₂ : abs (app P (bvar 0)) ⭢ηᶠ M₂
-h : ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
+h_step : ∃ N', P ⭢ηᶠ N' ∧ M₂ = abs (app N' (bvar 0))
 r_P_P₁ : P ⭢ηᶠ P₁
-h_eq : M₂ = abs (app P₁ (bvar 0)) 
+eq_M₂_P₁ : M₂ = abs (app P₁ (bvar 0)) 
 ⊢ ReflGen FullEta P P₁ ∧ ReflGen FullEta (abs (app P₁ (bvar 0))) P₁
 ```
 
@@ -189,8 +189,7 @@ theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
 M M₁ M₂ N P P₁ : Term Var
 lc_N : LC N
 r_P_P₁ : P ⭢ηᶠ P₁
-ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
->>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
 h₂ : app P N ⭢ηᶠ M₂
 ⊢ ∃ z, ReflGen FullEta (app P₁ N) z ∧ ReflGen FullEta M₂ z
 ```
@@ -215,8 +214,7 @@ Por lo tanto, tomamos `z` $=$ `app P₃ N`.
 M M₁ N P P₁ P₂ P₃ : Term Var
 lc_N : LC N
 r_P_P₁ : P ⭢ηᶠ P₁
-ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
->>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
 r_P_P₂ : P ⭢ηᶠ P₂
 refl_P₁_P₃ : ReflGen FullEta P₁ P₃
 refl_P₂_P₃ : ReflGen FullEta P₂ P₃
@@ -290,8 +288,7 @@ donde `LC P` y `N ⭢ηᶠ N₁`. Así, tomamos `z` $=$ `app P₁ N₁`.
 M M₁ N N₁ P P₁ : Term Var
 lc_N : LC N
 r_P_P₁ : P ⭢ηᶠ P₁
-ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
->>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
 lc_P : LC P
 r_N_N₁ : N ⭢ηᶠ N₁
 ⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
@@ -350,8 +347,7 @@ theorem strong_confluence_eta : StronglyConfluent (@FullEta Var) := by
 M M₁ M₂ N P P₁ : Term Var
 lc_N : LC N
 r_P_P₁ : P ⭢ηᶠ P₁
-ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, 
->>     ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
+ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
 h₂ : app N P ⭢ηᶠ M₂
 ⊢ ∃ z, ReflGen FullEta (app N P₁) z ∧ ReflGen FullEta M₂ z
 ```
@@ -413,9 +409,9 @@ a `abs P`, lo cual exige que `P` $=$ `app M₂ (bvar 0)` y `LC M₂`.
   case xi P Q L h_xi ih =>
     cases h₂
     case base e_P =>
-      have h₁ := CompatGen.xi L h_xi
+      have r_absM₂_absQ := CompatGen.xi L h_xi
       have ⟨lc_M₂⟩ := e_P
-      have h := invert_step_eta_redex lc_M₂ h₁ 
+      have h_inv := invert_step_eta_redex lc_M₂ r_absM₂_absQ 
 ```
 
 ```state
@@ -424,13 +420,13 @@ L : Finset Var
 e_P : Eta (abs P) M₂
 lc_M₂ : LC M₂
 h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
-h₁ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
-h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
+r_absM₂_absQ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
+h_inv : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
 ⊢ ∃ z, ReflGen FullEta (abs Q) z ∧ ReflGen FullEta M₂ z
 ```
 
 
-Estamos ante el mismo escenario del caso I-(b), ahora `h₁` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.3
+Estamos ante el mismo escenario del caso I-(b), ahora `r_absM₂_absQ` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.3
 (`invert_step_eta_redex`) nos da dos posibilidades: `abs Q` $=$ `M₂`, o bien
 `abs Q` $=$ `abs (app R (bvar 0))` para cierto término `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
 
@@ -444,13 +440,13 @@ aplicado a `r_M₂_R`, y el segundo es la reducción `M₂ ⭢ηᶠ R`.
 ```lean
     case base e_P =>
       ⋮
-      cases h with
-      | inl h_eq =>
-          rw [h_eq]
+      cases h_inv with
+      | inl eq_absQ_M₂ =>
+          rw [eq_absQ_M₂]
           use M₂
-      | inr h =>
-          have ⟨R, r_M₂_R, h_eq⟩ := h
-          rw [h_eq]
+      | inr h_step =>
+          have ⟨R, r_M₂_R, eq_absQ_R⟩ := h_step
+          rw [eq_absQ_R]
           use R -- ⊢
           constructor
           · exact .single (.base (.eta (step_lc_r r_M₂_R)))
@@ -463,10 +459,10 @@ L : Finset Var
 e_P : Eta (abs P) M₂
 lc_M₂ : LC M₂
 h_xi : ∀ x ∉ L, (app M₂ (bvar 0) ^ fvar x) ⭢ηᶠ (Q ^ fvar x)
-h₁ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
-h : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
+r_absM₂_absQ : abs (app M₂ (bvar 0)) ⭢ηᶠ abs Q
+h_step : ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 0))
 r_M₂_R : M₂ ⭢ηᶠ R
-h_eq : abs Q = abs (app R (bvar 0))
+eq_absQ_R : abs Q = abs (app R (bvar 0))
 ⊢ ReflGen FullEta (abs (app R (bvar 0))) R ∧ ReflGen FullEta M₂ R
 ```
 
