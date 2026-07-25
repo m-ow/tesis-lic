@@ -1517,12 +1517,11 @@ que \texttt{P} \(=\) \texttt{app\ M₂\ (bvar\ 0)} y \texttt{LC\ M₂}.
 \end{Highlighting}
 \end{Shaded}
 
-Estamos ante el mismo escenario del caso I-(b), ahora
-\texttt{r\_absM₂\_absQ} parte de \texttt{abs\ (app\ M₂\ (bvar\ 0))} y el
-teorema 2.1.3 (\texttt{invert\_step\_eta\_redex}) nos da dos
-posibilidades: \texttt{abs\ Q} \(=\) \texttt{M₂}, o bien \texttt{abs\ Q}
-\(=\) \texttt{abs\ (app\ R\ (bvar\ 0))} para cierto término \texttt{R}
-con \texttt{M₂\ ⭢ηᶠ\ R}. Analizamos cada una.
+Aplicando el teorema 2.1.3 (\texttt{invert\_step\_eta\_redex}) a
+\texttt{r\_absM₂\_absQ} obtenemos dos posibilidades: \texttt{abs\ Q}
+\(=\) \texttt{M₂}, o bien \texttt{abs\ Q} \(=\)
+\texttt{abs\ (app\ R\ (bvar\ 0))} para cierto término \texttt{R} con
+\texttt{M₂\ ⭢ηᶠ\ R}. Analizamos cada una.
 
 \begin{itemize}
 \item

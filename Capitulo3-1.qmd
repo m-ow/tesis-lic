@@ -426,9 +426,10 @@ h_inv : abs Q = M₂ ∨ ∃ N', M₂ ⭢ηᶠ N' ∧ abs Q = abs (app N' (bvar 
 ```
 
 
-Estamos ante el mismo escenario del caso I-(b), ahora `r_absM₂_absQ` parte de `abs (app M₂ (bvar 0))` y el teorema 2.1.3
-(`invert_step_eta_redex`) nos da dos posibilidades: `abs Q` $=$ `M₂`, o bien
-`abs Q` $=$ `abs (app R (bvar 0))` para cierto término `R` con `M₂ ⭢ηᶠ R`. Analizamos cada una.
+Aplicando el teorema 2.1.3 (`invert_step_eta_redex`) a `r_absM₂_absQ`
+obtenemos dos posibilidades: `abs Q` $=$ `M₂`, o bien `abs Q` $=$
+`abs (app R (bvar 0))` para cierto término `R` con `M₂ ⭢ηᶠ R`.
+Analizamos cada una.
 
 - Si `abs Q` $=$ `M₂`, ambas reducciones llegaron al mismo término y basta tomar `z` $=$ `M₂`.
 
