@@ -1,4 +1,5 @@
 \usepackage{mathrsfs}
+\usepackage{amsthm}
 \usepackage{tikz}
 \newcommand{\lean}[1]{\texttt{#1}}
 %\usepackage{twemojis}
@@ -16,6 +17,25 @@
 \def\brownsquiggly{\bgroup \markoverwith{\textcolor[HTML]{B8860B}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
 \def\bluesquiggly{\bgroup \markoverwith{\textcolor[HTML]{1E90FF}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
 \makeatother
+
+% Pandoc only defines these commands when the document contains highlighted
+% code.  Provide neutral fallbacks so a new or nearly empty thesis still
+% compiles; the custom definitions below then work in either case.
+\providecommand{\NormalTok}[1]{#1}
+\providecommand{\KeywordTok}[1]{#1}
+\providecommand{\SpecialCharTok}[1]{#1}
+\providecommand{\ErrorTok}[1]{#1}
+\providecommand{\WarningTok}[1]{#1}
+\providecommand{\StringTok}[1]{#1}
+\providecommand{\CommentTok}[1]{#1}
+\providecommand{\InformationTok}[1]{#1}
+\providecommand{\RegionMarkerTok}[1]{#1}
+\providecommand{\SpecialStringTok}[1]{#1}
+\providecommand{\ConstantTok}[1]{#1}
+\providecommand{\AnnotationTok}[1]{#1}
+\providecommand{\AlertTok}[1]{#1}
+\providecommand{\OtherTok}[1]{#1}
+\providecommand{\DocumentationTok}[1]{#1}
 
 \renewcommand{\NormalTok}[1]{\textcolor[HTML]{000000}{#1}}
 \renewcommand{\KeywordTok}[1]{\textcolor[HTML]{0000FF}{#1}}

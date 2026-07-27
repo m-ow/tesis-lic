@@ -1,13 +1,5 @@
 ## 3.1. Confluencia fuerte de $\eta$
 
-::: {.nthm arguments="Teorema 3.1.1"}
-La reducción $\eta$ de un solo paso es fuertemente confluente.
-:::
-
-::: {.proof}
-Supongamos que `M`, `M₁` y `M₂` son términos lambda tales que
-`M ⭢ηᶠ M₁` y `M ⭢ηᶠ M₂`. Entonces existe un término lambda `z`
-tal que `ReflGen FullEta M₁ z` y `M₂ ↠ηᶠ z`.
 
 ::: {.inout}
 ::: {.inpt}
@@ -132,20 +124,6 @@ eq_M₂_P : M₂ = P
 **(b)**\ Si `M₂` $=$ `abs (app P₁ (bvar 0))` para cierto término `P₁` con `P ⭢ηᶠ P₁`, tomamos `z` $=$ `P₁`:
 el primer componente de la conjunción es `P ⭢ηᶠ P₁`, y el segundo se obtiene aplicando la regla $\eta$ 
 a `abs (app P₁ (bvar 0))`, cuya premisa `LC P₁` se extrae del teorema 2.1.2 (`step_lc_r`) aplicado a `r_P_P₁`.
-
-```{=latex}
-\begin{center}
-\begin{tikzpicture}
-  \node (a) at (0, 2.5) {\lean{abs (app P (bvar 0))}};
-  \node (b) at (6, 2.5) {\lean{P}};
-  \node (c) at (0, 0)   {\lean{abs (app P₁ (bvar 0))}};
-  \node (d) at (6, 0)   {\lean{P₁}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{center}
 ```
 
 ```lean
@@ -221,37 +199,6 @@ refl_P₂_P₃ : ReflGen FullEta P₂ P₃
 ⊢ ReflGen FullEta (app P₁ N) (app P₃ N) ∧ ReflGen FullEta (app P₂ N) (app P₃ N)
 ```
 
-```{=latex}
-\begin{center}
-\begin{minipage}[c]{0.45\textwidth}
-\centering
-\begin{tikzpicture}
-  \node (a) at (0, 3) {\lean{P}};
-  \node (b) at (3, 3) {\lean{P₁}};
-  \node (c) at (0, 0) {\lean{P₂}};
-  \node (d) at (3, 0) {\lean{P₃}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{minipage}
-\begin{minipage}[c]{0.45\textwidth}
-\centering
-\begin{tikzpicture}
-  \node (a) at (0, 3) {\lean{app P N}};
-  \node (b) at (3, 3) {\lean{app P₁ N}};
-  \node (c) at (0, 0) {\lean{app P₂ N}};
-  \node (d) at (3, 0) {\lean{app P₃ N}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{minipage}
-\end{center}
-```
-
 Para demostrar cada componente de la conjunción procedemos por casos sobre 
 `ReflGen FullEta P₁ P₃` y `ReflGen FullEta P₂ P₃`, 
 respectivamente: si constan de cero pasos, ambos lados ya coinciden;
@@ -293,20 +240,7 @@ r_N_N₁ : N ⭢ηᶠ N₁
 ⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
 ```
 
-```{=latex}
-\begin{center}
-\begin{tikzpicture}
-  \node (a) at (0, 3) {\lean{app P N}};
-  \node (b) at (3, 3) {\lean{app P₁ N}};
-  \node (c) at (0, 0) {\lean{app P N₁}};
-  \node (d) at (3, 0) {\lean{app P₁ N₁}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{center}
-```
+
 
 Cada componente de la conjunción se obtiene con una sola reducción:
 en la primera reducimos `N` a `N₁` dejando fija `P₁`, y en la segunda reducimos `P` a `P₁` dejando fija `N₁`. 
@@ -496,37 +430,6 @@ por la hipótesis de inducción, existe un término `P₂` tal que `ReflGen Full
       use abs (P₂ ^* w)
 ```
 
-```{=latex}
-\begin{center}
-\begin{minipage}[c]{0.45\textwidth}
-\centering
-\begin{tikzpicture}
-  \node (a) at (0, 2.2) {\lean{P \textasciicircum{} fvar w}};
-  \node (b) at (3.6, 2.2) {\lean{Q \textasciicircum{} fvar w}};
-  \node (c) at (0, 0) {\lean{P₁ \textasciicircum{} fvar w}};
-  \node (d) at (3.6, 0) {\lean{P₂}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{minipage}
-\begin{minipage}[c]{0.45\textwidth}
-\centering
-\begin{tikzpicture}
-  \node (a) at (0, 2.2) {\lean{abs P}};
-  \node (b) at (3.6, 2.2) {\lean{abs Q}};
-  \node (c) at (0, 0) {\lean{abs P₁}};
-  \node (d) at (3.6, 0) {\lean{abs (P₂ \textasciicircum* w)}};
-  \draw[->]         (a) -- node[above] {\lean{ηᶠ}} (b);
-  \draw[->]         (a) -- node[left]  {\lean{ηᶠ}} (c);
-  \draw[->, dashed] (b) -- node[right] {\lean{ηᶠ}} node[left] {$=$} (d);
-  \draw[->, dashed] (c) -- node[below] {\lean{ηᶠ}} node[above] {$=$} (d);
-\end{tikzpicture}
-\end{minipage}
-\end{center}
-```
-
 Para probar el primer componente de la conjunción procedemos por casos sobre
 `ReflGen FullEta (Q ^ fvar w) P₂`: 
 
@@ -584,10 +487,6 @@ con `P₁` en lugar de `Q`.
           exact .single (step_abs_close st (step_lc_r r_P_P₁))
 ```
 
-En cada caso encontramos un término al que `M₁` y `M₂` se reducen 
-en cero o un paso, lo que demuestra la confluencia fuerte de $\eta$.
-
-:::
 
 
 
