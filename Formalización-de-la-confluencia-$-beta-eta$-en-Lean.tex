@@ -1355,7 +1355,6 @@ la segunda, dejando fija \texttt{N}, mediante la regla \texttt{appL}.
 \InformationTok{lc\_N }\NormalTok{: LC N}
 \InformationTok{r\_P\_P₁ }\NormalTok{: P ⭢ηᶠ P₁}
 \InformationTok{ih }\NormalTok{: ∀ \{M₂ : Term Var\}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z}
-\InformationTok{lc\_P }\NormalTok{: LC P}
 \InformationTok{r\_N\_N₁ }\NormalTok{: N ⭢ηᶠ N₁}
 \NormalTok{⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)}
 \end{Highlighting}
@@ -1771,7 +1770,236 @@ demostraremos que, para todo término \texttt{M₁}, si
 \texttt{ReflGen\ FullBeta\ M₁\ z} y \texttt{M₂\ ↠ηᶠ\ z}. Procedemos por
 casos según la última regla empleada en la derivación de \texttt{h₂}.
 
-\textbf{I}.
+\textbf{I}. Si la última regla fue \texttt{base}, entonces \texttt{M₂}
+se obtuvo aplicando la regla \(\beta\) a \texttt{M}, lo cual exige que
+\texttt{M} \(=\) \texttt{(app\ (abs\ A)\ B)} y \texttt{M₂} \(=\)
+\texttt{A\ \^{}\ B}, para ciertos términos \texttt{A} y \texttt{B} tales
+que \texttt{LC\ (abs\ A)} y \texttt{LC\ B}.
+
+Aplicando el teorema 2.X.X (\texttt{invert\_step\_app}) a
+\texttt{h₁\ :\ app\ (abs\ A)\ B\ ⭢ηᶠ\ M₁} obtenemos dos posibilidades:
+\texttt{M₁} \(=\) \texttt{app\ Q\ B} para cierto término \texttt{Q} con
+\texttt{abs\ A\ ⭢ηᶠ\ Q}, o bien \texttt{M₁} \(=\)
+\texttt{app\ (abs\ A)\ B₁} para cierto término \texttt{B₁} con
+\texttt{B\ ⭢ηᶠ\ B₁}. Analizamos cada una.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  induction h₂ generalizing M₁}
+\NormalTok{  case base P b\_P =\textgreater{}}
+\NormalTok{    cases b\_P}
+\NormalTok{    case beta A B lc\_absA lc\_B =\textgreater{}}
+      \KeywordTok{have}\NormalTok{ h\_inv := invert\_step\_app h₁}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ A B }\NormalTok{: Term Var}
+\InformationTok{lc\_absA }\NormalTok{: LC (abs A)}
+\InformationTok{lc\_B }\NormalTok{: LC B}
+\InformationTok{h₁ }\NormalTok{: app (abs A) B ⭢ηᶠ M₁}
+\InformationTok{h\_inv }\NormalTok{: (∃ M\textquotesingle{}, abs A ⭢ηᶠ M\textquotesingle{} ∧ M₁ = app M\textquotesingle{} B) ∨ ∃ N\textquotesingle{}, B ⭢ηᶠ N\textquotesingle{} ∧ M₁ = app (abs A) N\textquotesingle{}}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta M₁ z ∧ (A \^{} B) ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(a)}~Si \texttt{M₁} \(=\) \texttt{app\ Q\ B}, aplicamos el
+teorema 2.X.X (\texttt{invert\_step\_abs}) al paso
+\texttt{abs\ A\ ⭢ηᶠ\ Q} y distinguimos dos casos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ strong\_commutation\_eta\_beta :}
+\NormalTok{    StronglyCommute (@FullEta Var) FullBeta := }\KeywordTok{by}
+\NormalTok{  intro M M₁ M₂ h₁ h₂}
+\NormalTok{  induction h₂ generalizing M₁}
+\NormalTok{      ⋮}
+      \KeywordTok{have}\NormalTok{ h\_inv := invert\_step\_app h₁}
+\NormalTok{      cases h\_inv }\KeywordTok{with}
+\NormalTok{      | inl h\_appL =\textgreater{}}
+          \KeywordTok{have}\NormalTok{ ⟨Q, e\_absA\_Q, eq\_M₁\_Q⟩ := h\_appL}
+          \KeywordTok{rw}\NormalTok{ [eq\_M₁\_Q]}
+          \KeywordTok{have}\NormalTok{ h\_inv\_abs := invert\_step\_abs e\_absA\_Q}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M₁ A B Q }\NormalTok{: Term Var}
+\InformationTok{e\_absA\_Q }\NormalTok{: abs A ⭢ηᶠ Q}
+\InformationTok{eq\_M₁\_Q }\NormalTok{: M₁ = app Q B}
+\InformationTok{h\_inv\_abs }\NormalTok{: (∃ P, A = app P (bvar 0) ∧ LC P ∧ Q = P) }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∨ ∃ P L, (∀ x ∉ L, (A \^{} fvar x) ⭢ηᶠ (P \^{} fvar x)) ∧ Q = abs P}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta (app Q B) z ∧ (A \^{} B) ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Si \texttt{A} \(=\) \texttt{app\ R\ (bvar\ 0)} para cierto término
+  \texttt{R} con \texttt{LC\ R}, entonces \texttt{M₁} \(=\)
+  \texttt{(app\ R\ B)}. Además, \texttt{M₂} \(=\) \texttt{A\ \^{}\ B}
+  \(=\) \texttt{(app\ R\ (bvar\ 0))\ \^{}\ B} es \texttt{(app\ R\ B)}
+  por el teorema 2.X.X (\texttt{open\_app\_bvar}). Como \texttt{M₁} y
+  \texttt{M₂} coinciden, basta tomar \texttt{z} \(=\)
+  \texttt{app\ R\ B}.
+\end{enumerate}
+
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{      cases h\_inv }\KeywordTok{with}
+\NormalTok{      | inl h\_appL =\textgreater{}}
+\NormalTok{          ⋮}
+          \KeywordTok{have}\NormalTok{ h\_inv\_abs := invert\_step\_abs e\_absA\_Q}
+\NormalTok{          cases h\_inv\_abs }\KeywordTok{with}
+\NormalTok{          | inl h\_eta =\textgreater{}}
+              \KeywordTok{have}\NormalTok{ ⟨R, eq\_A\_R, lc\_R, eq\_Q\_R⟩ := h\_eta}
+              \KeywordTok{rw}\NormalTok{ [eq\_A\_R, eq\_Q\_R]}
+              \KeywordTok{rw}\NormalTok{ [open\_app\_bvar lc\_R] }\CommentTok{{-}{-} ⊢}
+\NormalTok{              use app R B}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{A B Q R }\NormalTok{: Term Var}
+\InformationTok{h\_eta }\NormalTok{: ∃ P, }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{  A = app P (bvar 0) }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{   ∧ P.LC ∧ Q = P}
+\InformationTok{eq\_A\_R }\NormalTok{: A = app R (bvar 0)}
+\InformationTok{lc\_R }\NormalTok{: LC R}
+\InformationTok{eq\_Q\_R }\NormalTok{: Q = R}
+\NormalTok{⊢ ∃ z, ReflGen FullBeta }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{   (app R B) z }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{    ∧ app R B ↠ηᶠ z}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Si \texttt{Q} \(=\) \texttt{abs\ R} para cierto término \texttt{R} tal
+  que, para toda variable \texttt{x} fuera de un conjunto finito
+  \texttt{L}, se cumple
+  \texttt{(A\ \^{}\ fvar\ x)\ ⭢ηᶠ\ (R\ \^{}\ fvar\ x)}, entonces
+  \texttt{M₁} \(=\) \texttt{app\ (abs\ R)\ B}, mientras que \texttt{M₂}
+  \(=\) \texttt{A\ \^{}\ B}. Tomamos \texttt{z} \(=\)
+  \texttt{R\ \^{}\ B}.
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2.5) {\lean{app (abs A) B}};
+  \node (b) at (5, 2.5) {\lean{app (abs R) B}};
+  \node (c) at (0, 0)   {\lean{A \textasciicircum{} B}};
+  \node (d) at (5, 0)   {\lean{R \textasciicircum{} B}};
+  \draw[->]          (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]          (a) -- node[left]  {\lean{βᶠ}} (c);
+  \draw[->, dashed]  (b) -- node[right] {\lean{βᶠ}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{ηᶠ}} (d);
+\end{tikzpicture}
+\end{center}
+
+El primer componente de la conjunción se obtiene aplicando la regla
+\(\beta\) a \texttt{app\ (abs\ R)\ B}, cuya premisa
+\texttt{LC\ (abs\ R)} se extrae del teorema 2.1.2
+(\texttt{step\_lc\_r}), y el segundo se obtiene del teorema 2.X.X
+(\texttt{step\_open\_cong\_l}) aplicado a \texttt{h\_e\_xi}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{          cases h\_inv\_abs }\KeywordTok{with}
+\NormalTok{          | inl h\_eta =\textgreater{}}
+\NormalTok{              ⋮}
+\NormalTok{          | inr h\_xi =\textgreater{}}
+              \KeywordTok{have}\NormalTok{ ⟨R, L, h\_e\_xi, eq\_Q\_absR⟩ := h\_xi}
+              \KeywordTok{have}\NormalTok{ e\_absA\_absR : abs A ⭢ηᶠ abs R := .xi L h\_e\_xi}
+              \KeywordTok{have}\NormalTok{ lc\_absR : LC (abs R) := step\_lc\_r e\_absA\_absR}
+              \KeywordTok{rw}\NormalTok{ [eq\_Q\_absR] }
+\NormalTok{              use R \^{} B }\CommentTok{{-}{-} ⊢}
+\NormalTok{              constructor}
+\NormalTok{              · }\KeywordTok{exact}\NormalTok{ .single (.base (.beta lc\_absR lc\_B))}
+\NormalTok{              · }\KeywordTok{exact}\NormalTok{ .single (step\_open\_cong\_l L h\_e\_xi lc\_B)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{A B Q R }\NormalTok{: Term Var}
+\InformationTok{h\_xi }\NormalTok{: ∃ P L, (∀ x ∉ L, (A \^{} fvar x) ⭢ηᶠ P \^{} fvar x) ∧ Q = P.abs}
+\InformationTok{e\_absA\_absR }\NormalTok{: abs A ⭢ηᶠ abs R}
+\InformationTok{L }\NormalTok{: Finset Var}
+\InformationTok{h\_e\_xi }\NormalTok{: ∀ x ∉ L, (A \^{} fvar x) ⭢ηᶠ (R \^{} fvar x)}
+\InformationTok{eq\_Q\_absR }\NormalTok{: Q = abs R}
+\InformationTok{lc\_absR }\NormalTok{: LC (abs R)}
+\NormalTok{⊢ ReflGen FullBeta (app (abs R) B) (R \^{} B) ∧ (A \^{} B) ↠ηᶠ R \^{} B}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(b)}~Si \texttt{M₁} \(=\) \texttt{app\ (abs\ A)\ B₁}, tomamos
+\texttt{z} \(=\) \texttt{A\ \^{}\ B₁}.
+
+El primer componente de la conjunción se obtiene aplicando la regla
+\(\beta\) a \texttt{(app\ (abs\ A)\ B₁)}, cuya premisa \texttt{LC\ B₁}
+se extrae del teorema 2.1.2 (\texttt{step\_lc\_r}), y el segundo se
+obtiene del teorema 2.X.X (\texttt{step\_open\_cong\_r}) aplicado a
+\texttt{e\_B\_B₁}.
+
+\begin{inpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{      | inl h\_appL =\textgreater{}}
+\NormalTok{        ⋮}
+\NormalTok{      | inr h\_appR =\textgreater{}}
+          \KeywordTok{have}\NormalTok{ ⟨B₁, e\_B\_B₁, h\_eq⟩ := h\_appR}
+          \KeywordTok{rw}\NormalTok{ [h\_eq]}
+\NormalTok{          use A \^{} B₁ }\CommentTok{{-}{-} ⊢}
+\NormalTok{          constructor}
+\NormalTok{          · }\KeywordTok{have}\NormalTok{ lc\_B₁ : LC B₁ := step\_lc\_r e\_B\_B₁}
+            \KeywordTok{exact}\NormalTok{ .single }
+\NormalTok{              (.base (.beta lc\_absA lc\_B₁))}
+\NormalTok{          · }\KeywordTok{exact}\NormalTok{ step\_open\_cong\_r lc\_absA lc\_B e\_B\_B₁}
+\end{Highlighting}
+\end{Shaded}
+
+\end{inpt}
+
+\begin{outpt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\InformationTok{M M₁ M₂ A B B₁ }\NormalTok{: Term Var}
+\InformationTok{lc\_absA }\NormalTok{: LC (abs A)}
+\InformationTok{lc\_B }\NormalTok{: LC B}
+\InformationTok{h₁ }\NormalTok{: app (abs A) B ⭢ηᶠ M₁}
+\InformationTok{h\_appR }\NormalTok{: ∃ N\textquotesingle{}, B ⭢ηᶠ N\textquotesingle{} }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{      ∧ M₁ = app (abs A) N\textquotesingle{}}
+\InformationTok{e\_B\_B₁ }\NormalTok{: B ⭢ηᶠ B₁}
+\InformationTok{h\_eq }\NormalTok{: M₁ = app (abs A) B₁}
+\NormalTok{⊢ ReflGen FullBeta }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{   (app (abs A) B₁) (A \^{} B₁) }
+\SpecialCharTok{\textgreater{}\textgreater{}}\NormalTok{  ∧ (A \^{} B) ↠ηᶠ A \^{} B₁}
+\end{Highlighting}
+\end{Shaded}
+
+\end{outpt}
 
 \textbf{II}. Si la última regla fue \texttt{appL}, entonces \texttt{M}
 \(=\) \texttt{app\ P\ N} y \texttt{M₂} \(=\) \texttt{app\ P₁\ N}, para
@@ -1875,7 +2103,7 @@ fija \texttt{N}.
 \NormalTok{    case appL P₂ e\_P\_P₂ \_ =\textgreater{}}
       \KeywordTok{have}\NormalTok{ ⟨P₃, b\_refl\_P₂\_P₃, e\_multi\_P₁\_P₃⟩ := ih e\_P\_P₂}
 \NormalTok{      use app P₃ N}
-\NormalTok{      constructor}
+\NormalTok{      constructor }
 \NormalTok{      · cases b\_refl\_P₂\_P₃}
 \NormalTok{        case refl =\textgreater{} }\KeywordTok{rfl}
 \NormalTok{        case single b\_P₂\_P₃ =\textgreater{} }\KeywordTok{exact}\NormalTok{ .single (.appL lc\_N b\_P₂\_P₃)}

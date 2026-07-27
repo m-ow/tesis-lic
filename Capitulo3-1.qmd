@@ -289,7 +289,6 @@ M M₁ N N₁ P P₁ : Term Var
 lc_N : LC N
 r_P_P₁ : P ⭢ηᶠ P₁
 ih : ∀ {M₂ : Term Var}, P ⭢ηᶠ M₂ → ∃ z, ReflGen FullEta P₁ z ∧ ReflGen FullEta M₂ z
-lc_P : LC P
 r_N_N₁ : N ⭢ηᶠ N₁
 ⊢ ReflGen FullEta (app P₁ N) (app P₁ N₁) ∧ ReflGen FullEta (app P N₁) (app P₁ N₁)
 ```

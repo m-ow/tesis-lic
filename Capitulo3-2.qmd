@@ -33,7 +33,183 @@ Por inducción sobre la derivación de `h₂ : M ⭢βᶠ M₂`, demostraremos q
 si `M ⭢ηᶠ M₁`, entonces existe un término `z` tal que `ReflGen FullBeta M₁ z` y `M₂ ↠ηᶠ z`.
 Procedemos por casos según la última regla empleada en la derivación de `h₂`.
 
-**I**\.
+**I**\. Si la última regla fue `base`, entonces `M₂` se obtuvo aplicando 
+la regla $\beta$ a `M`, lo cual exige que `M` $=$ `(app (abs A) B)` y 
+`M₂` $=$ `A ^ B`, para ciertos términos `A` y `B` tales que `LC (abs A)` y `LC B`.
+
+Aplicando el teorema 2.X.X (`invert_step_app`) a `h₁ : app (abs A) B ⭢ηᶠ M₁` obtenemos
+dos posibilidades: `M₁` $=$ `app Q B` para cierto término `Q` con `abs A ⭢ηᶠ Q`, o bien
+`M₁` $=$ `app (abs A) B₁` para cierto término `B₁` con `B ⭢ηᶠ B₁`. Analizamos cada una.
+
+```lean
+theorem strong_commutation_eta_beta :
+    StronglyCommute (@FullEta Var) FullBeta := by
+  intro M M₁ M₂ h₁ h₂
+  induction h₂ generalizing M₁
+  case base P b_P =>
+    cases b_P
+    case beta A B lc_absA lc_B =>
+      have h_inv := invert_step_app h₁
+```
+
+```state
+M M₁ M₂ A B : Term Var
+lc_absA : LC (abs A)
+lc_B : LC B
+h₁ : app (abs A) B ⭢ηᶠ M₁
+h_inv : (∃ M', abs A ⭢ηᶠ M' ∧ M₁ = app M' B) ∨ ∃ N', B ⭢ηᶠ N' ∧ M₁ = app (abs A) N'
+⊢ ∃ z, ReflGen FullBeta M₁ z ∧ (A ^ B) ↠ηᶠ z
+```
+**(a)**\ Si `M₁` $=$ `app Q B`, aplicamos el teorema 2.X.X (`invert_step_abs`) al paso
+`abs A ⭢ηᶠ Q` y distinguimos dos casos.
+
+
+```lean
+theorem strong_commutation_eta_beta :
+    StronglyCommute (@FullEta Var) FullBeta := by
+  intro M M₁ M₂ h₁ h₂
+  induction h₂ generalizing M₁
+      ⋮
+      have h_inv := invert_step_app h₁
+      cases h_inv with
+      | inl h_appL =>
+          have ⟨Q, e_absA_Q, eq_M₁_Q⟩ := h_appL
+          rw [eq_M₁_Q]
+          have h_inv_abs := invert_step_abs e_absA_Q
+```
+
+```state
+M₁ A B Q : Term Var
+e_absA_Q : abs A ⭢ηᶠ Q
+eq_M₁_Q : M₁ = app Q B
+h_inv_abs : (∃ P, A = app P (bvar 0) ∧ LC P ∧ Q = P) 
+>>    ∨ ∃ P L, (∀ x ∉ L, (A ^ fvar x) ⭢ηᶠ (P ^ fvar x)) ∧ Q = abs P
+⊢ ∃ z, ReflGen FullBeta (app Q B) z ∧ (A ^ B) ↠ηᶠ z
+```
+
+1. Si `A` $=$ `app R (bvar 0)` para cierto término `R` con `LC R`, 
+  entonces `M₁` $=$ `(app R B)`. Además, `M₂` $=$ `A ^ B` $=$ 
+  `(app R (bvar 0)) ^ B` es `(app R B)` por el teorema 2.X.X (`open_app_bvar`). 
+  Como `M₁` y `M₂` coinciden, basta tomar `z` $=$ `app R B`.
+
+::: {.inout}
+::: {.inpt}
+```lean
+      cases h_inv with
+      | inl h_appL =>
+          ⋮
+          have h_inv_abs := invert_step_abs e_absA_Q
+          cases h_inv_abs with
+          | inl h_eta =>
+              have ⟨R, eq_A_R, lc_R, eq_Q_R⟩ := h_eta
+              rw [eq_A_R, eq_Q_R]
+              rw [open_app_bvar lc_R] -- ⊢
+              use app R B
+```
+:::
+
+::: {.outpt}
+```state
+A B Q R : Term Var
+h_eta : ∃ P, 
+>>  A = app P (bvar 0) 
+>>   ∧ P.LC ∧ Q = P
+eq_A_R : A = app R (bvar 0)
+lc_R : LC R
+eq_Q_R : Q = R
+⊢ ∃ z, ReflGen FullBeta 
+>>   (app R B) z 
+>>    ∧ app R B ↠ηᶠ z
+```
+:::
+:::
+
+2. Si `Q` $=$ `abs R` para cierto término `R` tal que, para toda variable `x` fuera de un
+  conjunto finito `L`, se cumple `(A ^ fvar x) ⭢ηᶠ (R ^ fvar x)`, entonces `M₁` $=$
+  `app (abs R) B`, mientras que `M₂` $=$ `A ^ B`. Tomamos `z` $=$ `R ^ B`.
+
+\begin{center}
+\begin{tikzpicture}
+  \node (a) at (0, 2.5) {\lean{app (abs A) B}};
+  \node (b) at (5, 2.5) {\lean{app (abs R) B}};
+  \node (c) at (0, 0)   {\lean{A \textasciicircum{} B}};
+  \node (d) at (5, 0)   {\lean{R \textasciicircum{} B}};
+  \draw[->]          (a) -- node[above] {\lean{ηᶠ}} (b);
+  \draw[->]          (a) -- node[left]  {\lean{βᶠ}} (c);
+  \draw[->, dashed]  (b) -- node[right] {\lean{βᶠ}} node[left] {$=$} (d);
+  \draw[->>, dashed] (c) -- node[below] {\lean{ηᶠ}} (d);
+\end{tikzpicture}
+\end{center}
+
+  El primer componente de la conjunción se obtiene aplicando la regla $\beta$ a
+  `app (abs R) B`, cuya premisa `LC (abs R)` se extrae del teorema 2.1.2 (`step_lc_r`),
+  y el segundo se obtiene del teorema 2.X.X (`step_open_cong_l`) aplicado a `h_e_xi`.
+
+```lean
+          cases h_inv_abs with
+          | inl h_eta =>
+              ⋮
+          | inr h_xi =>
+              have ⟨R, L, h_e_xi, eq_Q_absR⟩ := h_xi
+              have e_absA_absR : abs A ⭢ηᶠ abs R := .xi L h_e_xi
+              have lc_absR : LC (abs R) := step_lc_r e_absA_absR
+              rw [eq_Q_absR] 
+              use R ^ B -- ⊢
+              constructor
+              · exact .single (.base (.beta lc_absR lc_B))
+              · exact .single (step_open_cong_l L h_e_xi lc_B)
+```
+
+```state
+A B Q R : Term Var
+h_xi : ∃ P L, (∀ x ∉ L, (A ^ fvar x) ⭢ηᶠ P ^ fvar x) ∧ Q = P.abs
+e_absA_absR : abs A ⭢ηᶠ abs R
+L : Finset Var
+h_e_xi : ∀ x ∉ L, (A ^ fvar x) ⭢ηᶠ (R ^ fvar x)
+eq_Q_absR : Q = abs R
+lc_absR : LC (abs R)
+⊢ ReflGen FullBeta (app (abs R) B) (R ^ B) ∧ (A ^ B) ↠ηᶠ R ^ B
+```
+
+**(b)**\ Si `M₁` $=$ `app (abs A) B₁`, tomamos `z` $=$ `A ^ B₁`.
+
+El primer componente de la conjunción se obtiene aplicando la regla $\beta$ a
+`(app (abs A) B₁)`, cuya premisa `LC B₁` se extrae del teorema 2.1.2 (`step_lc_r`),
+y el segundo se obtiene del teorema 2.X.X (`step_open_cong_r`) aplicado a `e_B_B₁`.
+
+::: {.inout}
+::: {.inpt}
+```lean
+      | inl h_appL =>
+        ⋮
+      | inr h_appR =>
+          have ⟨B₁, e_B_B₁, h_eq⟩ := h_appR
+          rw [h_eq]
+          use A ^ B₁ -- ⊢
+          constructor
+          · have lc_B₁ : LC B₁ := step_lc_r e_B_B₁
+            exact .single 
+              (.base (.beta lc_absA lc_B₁))
+          · exact step_open_cong_r lc_absA lc_B e_B_B₁
+```
+:::
+
+::: {.outpt}
+```state 
+M M₁ M₂ A B B₁ : Term Var
+lc_absA : LC (abs A)
+lc_B : LC B
+h₁ : app (abs A) B ⭢ηᶠ M₁
+h_appR : ∃ N', B ⭢ηᶠ N' 
+>>      ∧ M₁ = app (abs A) N'
+e_B_B₁ : B ⭢ηᶠ B₁
+h_eq : M₁ = app (abs A) B₁
+⊢ ReflGen FullBeta 
+>>   (app (abs A) B₁) (A ^ B₁) 
+>>  ∧ (A ^ B) ↠ηᶠ A ^ B₁
+```
+:::
+:::
 
 **II**\. Si la última regla fue `appL`, entonces `M` $=$ `app P N` y `M₂` $=$ `app P₁ N`,
 para ciertos términos `P`, `P₁` y `N` tales que `LC N` y `P ⭢βᶠ P₁`.
@@ -123,7 +299,7 @@ se obtiene del teorema 2.X.X (`redex_app_l_cong`) aplicado a `P₁ ↠ηᶠ P₃
     case appL P₂ e_P_P₂ _ =>
       have ⟨P₃, b_refl_P₂_P₃, e_multi_P₁_P₃⟩ := ih e_P_P₂
       use app P₃ N
-      constructor
+      constructor 
       · cases b_refl_P₂_P₃
         case refl => rfl
         case single b_P₂_P₃ => exact .single (.appL lc_N b_P₂_P₃)
