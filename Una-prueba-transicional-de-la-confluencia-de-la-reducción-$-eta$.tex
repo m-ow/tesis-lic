@@ -1,0 +1,1133 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  spanish,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrreprt}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{0}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmonofont[]{JuliaMono}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{mathpartir}
+\usepackage{tikz}
+\newcommand{\lean}[1]{\texttt{#1}}
+%\usepackage{twemojis}
+%\usepackage{myunixode}
+\usepackage[normalem]{ulem}
+\usepackage{scrlayer-scrpage}
+\usepackage[most]{tcolorbox}
+\automark{section}
+\setkomafont{pagefoot}{\upshape}
+\cfoot*{}
+\ofoot*{\pagemark}
+
+\makeatletter
+\def\redsquiggly{\bgroup \markoverwith{\textcolor{red}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\def\brownsquiggly{\bgroup \markoverwith{\textcolor[HTML]{B8860B}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\def\bluesquiggly{\bgroup \markoverwith{\textcolor[HTML]{1E90FF}{\lower3.5\p@\hbox{\sixly \char58}}}\ULon}
+\makeatother
+
+\renewcommand{\NormalTok}[1]{\textcolor[HTML]{000000}{#1}}
+\renewcommand{\KeywordTok}[1]{\textcolor[HTML]{0000FF}{#1}}
+\renewcommand{\SpecialCharTok}[1]{}
+\renewcommand{\ErrorTok}[1]{\redsquiggly{#1}}
+\renewcommand{\WarningTok}[1]{\redsquiggly{\textcolor[HTML]{0000FF}{#1}}}
+\renewcommand{\StringTok}[1]{\textcolor[HTML]{A52A2A}{#1}}
+\renewcommand{\CommentTok}[1]{\textcolor[HTML]{008000}{#1}}
+\renewcommand{\InformationTok}[1]{\textcolor[HTML]{D2691E}{\textbf{#1}}}
+\renewcommand{\RegionMarkerTok}[1]{▼\:\textcolor[HTML]{008000}{\textbf{#1}}}
+\renewcommand{\SpecialStringTok}[1]{\textcolor[HTML]{4682B4}{\textbf{#1}}}
+\renewcommand{\ConstantTok}[1]{\textcolor[HTML]{DC143C}{#1}}
+\renewcommand{\AnnotationTok}[1]{\brownsquiggly{#1}}
+\renewcommand{\AlertTok}[1]{\brownsquiggly{\textcolor[HTML]{0000FF}{#1}}}
+\renewcommand{\OtherTok}[1]{\bluesquiggly{#1}}
+\renewcommand{\DocumentationTok}[1]{\bluesquiggly{\textcolor[HTML]{0000FF}{#1}}}
+
+\newenvironment{ind}
+	{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\relax}
+	{\end{list}}
+
+%redefines Shaded so it can't break
+\newcommand{\nobreakShaded}{\renewenvironment{Shaded}
+	{\begin{tcolorbox}[frame hidden, boxrule=0pt, colback=shadecolor,
+		sharp corners, left=0pt, right=0pt, top=0pt, bottom=0pt]}
+	{\end{tcolorbox}}}
+
+%Make end of environment ignore pars that come after it
+\def\useignorespacesandallpars#1\ignorespaces\fi{%
+#1\fi\ignorespacesandallpars}
+
+\makeatletter
+\def\ignorespacesandallpars{%
+  \@ifnextchar\par
+    {\expandafter\ignorespacesandallpars\@gobble}%
+    {}%
+}
+\makeatother
+
+\newenvironment{inpt}
+	{\nobreakShaded\noindent\begin{minipage}[t]{0.64\textwidth}
+		\uline{Código Lean}}
+	{\end{minipage}\hfill\useignorespacesandallpars}
+
+\newenvironment{outpt}
+	{\nobreakShaded\begin{minipage}[t]{0.34\textwidth}
+		\uline{Estado de la prueba}}
+	{\end{minipage}\\}
+
+\newenvironment{bef}
+	{\nobreakShaded\noindent\begin{minipage}[t]{0.49\textwidth}
+		\uline{Tactic State Before Using Strategy}}
+	{\end{minipage}\hfill\useignorespacesandallpars}
+
+\newenvironment{aft}
+	{\nobreakShaded\begin{minipage}[t]{0.49\textwidth}
+		\uline{Tactic State After Using Strategy}}
+	{\end{minipage}\\}
+
+\newenvironment{numex}[1]
+	{\begin{minipage}[t]{0.04\textwidth}\vspace{3pt}{#1}.
+		\end{minipage}\nobreakShaded\begin{minipage}[t]{0.96\textwidth}\vspace{0pt}}
+	{\end{minipage}}
+
+\newenvironment{mdsk}
+	{\medskip}
+	{}
+
+\newenvironment{absnobreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+\newcommand{\excl}[1]{}
+\newcommand{\incl}[1]{#1}
+\newcommand{\lrg}[1]{{\Large #1}}
+
+\newcommand{\setmin}{\mathbin{\backslash}}
+\newcommand{\symmdiff}{\mathbin{∆}}
+
+\pagenumbering{roman}  %So front matter uses roman numerals.  Switch back to arabic at beginning of preface.
+
+
+%Adds gray background to inline code, but inline code won't break across lines.
+%\let\oldtexttt\texttt
+%\renewcommand{\texttt}[1]{\colorbox{shadecolor}{\oldtexttt{#1}}}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Tabla de contenidos}
+\else
+  \newcommand\contentsname{Tabla de contenidos}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Listado de Figuras}
+\else
+  \newcommand\listfigurename{Listado de Figuras}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Listado de Tablas}
+\else
+  \newcommand\listtablename{Listado de Tablas}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figura}
+\else
+  \newcommand\figurename{Figura}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabla}
+\else
+  \newcommand\tablename{Tabla}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listado}
+\newcommand*\listoflistings{\listof{codelisting}{Listado de Listados}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Una prueba transicional de la confluencia de la reducción \textbackslash eta},
+  pdfauthor={Maximiliano Onofre Martínez},
+  pdflang={es},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Una prueba transicional de la confluencia de la reducción
+\(\eta\)}
+\author{Maximiliano Onofre Martínez}
+\date{}
+\begin{document}
+\maketitle
+
+%Can't be in preamble because Quarto loads amsthm too late.
+\theoremstyle{definition}
+\newtheorem*{thm}{Theorem}
+\newcommand{\thmnm}{Theorem}
+\newtheorem*{namedthm}{\thmnm}
+\newtheorem*{dfn}{Definition}
+\newcommand{\defnm}{Definition}
+\newtheorem*{nameddfn}{\defnm}
+
+\newenvironment{nthm}[1]
+  {\renewcommand{\thmnm}{#1}\begin{namedthm}}
+  {\end{namedthm}}
+
+\newenvironment{ndfn}[1]
+  {\renewcommand{\defnm}{#1}\begin{nameddfn}}
+  {\end{nameddfn}}
+
+\newenvironment{npf}[1]
+  {\begin{proof}[#1]}
+  {\end{proof}}
+
+% Usage:
+% ::: {.thm} will create an unnumbered thm environment with title Theorem.
+% ::: {.nthm arguments="Name of Theorem"} will create an unnumbered theorem whose title is Name of Theorem.
+
+\let\oldgreater\textgreater
+\renewcommand{\textgreater}{\null\oldgreater}   % To prevent => changing to double arrow
+
+\renewcommand*\contentsname{Tabla de contenidos}
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+
+\bookmarksetup{startatroot}
+
+\chapter*{Introducción}\label{introducciuxf3n}
+\addcontentsline{toc}{chapter}{Introducción}
+
+\markboth{Introducción}{Introducción}
+
+\pagenumbering{arabic}
+
+TODO
+
+\bookmarksetup{startatroot}
+
+\chapter{Relaciones}\label{relaciones}
+
+En teoría de conjuntos se entiende una relación binaria \(R\) sobre un
+conjunto \(A\) como un conjunto de pares ordenados, de modo que
+\(R(a,b)\) significa \((a,b) \in R\). Una alternativa es pensar en \(R\)
+como una función que, al aplicarse a \(a\) y \(b\), produce una
+proposición que expresa que ambos elementos están relacionados.
+Adoptaremos esta presentación en Lean mediante la siguiente definición:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ relation (X : }\KeywordTok{Type}\NormalTok{) := X → X → }\KeywordTok{Prop}
+\end{Highlighting}
+\end{Shaded}
+
+Así, si \texttt{(R\ :\ relation\ X)} y \texttt{(a\ b\ :\ X)}, la
+expresión \texttt{(R\ a\ b)} representa la proposición que afirma que
+\texttt{a} está relacionado con \texttt{b} mediante \texttt{R}.
+
+Sea \texttt{R\ :\ relation\ X}. La relación \texttt{R} es
+\emph{reflexiva} si todo término de tipo \texttt{X} está relacionado
+consigo mismo, y es \emph{transitiva} si, para cualesquiera términos
+\texttt{a}, \texttt{b} y \texttt{c} de tipo \texttt{X}, de
+\texttt{R\ a\ b} y \texttt{R\ b\ c} se sigue \texttt{R\ a\ c}. Estas
+propiedades pueden expresarse en Lean de la siguiente manera:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{variable \{X : }\KeywordTok{Type}\NormalTok{\}}
+
+\KeywordTok{def}\NormalTok{ reflexive (R : relation X) : }\KeywordTok{Prop}\NormalTok{ :=}
+\NormalTok{  ∀ a : X, R a a}
+
+\KeywordTok{def}\NormalTok{ transitive (R : relation X) : }\KeywordTok{Prop}\NormalTok{ :=}
+\NormalTok{  ∀ a b c : X, R a b → R b c → R a c}
+\end{Highlighting}
+\end{Shaded}
+
+Las llaves en \texttt{variable\ \{X\ :\ Type\}} indican que \texttt{X}
+es un argumento \emph{implícito}: en lugar de exigir que se proporcione,
+Lean lo infiere a partir del contexto. Así, como \texttt{R} tiene tipo
+\texttt{relation\ X}, Lean determina \texttt{X} a partir del tipo de
+\texttt{R}, y basta escribir \texttt{reflexive\ R} o
+\texttt{transitive\ R} sin indicar el tipo sobre el cual está definida
+la relación.
+
+\section{1.1. Clausuras}\label{clausuras}
+
+A continuación presentamos las tres clausuras de \(R\) que utilizaremos,
+junto con sus reglas de inferencia y sus definiciones en Lean.
+Interpretaremos \(R(a,b)\) como un paso de \(a\) a \(b\).
+
+I. La clausura reflexiva \(R^{=}\) relaciona dos elementos si son
+iguales o si están relacionados por \(R\). Se define mediante las
+siguientes reglas:
+
+\[
+\inferrule*[right=\textsc{refl}]
+  { }
+  {R^=(a,a)}
+\qquad
+\inferrule*[right=\textsc{step}]
+  {R(a,b)}
+  {R^=(a,b)}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive clos\_refl (R : relation X) : relation X}
+\NormalTok{  | refl : ∀ a : X,}
+\NormalTok{      clos\_refl R a a}
+\NormalTok{  | step : ∀ a b : X,}
+\NormalTok{      R a b → clos\_refl R a b}
+\end{Highlighting}
+\end{Shaded}
+
+II. La clausura transitiva \(R^{+}\) relaciona dos elementos cuando
+pueden conectarse mediante una sucesión finita de uno o más pasos de
+\(R\). Sus reglas de inferencia son:
+
+\[
+\inferrule*[right=\textsc{step}]
+  {R(a,b)}
+  {R^+(a,b)}
+\qquad
+\inferrule*[right=\textsc{trans}]
+  {R^+(a,b) \\
+   R^+(b,c)}
+  {R^+(a,c)}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive clos\_trans (R : relation X) : relation X}
+\NormalTok{  | step : ∀ a b : X,}
+\NormalTok{      R a b → clos\_trans R a b}
+\NormalTok{  | trans : ∀ a b c : X,}
+\NormalTok{      clos\_trans R a b → clos\_trans R b c →}
+\NormalTok{      clos\_trans R a c}
+\end{Highlighting}
+\end{Shaded}
+
+III. La clausura reflexiva-transitiva \(R^*\) relaciona dos elementos
+cuando pueden conectarse mediante una sucesión finita de cero o más
+pasos de \(R\). Una sucesión de cero pasos comienza y termina en el
+mismo elemento.
+
+\[
+\inferrule*[right=\textsc{refl}]
+  { }
+  {R^*(a,a)}
+\qquad
+\inferrule*[right=\textsc{step}]
+  {R(a,b)}
+  {R^*(a,b)}
+\qquad
+\inferrule*[right=\textsc{trans}]
+  {R^*(a,b) \\
+   R^*(b,c)}
+  {R^*(a,c)}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive clos\_refl\_trans (R : relation X) : relation X}
+\NormalTok{  | refl : ∀ a : X,}
+\NormalTok{      clos\_refl\_trans R a a}
+\NormalTok{  | step : ∀ a b : X,}
+\NormalTok{      R a b → clos\_refl\_trans R a b}
+\NormalTok{  | trans : ∀ a b c : X,}
+\NormalTok{      clos\_refl\_trans R a b → clos\_refl\_trans R b c →}
+\NormalTok{      clos\_refl\_trans R a c}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Lema 1.1.1.} La clausura reflexiva-transitiva de toda relación
+es igual a la clausura transitiva de su clausura reflexiva.
+\[ R^* = (R^{=})^+ \] Su enunciado en Lean es:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ clos\_refl\_trans\_eq : ∀ R : relation X, }
+\NormalTok{    clos\_refl\_trans R = clos\_trans (clos\_refl R)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{1.2. Propiedad del diamante y
+confluencia}\label{propiedad-del-diamante-y-confluencia}
+
+Una relación \(R\) tiene la \emph{propiedad del diamante} si y solo si
+\[
+\forall m,m_1,m_2,\quad
+R(m,m_1)\implies R(m,m_2)\implies
+\exists m_3,\;
+\bigl[R(m_1,m_3)\land R(m_2,m_3)\bigr].
+\]
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ diamond (R : relation X) : }\KeywordTok{Prop}\NormalTok{ :=}
+\NormalTok{  ∀ m m₁ m₂ : X, R m m₁ → R m m₂ → ∃ m₃ : X, R m₁ m₃ ∧ R m₂ m₃}
+\end{Highlighting}
+\end{Shaded}
+
+Escribiendo \(a \longrightarrow b\) en lugar de \(R(a,b)\), gráficamente
+esto significa que siempre podemos completar el siguiente diagrama:
+
+\begin{center}
+\begin{tikzpicture}[>=stealth, scale=0.7]
+  \node (m)  at (0, 1.5) {$m$};
+  \node (m1) at (-1.5, 0) {$m_1$};
+  \node (m2) at (1.5, 0) {$m_2$};
+  \node (m3) at (0, -1.5) {$m_3$};
+
+  \draw[->] (m) -- (m1);
+  \draw[->] (m) -- (m2);
+  \draw[->, dashed] (m1) -- (m3);
+  \draw[->, dashed] (m2) -- (m3);
+\end{tikzpicture}
+\end{center}
+
+Una relación \(R\) es \emph{confluente} si su clausura
+reflexiva-transitiva \(R^*\) tiene la propiedad del diamante.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ confluent (R : relation X) : }\KeywordTok{Prop}\NormalTok{ :=}
+\NormalTok{  diamond (clos\_refl\_trans R)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Lema 1.2.1.} Si una relación \(R\) tiene la propiedad del
+diamante, entonces su clausura transitiva \(R^+\) también la tiene.
+
+El enunciado correspondiente en Lean es:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ diamond\_clos\_trans \{R : relation X\} :}
+\NormalTok{    diamond R →}
+\NormalTok{    diamond (clos\_trans R)}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\chapter{\texorpdfstring{Cálculo
+\(\lambda\)}{Cálculo \textbackslash lambda}}\label{cuxe1lculo-lambda}
+
+Para representar términos del cálculo \(\lambda\) utilizaremos la
+representación \emph{locally nameless}. En ella, las variables ligadas
+se representan mediante índices de de Bruijn, mientras que las variables
+libres conservan un nombre. De esta manera, la sintaxis de los términos
+está dada por
+
+\[
+t ::= 
+\mathsf{bvar} \, i  \mid 
+\mathsf{fvar} \, x  \mid 
+\mathsf{abs}  \, t  \mid 
+\mathsf{app}  \, t \, t  
+\]
+
+donde \(i \in \mathbb{N}\) es un índice de de Bruijn y \(x\) es el
+nombre de una variable libre. En Lean tomamos los nombres como cadenas
+de caracteres:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive trm : }\KeywordTok{Type}
+\NormalTok{  | bvar : ℕ → trm}
+\NormalTok{  | fvar : String → trm}
+\NormalTok{  | abs  : trm → trm}
+\NormalTok{  | app  : trm → trm → trm}
+\end{Highlighting}
+\end{Shaded}
+
+Para simplificar la escritura, usamos cadenas de caracteres para
+variables libres y naturales para variables ligadas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{instance : Coe String trm where}
+\NormalTok{  coe := fvar}
+
+\NormalTok{instance (n : ℕ) : OfNat trm n where}
+\NormalTok{  ofNat := bvar n}
+\end{Highlighting}
+\end{Shaded}
+
+Por ejemplo, el término \(\lambda x. \, x \, y\) puede escribirse en
+Lean como \texttt{abs\ (app\ 0\ "y")}.
+
+\subsection{Variables libres}\label{variables-libres}
+
+El conjunto de variables libres de un término \(t\), denotado por
+\(\operatorname{fv} (t)\), se define recursivamente mediante \[
+\begin{array}{l c l}
+\operatorname{fv}(\mathsf{bvar}\, i) & \equiv & \emptyset \\ 
+\operatorname{fv}(\mathsf{fvar}\, x) & \equiv & \{x\} \\ 
+\operatorname{fv}(\mathsf{app}\, t_1\, t_2) & \equiv & \operatorname{fv}(t_1) \cup \operatorname{fv}(t_2) \\ 
+\operatorname{fv}(\mathsf{abs}\, t) & \equiv & \operatorname{fv}(t)
+\end{array}
+\] Su implementación en Lean es:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ fv (t : trm) : Finset String :=}
+  \KeywordTok{match}\NormalTok{ t }\KeywordTok{with}
+\NormalTok{  | bvar \_    =\textgreater{} ∅}
+\NormalTok{  | fvar x    =\textgreater{} \{x\}}
+\NormalTok{  | app t₁ t₂ =\textgreater{} fv t₁ ∪ fv t₂}
+\NormalTok{  | abs u     =\textgreater{} fv u}
+\end{Highlighting}
+\end{Shaded}
+
+\section{2.1. Apertura}\label{apertura}
+
+En la representación \emph{locally nameless}, una abstracción tiene la
+forma \(\mathsf{abs} \, t\), donde el cuerpo \(t\) utiliza índices de de
+Bruijn para referirse a las variables ligadas. Para trabajar con este
+cuerpo resulta útil reemplazar las referencias a la abstracción exterior
+por una variable libre. A esta operación la llamaremos \emph{apertura}.
+
+Para definirla, utilizamos una operación auxiliar
+\(\{k\rightsquigarrow x\}\,t\), donde \(k\) indica el índice que se
+reemplaza por la variable libre de nombre \(x\). Al entrar en una
+abstracción, el parámetro \(k\) aumenta en uno. La operación se define
+recursivamente por
+
+\[
+\begin{array}{l c l}
+\{k \rightsquigarrow x\} \, (\mathsf{bvar}\, i) & \equiv & \text{si } (i = k) \text{ entonces } (\mathsf{fvar}\, x) \text{ si no } (\mathsf{bvar}\, i) \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{fvar}\, y) & \equiv & \mathsf{fvar}\, y \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{app}\, t_1 \, t_2) & \equiv & \mathsf{app}\, (\{k \rightsquigarrow x \} \, t_1) \, (\{k \rightsquigarrow x\} \, t_2) \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{abs}\, t) & \equiv & \mathsf{abs}\, (\{(k + 1) \rightsquigarrow x\} \, t)
+\end{array}
+\]
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ open\_rec (k : ℕ) (x : String) (t : trm) : trm :=}
+  \KeywordTok{match}\NormalTok{ t }\KeywordTok{with}
+\NormalTok{  | bvar i    =\textgreater{} if i = k then fvar x else bvar i}
+\NormalTok{  | fvar y    =\textgreater{} fvar y}
+\NormalTok{  | app t₁ t₂ =\textgreater{} app (open\_rec k x t₁) (open\_rec k x t₂)}
+\NormalTok{  | abs t     =\textgreater{} abs (open\_rec (k + 1) x t)}
+
+\KeywordTok{notation} \StringTok{"\{"}\NormalTok{ k }\StringTok{" \textasciitilde{}\textgreater{} "}\NormalTok{ x }\StringTok{"\} "}\NormalTok{ t =\textgreater{} open\_rec k x t}
+\end{Highlighting}
+\end{Shaded}
+
+La apertura del cuerpo \(t\) con una variable libre \(x\) se define
+tomando \(k=0\): \[
+t^x \equiv \{ 0 \rightsquigarrow x \} \, t
+\]
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ open\_var (t : trm) (x : String) : trm :=}
+\NormalTok{  \{0 \textasciitilde{}\textgreater{} x\} t}
+
+\NormalTok{infixl:80 }\StringTok{" \^{} "}\NormalTok{ =\textgreater{} open\_var}
+\end{Highlighting}
+\end{Shaded}
+
+Así, \(t^x\) representa el resultado de aplicar la apertura al cuerpo de
+una abstracción \(\mathsf{abs} \, t\), utilizando la variable libre
+\(x\).
+
+Por ejemplo, consideremos en Lean la abstracción \texttt{abs\ t}, con
+\texttt{t\ =\ app\ (abs\ (app\ 0\ 1))\ 0}. Al abrir su cuerpo con el
+nombre \texttt{"x"}, obtenemos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{example}\NormalTok{ :}
+\NormalTok{  (app (abs (app 0 1)) 0) \^{} }\StringTok{"x"}\NormalTok{ = (app (abs (app 0 }\StringTok{"x"}\NormalTok{)) }\StringTok{"x"}\NormalTok{) := }\KeywordTok{rfl}
+\end{Highlighting}
+\end{Shaded}
+
+El índice \texttt{0} que aparece dentro de la abstracción interior
+permanece sin cambios, pues hace referencia a dicha abstracción. En
+cambio, el índice \texttt{1} que aparece dentro de ella y el índice
+\texttt{0} exterior hacen referencia a la abstracción exterior y son
+reemplazados por \texttt{"x"}.
+
+\section{2.2. Clausura local}\label{clausura-local}
+
+El tipo \texttt{trm} admite expresiones cuyos índices de de Bruijn no
+hacen referencia a ninguna abstracción, como ocurre en \texttt{bvar\ 0}
+y en \texttt{abs\ 1}. En el primer caso, el índice no se encuentra bajo
+ninguna abstracción y, en el segundo, no corresponde a la única
+abstracción presente, mientras que \texttt{abs\ 0} sí representa el
+término identidad \(\lambda x.\,x\).
+
+Diremos que un término es localmente cerrado si todos los índices de de
+Bruijn que aparecen en él se encuentran ligados por alguna abstracción.
+La proposición \(\mathsf{lc} \, t\) expresa que el término \(t\) es
+localmente cerrado. Este predicado se define mediante las reglas
+
+\[
+\inferrule*[right=\textsc{lc-var}]
+  { }
+  {\mathsf{lc} \, (\mathsf{fvar}\,x)}
+\qquad
+\inferrule*[right=\textsc{lc-app}]
+  {\mathsf{lc} \, t_1 \\ \mathsf{lc} \, t_2}
+  {\mathsf{lc} \, (\mathsf{app} \, t_1 \, t_2)}
+\qquad
+\inferrule*[right=\textsc{lc-abs}]
+  {\forall x \notin L, \quad \mathsf{lc} \, (t^x)}
+  {\mathsf{lc} \, (\mathsf{abs}\,t)}
+\]
+
+donde \(L\) es algún conjunto finito de nombres.
+
+En Lean, esta definición se expresa de la siguiente manera:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive lc : trm → }\KeywordTok{Prop}
+\NormalTok{  | lc\_var (x : String) :}
+\NormalTok{      lc (fvar x)}
+\NormalTok{  | lc\_app \{t₁ t₂ : trm\} :}
+\NormalTok{      lc t₁ → lc t₂ → lc (app t₁ t₂)}
+\NormalTok{  | lc\_abs (L : Finset String) (t : trm) :}
+\NormalTok{      (∀ x ∉ L, lc (t \^{} x)) →}
+\NormalTok{      lc (abs t)}
+\end{Highlighting}
+\end{Shaded}
+
+El constructor \texttt{lc\_var} establece que toda variable libre es
+localmente cerrada. El constructor \texttt{lc\_app} indica que una
+aplicación es localmente cerrada cuando lo son sus dos componentes. Por
+último, \texttt{lc\_abs} emplea \emph{cuantificación cofinita}: exige
+elegir un conjunto finito \texttt{L} y demostrar que \texttt{t\ \^{}\ x}
+es localmente cerrado para todo nombre \texttt{x} que no pertenezca a
+\texttt{L}. La definición no incluye un constructor para términos de la
+forma \texttt{bvar\ i}, pues un índice aislado no está ligado por
+ninguna abstracción y, por tanto, no es localmente cerrado.
+
+\section{2.3. Cierre}\label{cierre}
+
+Mientras que la apertura reemplaza determinadas referencias ligadas por
+una variable libre, el cierre reemplaza las apariciones libres de un
+nombre por índices de de Bruijn. En particular, dado un término \(t\) y
+un nombre \(x\), permite construir el cuerpo de una abstracción que liga
+esas apariciones de \(x\).
+
+Para definirla, utilizamos una operación auxiliar
+\(\{k \leftsquigarrow x \} \, t\), donde \(k\) indica el índice de de
+Bruijn que debe asignarse a las variables libres con nombre \(x\). Se
+define recursivamente por
+
+\[
+\begin{array}{l c l}
+\{k \leftsquigarrow x\} \, (\mathsf{bvar}\, i) & \equiv & \mathsf{bvar}\, i \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{fvar}\, y) & \equiv & \text{si } (x = y) \text{ entonces } (\mathsf{bvar}\, k) \text{ si no } (\mathsf{fvar}\, y) \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{app}\, t_1 \, t_2) & \equiv & \mathsf{app}\, (\{k \leftsquigarrow x \} \, t_1) \, (\{k \leftsquigarrow x\} \, t_2) \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{abs}\, t) & \equiv & \mathsf{abs}\, (\{(k + 1) \leftsquigarrow x\} \, t)
+\end{array}
+\]
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ close\_var\_rec (k : ℕ) (x : String) (t : trm) : trm :=}
+  \KeywordTok{match}\NormalTok{ t }\KeywordTok{with}
+\NormalTok{  | bvar i    =\textgreater{} bvar i}
+\NormalTok{  | fvar y    =\textgreater{} if x = y then bvar k else fvar y}
+\NormalTok{  | app t₁ t₂ =\textgreater{} app (close\_var\_rec k x t₁) (close\_var\_rec k x t₂)}
+\NormalTok{  | abs t     =\textgreater{} abs (close\_var\_rec (k + 1) x t)}
+
+\KeywordTok{notation} \StringTok{"\{"}\NormalTok{ k }\StringTok{" \textless{}\textasciitilde{} "}\NormalTok{ x }\StringTok{"\} "}\NormalTok{ t =\textgreater{} close\_var\_rec k x t}
+\end{Highlighting}
+\end{Shaded}
+
+El cierre de un término \(t\) respecto de una variable libre \(x\) se
+define tomando \(k=0\): \[
+{}^{\textbackslash x} t \equiv \{0 \leftsquigarrow x \} \, t
+\] En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ close\_var (t : trm) (x : String) : trm :=}
+\NormalTok{  \{0 \textless{}\textasciitilde{} x\} t}
+
+\NormalTok{infixl:80 }\StringTok{" \^{}* "}\NormalTok{ =\textgreater{} close\_var}
+\end{Highlighting}
+\end{Shaded}
+
+Así, \({}^{\textbackslash x} t\) reemplaza las variables libres con
+nombre \(x\) por índices de de Bruijn que, al formar
+\(\mathsf{abs} \, ({}^{\textbackslash x} t)\), hacen referencia a esta
+abstracción.
+
+Por ejemplo:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{example}\NormalTok{ :}
+\NormalTok{  (app (abs (app 0 }\StringTok{"x"}\NormalTok{)) }\StringTok{"x"}\NormalTok{) \^{}* }\StringTok{"x"}\NormalTok{ = (app (abs (app 0 1)) 0) := }\KeywordTok{rfl}
+\end{Highlighting}
+\end{Shaded}
+
+En este ejemplo, la aparición libre de \texttt{"x"} exterior se
+reemplaza por \texttt{0}, mientras que la situada dentro de la
+abstracción se reemplaza por \texttt{1}.
+
+\bookmarksetup{startatroot}
+
+\chapter{\texorpdfstring{Reducción
+\(\eta\)}{Reducción \textbackslash eta}}\label{reducciuxf3n-eta}
+
+Una reducción es, sencillamente, una relación binaria sobre el conjunto
+de todos los términos \(\lambda\). La única reducción que nosotros
+trataremos es \(\eta\), cuya definición usual es la siguiente: \[
+\inferrule*[right=\textsc{eta-red}]
+  {x \notin \operatorname{fv}(t)}
+  {\lambda x. \, t \, x
+   \longrightarrow_{\eta} t}
+\qquad
+\inferrule*[right=\textsc{eta-app-1}]
+  {t_1 \longrightarrow_{\eta} t_1'}
+  {t_1 \, t_2
+   \longrightarrow_{\eta}
+   t_1' \, t_2}
+\] \[
+\inferrule*[right=\textsc{eta-app-2}]
+  {t_2 \longrightarrow_{\eta} t_2'}
+  {t_1 \, t_2
+   \longrightarrow_{\eta}
+   t_1 \, t_2'}
+\qquad
+\inferrule*[right=\textsc{eta-abs}]
+  {t \longrightarrow_{\eta} t'}
+  {\lambda x. t
+   \longrightarrow_{\eta}
+   \lambda x. t'}
+\]
+
+Las reglas \textsc{eta-abs}, \textsc{eta-app-1} y \textsc{eta-app-2},
+que permiten reducir dentro del cuerpo de una abstracción o en
+cualquiera de los componentes de una aplicación, son llamadas
+\emph{reglas de congruencia}.
+
+Llamaremos \emph{redex} \(\eta\) a un término de la forma
+\(\lambda x.\,t\,x\) con \(x\notin\operatorname{fv}(t)\). Si \(t\) y
+\(t'\) son términos tales que \(t \longrightarrow_{\eta} t'\), entonces
+decimos que \(t\) se \emph{reduce} a \(t'\) en un solo paso.
+
+Para las clausuras de la reducción \(\eta\), usaremos las siguientes
+notaciones habituales:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \(\longrightarrow_{\eta}^{=}\) denota la clausura reflexiva de
+  \(\longrightarrow_\eta\). Así, \(t \longrightarrow_{\eta}^{=} t'\)
+  significa que \(t=t'\) o que \(t \longrightarrow_\eta t'\).
+\item
+  \(\longrightarrow_{\eta}^{+}\) denota la clausura transitiva de
+  \(\longrightarrow_\eta\). Escribimos
+  \(t \longrightarrow_{\eta}^{+} t'\) cuando \(t\) se reduce a \(t'\) en
+  uno o más pasos.
+\item
+  \(\twoheadrightarrow_{\eta}\) denota la clausura reflexiva-transitiva
+  de \(\longrightarrow_\eta\). Escribimos
+  \(t \twoheadrightarrow_\eta t'\) si \(t=t'\) o si una sucesión finita
+  de pasos lleva de \(t\) a \(t'\).
+\end{enumerate}
+
+Como \(\eta\) es la única reducción que consideraremos, a partir de
+ahora omitiremos el subíndice \(\eta\) en la notación de la reducción y
+de sus clausuras.
+
+Para formalizar la reducción \(\eta\) mediante la representación
+\emph{locally nameless}, debemos adaptar las reglas anteriores.
+
+En la regla \textsc{eta-red}, el término \(\lambda x.\,t\,x\) se
+representa como \(\mathsf{abs}\,(\mathsf{app}\,t\,0)\), donde el índice
+\(0\) hace referencia a la abstracción exterior. La condición de que
+\(t\) sea localmente cerrado garantiza que todos sus índices hacen
+referencia a abstracciones contenidas en el propio \(t\) y, en
+particular, que ninguno hace referencia a la abstracción exterior que se
+elimina. Así se expresa, en esta regla, la condición de que la variable
+ligada no aparezca libre en \(t\).
+
+Las reglas se formulan de modo que la reducción relacione únicamente
+términos localmente cerrados. Al igual que la definición de
+\(\mathsf{lc}\), la regla \textsc{eta-abs} emplea cuantificación
+cofinita. Obtenemos así las siguientes reglas:
+
+\[
+\inferrule*[right=\textsc{eta-red}]
+  {\mathsf{lc} \, t}
+  {\mathsf{abs} \, (\mathsf{app} \, t \, 0)
+   \longrightarrow t}
+\qquad
+\inferrule*[right=\textsc{eta-app-1}]
+  {\mathsf{lc} \, t_2 \\ 
+    t_1 \longrightarrow t_1'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow
+   \mathsf{app}\,t_1'\,t_2}
+\]
+
+\[
+\inferrule*[right=\textsc{eta-app-2}]
+  {\mathsf{lc} \, t_1 \\
+   t_2 \longrightarrow t_2'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow
+   \mathsf{app} \, t_1 \, t_2'}
+\qquad
+\inferrule*[right=\textsc{eta-abs}]
+  {\forall x\notin L, \quad
+   t^x \longrightarrow t'^x}
+  {\mathsf{abs}\,t
+   \longrightarrow
+   \mathsf{abs}\,t'}
+\]
+
+En Lean, esta relación se define inductivamente de la siguiente manera:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{inductive eta : relation trm}
+\NormalTok{  | eta\_red \{t : trm\} :}
+\NormalTok{      lc t →}
+\NormalTok{      eta (abs (app t (bvar 0))) t}
+\NormalTok{  | eta\_app1 \{t₁ t₁\textquotesingle{} t₂ : trm\} :}
+\NormalTok{      lc t₂ →}
+\NormalTok{      eta t₁ t₁\textquotesingle{} →}
+\NormalTok{      eta (app t₁ t₂) (app t₁\textquotesingle{} t₂)}
+\NormalTok{  | eta\_app2 \{t₁ t₂ t₂\textquotesingle{} : trm\} :}
+\NormalTok{      lc t₁ →}
+\NormalTok{      eta t₂ t₂\textquotesingle{} →}
+\NormalTok{      eta (app t₁ t₂) (app t₁ t₂\textquotesingle{})}
+\NormalTok{  | eta\_abs (L : Finset String) \{t t\textquotesingle{} : trm\} :}
+\NormalTok{      (∀ x, x ∉ L → eta (t \^{} x) (t\textquotesingle{} \^{} x)) →}
+\NormalTok{      eta (abs t) (abs t\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Lema 3.0.1.} Si \(t \longrightarrow t'\), entonces \(t'\) es
+localmente cerrado.
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ eta\_lc\_right \{t t\textquotesingle{} : trm\} :}
+\NormalTok{    eta t t\textquotesingle{} → lc t\textquotesingle{}}
+\end{Highlighting}
+\end{Shaded}
+
+\section{3.1. Reglas de congruencia para la clausura
+reflexiva}\label{reglas-de-congruencia-para-la-clausura-reflexiva}
+
+Las reglas de congruencia de la reducción \(\eta\) se extienden a su
+clausura reflexiva. A continuación presentamos las dos que utilizaremos
+en la demostración de la confluencia de la reducción \(\eta\).
+
+\textbf{Lema 3.1.1.} \[
+\inferrule*[right=\textsc{refl-app-1}]
+  {\mathsf{lc} \, t_2 \\ 
+    t_1 \longrightarrow^{=} t_1'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow^{=}
+   \mathsf{app}\,t_1'\,t_2}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ refl\_app1 \{t₁ t₁\textquotesingle{} t₂ : trm\} :}
+\NormalTok{    lc t₂ →}
+\NormalTok{    clos\_refl eta t₁ t₁\textquotesingle{} →}
+\NormalTok{    clos\_refl eta (app t₁ t₂) (app t₁\textquotesingle{} t₂)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Lema 3.1.2.} \[
+\inferrule*[right=\textsc{refl-app-2}]
+  {\mathsf{lc} \, t_1 \\
+   t_2 \longrightarrow^{=} t_2'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow^{=}
+   \mathsf{app} \, t_1 \, t_2'}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ refl\_app2 \{t₁ t₂ t₂\textquotesingle{} : trm\} :}
+\NormalTok{    lc t₁ →}
+\NormalTok{    clos\_refl eta t₂ t₂\textquotesingle{} →}
+\NormalTok{    clos\_refl eta (app t₁ t₂) (app t₁ t₂\textquotesingle{}) }
+\end{Highlighting}
+\end{Shaded}
+
+\section{3.2. Análisis de las
+reducciones}\label{anuxe1lisis-de-las-reducciones}
+
+La forma del término inicial permite identificar las reglas con las que
+puede obtenerse una reducción.
+
+Si \(\mathsf{app}\,t_1\,t_2\longrightarrow s\), hay dos posibilidades:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Se aplica la regla \textsc{eta-app-1}: \(t_2\) es localmente cerrado y
+  existe un término \(t_1'\) tal que \(t_1\longrightarrow t_1'\) y
+  \(s=\mathsf{app}\,t_1'\,t_2\).
+\item
+  Se aplica la regla \textsc{eta-app-2}: \(t_1\) es localmente cerrado y
+  existe un término \(t_2'\) tal que \(t_2\longrightarrow t_2'\) y
+  \(s=\mathsf{app}\,t_1\,t_2'\).
+\end{enumerate}
+
+Si \(\mathsf{abs}\,t\longrightarrow s\), las posibilidades son las
+siguientes:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Se aplica la regla \textsc{eta-red}: existe un término \(u\)
+  localmente cerrado tal que \(t=\mathsf{app}\,u\,0\) y \(s=u\).
+\item
+  Se aplica la regla \textsc{eta-abs}: existen un conjunto finito de
+  nombres \(L\) y un término \(t'\) tales que
+  \(t^x\longrightarrow t'^x\) para todo \(x\notin L\) y
+  \(s=\mathsf{abs}\,t'\).
+\end{enumerate}
+
+En particular, consideremos una reducción
+\(\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow s\), donde \(t\) es
+localmente cerrado. Las dos posibilidades para esta reducción se
+presentan de la siguiente manera.
+
+Si se aplica \textsc{eta-red}, obtenemos directamente \(s=t\): \[
+\inferrule*[right=\textsc{eta-red}]
+  {\mathsf{lc}\,t}
+  {\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow t}.
+\]
+
+Si se aplica \textsc{eta-abs}, tenemos \(s=\mathsf{abs}\,u\) para algún
+término \(u\), y la reducción se obtiene mediante \[
+\inferrule*[right=\textsc{eta-abs}]
+  {\forall x\notin L,\quad
+   (\mathsf{app}\,t\,0)^x\longrightarrow u^x}
+  {\mathsf{abs}\,(\mathsf{app}\,t\,0)
+   \longrightarrow\mathsf{abs}\,u},
+\] donde \(L\) es un conjunto finito de nombres.
+
+En este último caso, el resultado es una abstracción
+\(\mathsf{abs}\,u\). El siguiente lema permite determinar la forma de su
+cuerpo a partir de la condición que exige la regla \textsc{eta-abs}.
+
+\textbf{Lema 3.2.1.} Sea \(t\) un término localmente cerrado y sea \(L\)
+un conjunto finito de nombres. Si
+\((\mathsf{app}\,t\,0)^x\longrightarrow u^x\) para todo \(x\notin L\),
+entonces existe un término \(t'\) tal que \(t\longrightarrow t'\) y
+\(u=\mathsf{app}\,t'\,0\).
+
+En Lean:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lemma}\NormalTok{ eta\_redex\_body \{L : Finset String\} \{t u : trm\} :}
+\NormalTok{    lc t →}
+\NormalTok{    (∀ x ∉ L, eta ((app t (bvar 0)) \^{} x) (u \^{} x)) →}
+\NormalTok{    ∃ t\textquotesingle{}, eta t t\textquotesingle{} ∧ u = app t\textquotesingle{} (bvar 0)}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+
+
+\end{document}

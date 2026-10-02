@@ -1,0 +1,252 @@
+# Reducción $\eta$
+
+Una reducción es, sencillamente, una relación binaria 
+sobre el conjunto de todos los términos $\lambda$. La única reducción que 
+nosotros trataremos es $\eta$, cuya definición usual es la siguiente:
+$$
+\inferrule*[right=\textsc{eta-red}]
+  {x \notin \operatorname{fv}(t)}
+  {\lambda x. \, t \, x
+   \longrightarrow_{\eta} t}
+\qquad
+\inferrule*[right=\textsc{eta-app-1}]
+  {t_1 \longrightarrow_{\eta} t_1'}
+  {t_1 \, t_2
+   \longrightarrow_{\eta}
+   t_1' \, t_2}
+$$
+$$
+\inferrule*[right=\textsc{eta-app-2}]
+  {t_2 \longrightarrow_{\eta} t_2'}
+  {t_1 \, t_2
+   \longrightarrow_{\eta}
+   t_1 \, t_2'}
+\qquad
+\inferrule*[right=\textsc{eta-abs}]
+  {t \longrightarrow_{\eta} t'}
+  {\lambda x. t
+   \longrightarrow_{\eta}
+   \lambda x. t'}
+$$
+
+Las reglas \textsc{eta-abs}, \textsc{eta-app-1} y \textsc{eta-app-2}, 
+que permiten reducir dentro del cuerpo de una abstracción o en cualquiera de los componentes de una aplicación, 
+son llamadas *reglas de congruencia*.
+
+Llamaremos *redex* $\eta$ a un término de la forma
+$\lambda x.\,t\,x$ con $x\notin\operatorname{fv}(t)$.
+Si $t$ y $t'$ son términos tales que $t \longrightarrow_{\eta} t'$,
+entonces decimos que $t$ se *reduce* a $t'$ en un solo paso.
+
+Para las clausuras de la reducción $\eta$, usaremos las siguientes
+notaciones habituales:
+
+1. $\longrightarrow_{\eta}^{=}$ denota la clausura reflexiva
+   de $\longrightarrow_\eta$. Así, $t \longrightarrow_{\eta}^{=} t'$
+   significa que $t=t'$ o que $t \longrightarrow_\eta t'$.
+    
+2. $\longrightarrow_{\eta}^{+}$ denota la clausura transitiva
+   de $\longrightarrow_\eta$. Escribimos
+   $t \longrightarrow_{\eta}^{+} t'$ cuando $t$ se reduce
+   a $t'$ en uno o más pasos.
+
+3. $\twoheadrightarrow_{\eta}$ denota la clausura reflexiva-transitiva
+   de $\longrightarrow_\eta$. Escribimos $t \twoheadrightarrow_\eta t'$ si $t=t'$
+   o si una sucesión finita de pasos lleva de $t$ a $t'$. 
+
+Como $\eta$ es la única reducción que consideraremos,
+a partir de ahora omitiremos el subíndice $\eta$ en la notación
+de la reducción y de sus clausuras.
+
+Para formalizar la reducción $\eta$ mediante la representación 
+*locally nameless*, debemos adaptar las reglas anteriores. 
+
+En la regla \textsc{eta-red}, el término $\lambda x.\,t\,x$
+se representa como $\mathsf{abs}\,(\mathsf{app}\,t\,0)$,
+donde el índice $0$ hace referencia a la abstracción exterior.
+La condición de que $t$ 
+sea localmente cerrado garantiza que 
+todos sus índices hacen referencia a abstracciones contenidas en el propio $t$ 
+y, en particular, que ninguno hace
+referencia a la abstracción exterior que se elimina.
+Así se expresa, en esta regla, la condición de que la
+variable ligada no aparezca libre en $t$.
+
+Las reglas se formulan de modo que la reducción relacione únicamente 
+términos localmente cerrados. Al igual que la definición de $\mathsf{lc}$, 
+la regla \textsc{eta-abs} emplea cuantificación cofinita. 
+Obtenemos así las siguientes reglas:
+
+$$
+\inferrule*[right=\textsc{eta-red}]
+  {\mathsf{lc} \, t}
+  {\mathsf{abs} \, (\mathsf{app} \, t \, 0)
+   \longrightarrow t}
+\qquad
+\inferrule*[right=\textsc{eta-app-1}]
+  {\mathsf{lc} \, t_2 \\ 
+    t_1 \longrightarrow t_1'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow
+   \mathsf{app}\,t_1'\,t_2}
+$$
+
+$$
+\inferrule*[right=\textsc{eta-app-2}]
+  {\mathsf{lc} \, t_1 \\
+   t_2 \longrightarrow t_2'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow
+   \mathsf{app} \, t_1 \, t_2'}
+\qquad
+\inferrule*[right=\textsc{eta-abs}]
+  {\forall x\notin L, \quad
+   t^x \longrightarrow t'^x}
+  {\mathsf{abs}\,t
+   \longrightarrow
+   \mathsf{abs}\,t'}
+$$
+
+En Lean, esta relación se define inductivamente de la siguiente manera:
+
+```lean 
+inductive eta : relation trm
+  | eta_red {t : trm} :
+      lc t →
+      eta (abs (app t (bvar 0))) t
+  | eta_app1 {t₁ t₁' t₂ : trm} :
+      lc t₂ →
+      eta t₁ t₁' →
+      eta (app t₁ t₂) (app t₁' t₂)
+  | eta_app2 {t₁ t₂ t₂' : trm} :
+      lc t₁ →
+      eta t₂ t₂' →
+      eta (app t₁ t₂) (app t₁ t₂')
+  | eta_abs (L : Finset String) {t t' : trm} :
+      (∀ x, x ∉ L → eta (t ^ x) (t' ^ x)) →
+      eta (abs t) (abs t')
+```
+
+\textbf{Lema 3.0.1.} Si $t \longrightarrow t'$, entonces
+$t'$ es localmente cerrado.
+
+En Lean:
+```lean
+lemma eta_lc_right {t t' : trm} :
+    eta t t' → lc t'
+```
+
+## 3.1. Reglas de congruencia para la clausura reflexiva
+
+Las reglas de congruencia de la reducción $\eta$ se extienden a su clausura reflexiva.
+A continuación presentamos las dos que utilizaremos en la
+demostración de la confluencia de la reducción $\eta$.
+
+\textbf{Lema 3.1.1.}
+$$
+\inferrule*[right=\textsc{refl-app-1}]
+  {\mathsf{lc} \, t_2 \\ 
+    t_1 \longrightarrow^{=} t_1'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow^{=}
+   \mathsf{app}\,t_1'\,t_2}
+$$
+```lean 
+lemma refl_app1 {t₁ t₁' t₂ : trm} :
+    lc t₂ →
+    clos_refl eta t₁ t₁' →
+    clos_refl eta (app t₁ t₂) (app t₁' t₂)
+```
+
+\textbf{Lema 3.1.2.}
+$$
+\inferrule*[right=\textsc{refl-app-2}]
+  {\mathsf{lc} \, t_1 \\
+   t_2 \longrightarrow^{=} t_2'}
+  {\mathsf{app}\,t_1\,t_2
+   \longrightarrow^{=}
+   \mathsf{app} \, t_1 \, t_2'}
+$$
+```lean 
+lemma refl_app2 {t₁ t₂ t₂' : trm} :
+    lc t₁ →
+    clos_refl eta t₂ t₂' →
+    clos_refl eta (app t₁ t₂) (app t₁ t₂') 
+```
+
+## 3.2. Análisis de las reducciones
+
+La forma del término inicial permite identificar las reglas
+con las que puede obtenerse una reducción.
+
+Si $\mathsf{app}\,t_1\,t_2\longrightarrow s$,
+hay dos posibilidades:
+
+1. Se aplica la regla \textsc{eta-app-1}: $t_2$ es localmente
+   cerrado y existe un término $t_1'$ tal que
+   $t_1\longrightarrow t_1'$ y
+   $s=\mathsf{app}\,t_1'\,t_2$.
+
+2. Se aplica la regla \textsc{eta-app-2}: $t_1$ es localmente
+   cerrado y existe un término $t_2'$ tal que
+   $t_2\longrightarrow t_2'$ y
+   $s=\mathsf{app}\,t_1\,t_2'$.
+
+Si $\mathsf{abs}\,t\longrightarrow s$,
+las posibilidades son las siguientes:
+
+1. Se aplica la regla \textsc{eta-red}: existe un término
+   $u$ localmente cerrado tal que
+   $t=\mathsf{app}\,u\,0$ y $s=u$.
+
+2. Se aplica la regla \textsc{eta-abs}: existen un conjunto
+   finito de nombres $L$ y un término $t'$ tales que
+   $t^x\longrightarrow t'^x$ para todo $x\notin L$
+   y $s=\mathsf{abs}\,t'$.
+
+En particular, consideremos una reducción
+$\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow s$,
+donde $t$ es localmente cerrado.
+Las dos posibilidades para esta reducción se presentan
+de la siguiente manera.
+
+Si se aplica \textsc{eta-red}, obtenemos directamente $s=t$:
+$$
+\inferrule*[right=\textsc{eta-red}]
+  {\mathsf{lc}\,t}
+  {\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow t}.
+$$
+
+Si se aplica \textsc{eta-abs}, tenemos
+$s=\mathsf{abs}\,u$ para algún término $u$, y la reducción
+se obtiene mediante
+$$
+\inferrule*[right=\textsc{eta-abs}]
+  {\forall x\notin L,\quad
+   (\mathsf{app}\,t\,0)^x\longrightarrow u^x}
+  {\mathsf{abs}\,(\mathsf{app}\,t\,0)
+   \longrightarrow\mathsf{abs}\,u},
+$$
+donde $L$ es un conjunto finito de nombres.
+
+En este último caso, el resultado es una abstracción
+$\mathsf{abs}\,u$.
+El siguiente lema permite determinar la forma de su cuerpo
+a partir de la condición que exige la regla
+\textsc{eta-abs}.
+
+\textbf{Lema 3.2.1.} Sea $t$ un término localmente cerrado
+y sea $L$ un conjunto finito de nombres.
+Si $(\mathsf{app}\,t\,0)^x\longrightarrow u^x$
+para todo $x\notin L$, entonces existe un término $t'$
+tal que $t\longrightarrow t'$ y
+$u=\mathsf{app}\,t'\,0$.
+
+En Lean:
+
+```lean
+lemma eta_redex_body {L : Finset String} {t u : trm} :
+    lc t →
+    (∀ x ∉ L, eta ((app t (bvar 0)) ^ x) (u ^ x)) →
+    ∃ t', eta t t' ∧ u = app t' (bvar 0)
+```
