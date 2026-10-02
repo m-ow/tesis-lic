@@ -7,11 +7,19 @@ $m_1\longrightarrow^{=}m_3$ y $m_2\longrightarrow^{=}m_3$.
 ::: {.proof}
 Sean $m$, $m_1$ y $m_2$ términos tales que
 $m \longrightarrow m_1$ y $m \longrightarrow m_2$. 
-Procedemos por inducción sobre $m \longrightarrow m_1$ 
-y demostraremos que, para cualquier término $m_2$
-con $m \longrightarrow m_2$, existe un término $m_3$
-tal que $m_1 \longrightarrow^{=} m_3$ y
-$m_2 \longrightarrow^{=} m_3$.
+Procedemos por inducción sobre $m\longrightarrow m_1$.
+En cada caso demostraremos que, para cualquier término $m_2$
+tal que $m\longrightarrow m_2$, existe un término $m_3$
+con $m_1\longrightarrow^{=}m_3$ y
+$m_2\longrightarrow^{=}m_3$.
+
+```lean 
+theorem eta_diamond : ∀ m m₁ m₂,
+    eta m m₁ → eta m m₂ →
+    ∃ m₃, clos_refl eta m₁ m₃ ∧ clos_refl eta m₂ m₃ := by
+  intro m m₁ m₂ h₁ h₂
+  induction h₁ generalizing m₂
+```
 
 \textbf{Caso 1.} La reducción $m\longrightarrow m_1$ tiene
 la forma
@@ -28,11 +36,6 @@ Distinguimos dos subcasos según la regla utilizada para obtener
 $\mathsf{app}\,t\,z\longrightarrow m_2$.
 
 ```lean 
-theorem eta_diamond : ∀ m m₁ m₂,
-    eta m m₁ → eta m m₂ →
-    ∃ m₃, clos_refl eta m₁ m₃ ∧ clos_refl eta m₂ m₃ := by
-  intro m m₁ m₂ h₁ h₂
-  induction h₁ generalizing m₂
   -- Caso 1
   case eta_app1 t t₁ z lc_z r_t_t₁ ih =>
     cases h₂
@@ -203,22 +206,23 @@ para todo $x\notin L$.
 Aplicando el Lema 3.2.1 a esta condición y a la clausura
 local de $t$, obtenemos un término $t'$ tal que
 $t\longrightarrow t'$ y $u=\mathsf{app}\,t'\,0$.
-Al sustituir esta igualdad en $m_2=\mathsf{abs}\,u$,
-resulta $m_2=\mathsf{abs}\,(\mathsf{app}\,t'\,0)$.
-
+En la relación $\mathsf{abs}\,u\longrightarrow^{=}m_3$
+que debemos demostrar, sustituimos $u$ por
+$\mathsf{app}\,t'\,0$.
 Tomamos $m_3=t'$.
-De $t\longrightarrow t'$ obtenemos
-$t\longrightarrow^{=}t'$ mediante la regla \textsc{step}.
-Como $m_1=t$, esta relación es
-$m_1\longrightarrow^{=}m_3$.
+Las dos relaciones requeridas son entonces
+$t\longrightarrow^{=}t'$ y
+$\mathsf{abs}\,(\mathsf{app}\,t'\,0)\longrightarrow^{=}t'$.
 
-Para obtener $m_2\longrightarrow^{=}m_3$, por la regla
-\textsc{step} basta demostrar
+La primera relación se obtiene aplicando la regla
+\textsc{step} a $t\longrightarrow t'$.
+
+Para la segunda relación, aplicamos la regla \textsc{step}.
+Basta demostrar
 $\mathsf{abs}\,(\mathsf{app}\,t'\,0)\longrightarrow t'$.
-El Lema 3.0.1 aplicado a $t\longrightarrow t'$
-garantiza que $t'$ es localmente cerrado,
-por lo que la regla \textsc{eta-red} proporciona
-el paso requerido.
+Como $t\longrightarrow t'$, el Lema 3.0.1 garantiza
+que $t'$ es localmente cerrado. Podemos, por tanto,
+aplicar la regla \textsc{eta-red} y obtener este paso.
 
 ```lean
     -- Caso 3.2
@@ -230,6 +234,70 @@ el paso requerido.
       · exact clos_refl.step t t' r_t_t'
       · apply clos_refl.step
         exact eta.eta_red (eta_lc_right r_t_t')
+```
+
+\textbf{Caso 4.} La reducción $m\longrightarrow m_1$ tiene
+la forma
+$$
+\mathsf{abs}\,t\longrightarrow\mathsf{abs}\,t_1
+$$
+y se obtiene mediante la regla \textsc{eta-abs}.
+Existe, por tanto, un conjunto finito de nombres $L$ tal que
+$t^x\longrightarrow t_1^x$ para todo $x\notin L$.
+La hipótesis de inducción afirma que, para cada nombre
+$x\notin L$ y cualquier término $v$ con
+$t^x\longrightarrow v$, existe un término $q$ tal que
+$t_1^x\longrightarrow^{=}q$ y $v\longrightarrow^{=}q$.
+
+Distinguimos dos subcasos según la regla utilizada para
+obtener $\mathsf{abs}\,t\longrightarrow m_2$.
+
+```lean
+  -- Caso 4
+  case eta_abs L t t₁ hbody ih =>
+    cases h₂
+```
+
+\textbf{Caso 4.1.} La reducción
+$\mathsf{abs}\,t\longrightarrow m_2$ se obtiene mediante
+la regla \textsc{eta-red}, 
+de modo que $m_2$ es localmente cerrado y
+$t=\mathsf{app}\,m_2\,0$.
+Por tanto, tenemos
+$(\mathsf{app}\,m_2\,0)^x\longrightarrow t_1^x$
+para todo $x\notin L$.
+
+Aplicando el Lema 3.2.1 a la clausura local de $m_2$
+y a esta condición, obtenemos un término $t'$ tal que
+$m_2\longrightarrow t'$ y $t_1=\mathsf{app}\,t'\,0$.
+En la relación $\mathsf{abs}\,t_1\longrightarrow^{=}m_3$
+que debemos demostrar, sustituimos $t_1$ por
+$\mathsf{app}\,t'\,0$.
+Tomamos $m_3=t'$.
+Las dos relaciones requeridas son entonces
+$\mathsf{abs}\,(\mathsf{app}\,t'\,0)\longrightarrow^{=}t'$
+y $m_2\longrightarrow^{=}t'$.
+
+Para la primera relación, por la regla \textsc{step}
+basta demostrar
+$\mathsf{abs}\,(\mathsf{app}\,t'\,0)\longrightarrow t'$.
+Este paso se obtiene mediante \textsc{eta-red},
+pues el Lema 3.0.1 aplicado a $m_2\longrightarrow t'$
+establece que $t'$ es localmente cerrado.
+
+Para la segunda, aplicamos directamente la regla
+\textsc{step} a $m_2\longrightarrow t'$.
+
+```lean
+    -- Caso 4.1
+    case eta_red lc_m₂ =>
+      rcases eta_redex_body lc_m₂ hbody with ⟨t', r_m₂_t', ht₁⟩
+      rewrite [ht₁]
+      use t'
+      constructor
+      · apply clos_refl.step
+        exact eta.eta_red (eta_lc_right r_m₂_t')
+      · exact clos_refl.step m₂ t' r_m₂_t'
 ```
 
 :::

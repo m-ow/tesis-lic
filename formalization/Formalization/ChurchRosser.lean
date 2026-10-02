@@ -64,17 +64,17 @@ theorem eta_diamond : ∀ m m₁ m₂,
       · apply clos_refl.step
         exact eta.eta_red (eta_lc_right r_t_t')
   -- Caso 4
-  case eta_abs L p p₁ hx ih =>
+  case eta_abs L t t₁ hbody ih =>
     cases h₂
     -- Caso 4.1
-    case eta_red lc_t =>
-      rcases eta_redex_body lc_t hx with ⟨q, r_t_q, heq⟩
-      rewrite [heq]
-      use q
+    case eta_red lc_m₂ =>
+      rcases eta_redex_body lc_m₂ hbody with ⟨t', r_m₂_t', ht₁⟩
+      rewrite [ht₁]
+      use t'
       constructor
       · apply clos_refl.step
-        exact eta.eta_red (eta_lc_right r_t_q)
-      · exact clos_refl.step m₂ q r_t_q
+        exact eta.eta_red (eta_lc_right r_m₂_t')
+      · exact clos_refl.step m₂ t' r_m₂_t'
     -- Caso 4.2
     case eta_abs => sorry
 
