@@ -2,7 +2,7 @@ project:
   type: book
 
 book:
-  title: 'Formalización de la confluencia $\beta\eta$ en Lean'
+  title: 'Una prueba transicional de la confluencia de la reducción $\eta$'
   author:
     - name: "Maximiliano Onofre Martínez"
   chapters:
