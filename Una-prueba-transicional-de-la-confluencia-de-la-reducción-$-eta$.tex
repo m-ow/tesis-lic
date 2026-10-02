@@ -302,6 +302,13 @@
 \@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
 \floatname{codelisting}{Listado}
 \newcommand*\listoflistings{\listof{codelisting}{Listado de Listados}}
+\usepackage{amsthm}
+\theoremstyle{remark}
+\AtBeginDocument{\renewcommand*{\proofname}{Demostración}}
+\newtheorem*{remark}{Observación}
+\newtheorem*{solution}{Solución}
+\newtheorem{refremark}{Observación}[chapter]
+\newtheorem{refsolution}{Solución}[chapter]
 \makeatother
 \makeatletter
 \makeatother
@@ -1123,6 +1130,308 @@ En Lean:
 \NormalTok{    lc t →}
 \NormalTok{    (∀ x ∉ L, eta ((app t (bvar 0)) \^{} x) (u \^{} x)) →}
 \NormalTok{    ∃ t\textquotesingle{}, eta t t\textquotesingle{} ∧ u = app t\textquotesingle{} (bvar 0)}
+\end{Highlighting}
+\end{Shaded}
+
+\bookmarksetup{startatroot}
+
+\chapter{Una prueba transicional}\label{una-prueba-transicional}
+
+\textbf{Teorema 4.0.1.} Si un término \(m\) se reduce en un paso a
+\(m_1\) y a \(m_2\), entonces existe un término \(m_3\) tal que
+\(m_1\longrightarrow^{=}m_3\) y \(m_2\longrightarrow^{=}m_3\).
+
+\begin{proof}
+Sean \(m\), \(m_1\) y \(m_2\) términos tales que
+\(m \longrightarrow m_1\) y \(m \longrightarrow m_2\). Procedemos por
+inducción sobre \(m \longrightarrow m_1\) y demostraremos que, para
+cualquier término \(m_2\) con \(m \longrightarrow m_2\), existe un
+término \(m_3\) tal que \(m_1 \longrightarrow^{=} m_3\) y
+\(m_2 \longrightarrow^{=} m_3\).
+
+\textbf{Caso 1.} La reducción \(m\longrightarrow m_1\) tiene la forma \[
+\mathsf{app}\,t\,z \longrightarrow \mathsf{app}\,t_1\,z
+\] y se obtiene de \(t\longrightarrow t_1\) mediante la regla
+\textsc{eta-app-1}, con \(z\) localmente cerrado. La hipótesis de
+inducción afirma que, para cualquier término \(v\) tal que
+\(t\longrightarrow v\), existe un término \(q\) tal que
+\(t_1\longrightarrow^{=} q\) y \(v\longrightarrow^{=} q\).
+
+Distinguimos dos subcasos según la regla utilizada para obtener
+\(\mathsf{app}\,t\,z\longrightarrow m_2\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ eta\_diamond : ∀ m m₁ m₂,}
+\NormalTok{    eta m m₁ → eta m m₂ →}
+\NormalTok{    ∃ m₃, clos\_refl eta m₁ m₃ ∧ clos\_refl eta m₂ m₃ := }\KeywordTok{by}
+\NormalTok{  intro m m₁ m₂ h₁ h₂}
+\NormalTok{  induction h₁ generalizing m₂}
+  \CommentTok{{-}{-} Caso 1}
+\NormalTok{  case eta\_app1 t t₁ z lc\_z r\_t\_t₁ ih =\textgreater{}}
+\NormalTok{    cases h₂}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Caso 1.1.} Tenemos \(m_2=\mathsf{app}\,t_2\,z\), con
+\(t\longrightarrow t_2\). Aplicando la hipótesis de inducción al término
+\(t_2\) y a esta reducción, obtenemos un término \(t_3\) tal que
+\(t_1\longrightarrow^{=}t_3\) y \(t_2\longrightarrow^{=}t_3\).
+
+Tomamos \(m_3=\mathsf{app}\,t_3\,z\). Como \(z\) es localmente cerrado,
+aplicamos el Lema 3.1.1 a ambas relaciones y obtenemos
+\(\mathsf{app}\,t_1\,z\longrightarrow^{=}\mathsf{app}\,t_3\,z\) y
+\(\mathsf{app}\,t_2\,z\longrightarrow^{=}\mathsf{app}\,t_3\,z\). Puesto
+que \(m_1=\mathsf{app}\,t_1\,z\) y \(m_2=\mathsf{app}\,t_2\,z\), estas
+relaciones son precisamente \(m_1\longrightarrow^{=}m_3\) y
+\(m_2\longrightarrow^{=}m_3\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{{-}{-} Caso 1.1}
+\NormalTok{    case eta\_app1 t₂ r\_t\_t₂ lc\_z =\textgreater{}}
+\NormalTok{      rcases ih t₂ r\_t\_t₂ }\KeywordTok{with}\NormalTok{ ⟨t₃, rl\_t₁\_t₃, rl\_t₂\_t₃⟩}
+\NormalTok{      use app t₃ z}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ refl\_app1 lc\_z rl\_t₁\_t₃}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ refl\_app1 lc\_z rl\_t₂\_t₃}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Caso 1.2.} Tenemos \(m_2=\mathsf{app}\,t\,z_1\), con
+\(z\longrightarrow z_1\) y \(t\) localmente cerrado.
+
+Tomamos \(m_3=\mathsf{app}\,t_1\,z_1\). Como \(t\longrightarrow t_1\),
+el Lema 3.0.1 garantiza que \(t_1\) es localmente cerrado. Por el Lema
+3.1.2, para obtener \(m_1\longrightarrow^{=}m_3\) basta demostrar
+\(z\longrightarrow^{=}z_1\). Esta relación se obtiene aplicando la regla
+\textsc{step} a \(z\longrightarrow z_1\).
+
+Análogamente, el Lema 3.0.1 aplicado a \(z\longrightarrow z_1\)
+garantiza que \(z_1\) es localmente cerrado. Por el Lema 3.1.1, para
+obtener \(m_2\longrightarrow^{=}m_3\) basta demostrar
+\(t\longrightarrow^{=}t_1\). Esta relación se obtiene aplicando la regla
+\textsc{step} a \(t\longrightarrow t_1\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{{-}{-} Caso 1.2}
+\NormalTok{    case eta\_app2 z₁ lc\_t r\_z\_z₁ =\textgreater{}}
+\NormalTok{      use app t₁ z₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{apply}\NormalTok{ refl\_app2 (eta\_lc\_right r\_t\_t₁)}
+        \KeywordTok{exact}\NormalTok{ clos\_refl.step z z₁ r\_z\_z₁}
+\NormalTok{      · }\KeywordTok{apply}\NormalTok{ refl\_app1 (eta\_lc\_right r\_z\_z₁)}
+        \KeywordTok{exact}\NormalTok{ clos\_refl.step t t₁ r\_t\_t₁}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Caso 2.} La reducción \(m\longrightarrow m_1\) tiene la forma \[
+\mathsf{app}\,z\,t \longrightarrow \mathsf{app}\,z\,t_1
+\] y se obtiene de \(t\longrightarrow t_1\) mediante la regla
+\textsc{eta-app-2}, con \(z\) localmente cerrado. La hipótesis de
+inducción afirma que, para cualquier término \(v\) tal que
+\(t\longrightarrow v\), existe un término \(q\) tal que
+\(t_1\longrightarrow^{=}q\) y \(v\longrightarrow^{=}q\).
+
+Distinguimos dos subcasos según la regla utilizada para obtener
+\(\mathsf{app}\,z\,t\longrightarrow m_2\).
+
+\textbf{Caso 2.1.} Tenemos \(m_2=\mathsf{app}\,z_1\,t\), con
+\(z\longrightarrow z_1\) y \(t\) localmente cerrado.
+
+Tomamos \(m_3=\mathsf{app}\,z_1\,t_1\). Por el Lema 3.0.1 aplicado a
+\(t\longrightarrow t_1\), el término \(t_1\) es localmente cerrado. El
+Lema 3.1.1 permite reducir la demostración de
+\(m_1\longrightarrow^{=}m_3\) a la de \(z\longrightarrow^{=}z_1\). Esta
+última se obtiene mediante la regla \textsc{step}, aplicada a
+\(z\longrightarrow z_1\).
+
+Por otra parte, \(z_1\) es localmente cerrado por el Lema 3.0.1 aplicado
+a \(z\longrightarrow z_1\). Por el Lema 3.1.2, para obtener
+\(m_2\longrightarrow^{=}m_3\) basta demostrar
+\(t\longrightarrow^{=}t_1\). La regla \textsc{step}, aplicada a
+\(t\longrightarrow t_1\), proporciona esta relación.
+
+\textbf{Caso 2.2.} Tenemos \(m_2=\mathsf{app}\,z\,t_2\), con
+\(t\longrightarrow t_2\). Aplicando la hipótesis de inducción al término
+\(t_2\) y a esta reducción, obtenemos un término \(t_3\) tal que
+\(t_1\longrightarrow^{=}t_3\) y \(t_2\longrightarrow^{=}t_3\).
+
+Tomamos \(m_3=\mathsf{app}\,z\,t_3\). Como \(z\) es localmente cerrado,
+aplicamos el Lema 3.1.2 a ambas relaciones y obtenemos
+\(m_1\longrightarrow^{=}m_3\) y \(m_2\longrightarrow^{=}m_3\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{{-}{-} Caso 2}
+\NormalTok{  case eta\_app2 z t t₁ lc\_z r\_t\_t₁ ih =\textgreater{}}
+\NormalTok{    cases h₂}
+    \CommentTok{{-}{-} Caso 2.1}
+\NormalTok{    case eta\_app1 z₁ r\_z\_z₁ lc\_t =\textgreater{}}
+\NormalTok{      use app z₁ t₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{apply}\NormalTok{ refl\_app1 (eta\_lc\_right r\_t\_t₁)}
+        \KeywordTok{exact}\NormalTok{ clos\_refl.step z z₁ r\_z\_z₁}
+\NormalTok{      · }\KeywordTok{apply}\NormalTok{ refl\_app2 (eta\_lc\_right r\_z\_z₁)}
+        \KeywordTok{exact}\NormalTok{ clos\_refl.step t t₁ r\_t\_t₁}
+    \CommentTok{{-}{-} Caso 2.2}
+\NormalTok{    case eta\_app2 t₂ lc\_z r\_t\_t₂ =\textgreater{}}
+\NormalTok{      rcases ih t₂ r\_t\_t₂ }\KeywordTok{with}\NormalTok{ ⟨t₃, rl\_t₁\_t₃, rl\_t₂\_t₃⟩}
+\NormalTok{      use app z t₃}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ refl\_app2 lc\_z rl\_t₁\_t₃}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ refl\_app2 lc\_z rl\_t₂\_t₃}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Caso 3.} La reducción \(m\longrightarrow m_1\) tiene la forma \[
+\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow t
+\] y se obtiene mediante la regla \textsc{eta-red}, con \(t\) localmente
+cerrado. Distinguimos dos subcasos según la regla utilizada para obtener
+\(\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow m_2\).
+
+\textbf{Caso 3.1.} La reducción se obtiene mediante la regla
+\textsc{eta-red}, por lo que \(m_2=t\).
+
+Tomamos \(m_3=t\). Puesto que \(m_1=t\) y \(m_2=t\), ambas relaciones
+requeridas son \(t\longrightarrow^{=}t\). Aplicando la regla
+\textsc{refl} al término \(t\), obtenemos \(m_1\longrightarrow^{=}m_3\)
+y \(m_2\longrightarrow^{=}m_3\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{{-}{-} Caso 3}
+\NormalTok{  case eta\_red t lc\_t =\textgreater{}}
+\NormalTok{    cases h₂}
+    \CommentTok{{-}{-} Caso 3.1}
+\NormalTok{    case eta\_red lc\_t =\textgreater{}}
+\NormalTok{      use t}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ clos\_refl.refl t}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ clos\_refl.refl t}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Caso 3.2.} La reducción se obtiene mediante la regla
+\textsc{eta-abs}. Tenemos \(m_2=\mathsf{abs}\,u\) y un conjunto finito
+de nombres \(L\) tal que \((\mathsf{app}\,t\,0)^x\longrightarrow u^x\)
+para todo \(x\notin L\).
+
+Aplicando el Lema 3.2.1 a esta condición y a la clausura local de \(t\),
+obtenemos un término \(t'\) tal que \(t\longrightarrow t'\) y
+\(u=\mathsf{app}\,t'\,0\). Al sustituir esta igualdad en
+\(m_2=\mathsf{abs}\,u\), resulta
+\(m_2=\mathsf{abs}\,(\mathsf{app}\,t'\,0)\).
+
+Tomamos \(m_3=t'\). De \(t\longrightarrow t'\) obtenemos
+\(t\longrightarrow^{=}t'\) mediante la regla \textsc{step}. Como
+\(m_1=t\), esta relación es \(m_1\longrightarrow^{=}m_3\).
+
+Para obtener \(m_2\longrightarrow^{=}m_3\), por la regla \textsc{step}
+basta demostrar
+\(\mathsf{abs}\,(\mathsf{app}\,t'\,0)\longrightarrow t'\). El Lema 3.0.1
+aplicado a \(t\longrightarrow t'\) garantiza que \(t'\) es localmente
+cerrado, por lo que la regla \textsc{eta-red} proporciona el paso
+requerido.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{{-}{-} Caso 3.2}
+\NormalTok{    case eta\_abs L u hbody =\textgreater{}}
+\NormalTok{      rcases eta\_redex\_body lc\_t hbody }\KeywordTok{with}\NormalTok{ ⟨t\textquotesingle{}, r\_t\_t\textquotesingle{}, hu⟩}
+      \KeywordTok{rewrite}\NormalTok{ [hu]}
+\NormalTok{      use t\textquotesingle{}}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ clos\_refl.step t t\textquotesingle{} r\_t\_t\textquotesingle{}}
+\NormalTok{      · }\KeywordTok{apply}\NormalTok{ clos\_refl.step}
+        \KeywordTok{exact}\NormalTok{ eta.eta\_red (eta\_lc\_right r\_t\_t\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
+
+\end{proof}
+
+\textbf{Teorema 4.0.2 (Teorema de Church-Rosser).} La reducción \(\eta\)
+es confluente.
+
+\begin{proof}
+Debemos demostrar que \[
+\forall m,m_1,m_2,\quad
+m\twoheadrightarrow m_1\implies
+m\twoheadrightarrow m_2\implies
+\exists m_3,\;
+\bigl[
+m_1\twoheadrightarrow m_3\land
+m_2\twoheadrightarrow m_3
+\bigr],
+\] es decir, que \(\twoheadrightarrow\) tiene la propiedad del diamante.
+Notemos que \(\twoheadrightarrow=(\longrightarrow^{=})^+\) por el Lema
+1.1.1. Así, por el Lema 1.2.1, basta demostrar que
+\(\longrightarrow^{=}\) tiene la propiedad del diamante.
+
+Sean entonces \(m\), \(m_1\) y \(m_2\) términos tales que
+\(m\longrightarrow^{=}m_1\) y \(m\longrightarrow^{=}m_2\). Procedemos
+por casos sobre \(m\longrightarrow^{=}m_1\).
+
+\textbf{Caso 1.} La reducción consta de cero pasos, de modo que
+\(m_1=m\).
+
+El objetivo queda entonces en encontrar un término \(m_3\) tal que
+\(m\longrightarrow^{=}m_3\) y \(m_2\longrightarrow^{=}m_3\). Tomamos
+\(m_3=m_2\). La primera relación es la hipótesis
+\(m\longrightarrow^{=}m_2\), mientras que la segunda se obtiene
+aplicando la regla \textsc{refl} al término \(m_2\).
+
+\textbf{Caso 2.} La reducción de \(m\) a \(m_1\) consta de un paso, es
+decir, \(m\longrightarrow m_1\). Procedemos de manera análoga con
+\(m\longrightarrow^{=}m_2\).
+
+\textbf{Caso 2.1.} Esta reducción consta de cero pasos, por lo que
+\(m_2=m\).
+
+Buscamos, por tanto, un término \(m_3\) tal que
+\(m_1\longrightarrow^{=}m_3\) y \(m\longrightarrow^{=}m_3\). Tomamos
+\(m_3=m_1\). La primera relación se obtiene aplicando la regla
+\textsc{refl} al término \(m_1\), mientras que para la segunda aplicamos
+la regla \textsc{step} a \(m\longrightarrow m_1\).
+
+\textbf{Caso 2.2.} El término \(m\) se reduce también a \(m_2\) en un
+paso. Aplicando el Teorema 4.0.1 a \(m\longrightarrow m_1\) y
+\(m\longrightarrow m_2\), obtenemos un término \(m_3\) tal que
+\(m_1\longrightarrow^{=}m_3\) y \(m_2\longrightarrow^{=}m_3\).
+
+En todos los casos hemos obtenido un término \(m_3\) que satisface las
+relaciones requeridas. Por tanto, \(\longrightarrow^{=}\) tiene la
+propiedad del diamante y, en consecuencia, la reducción \(\eta\) es
+confluente.
+\end{proof}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{theorem}\NormalTok{ church\_rosser : confluent eta := }\KeywordTok{by}
+\NormalTok{  unfold confluent}
+  \KeywordTok{rewrite}\NormalTok{ [clos\_refl\_trans\_eq]}
+  \KeywordTok{apply}\NormalTok{ diamond\_clos\_trans}
+\NormalTok{  intro m m₁ m₂ h₁ h₂}
+\NormalTok{  cases h₁}
+  \CommentTok{{-}{-} Caso 1}
+\NormalTok{  case refl =\textgreater{}}
+\NormalTok{    use m₂}
+\NormalTok{    constructor}
+\NormalTok{    · }\KeywordTok{exact}\NormalTok{ h₂}
+\NormalTok{    · }\KeywordTok{exact}\NormalTok{ clos\_refl.refl m₂}
+  \CommentTok{{-}{-} Caso 2}
+\NormalTok{  case step hstep₁ =\textgreater{}}
+\NormalTok{    cases h₂}
+    \CommentTok{{-}{-} Caso 2.1}
+\NormalTok{    case refl =\textgreater{}}
+\NormalTok{      use m₁}
+\NormalTok{      constructor}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ clos\_refl.refl m₁}
+\NormalTok{      · }\KeywordTok{exact}\NormalTok{ clos\_refl.step m m₁ hstep₁}
+    \CommentTok{{-}{-} Caso 2.2}
+\NormalTok{    case step hstep₂ =\textgreater{}}
+      \KeywordTok{exact}\NormalTok{ eta\_diamond m m₁ m₂ hstep₁ hstep₂}
 \end{Highlighting}
 \end{Shaded}
 

@@ -10,6 +10,7 @@ book:
     - Capitulo1.qmd
     - Capitulo2.qmd
     - Capitulo3.qmd
+    - Capitulo4.qmd
 lang: es
 format:
   pdf:
