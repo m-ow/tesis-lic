@@ -20,6 +20,5 @@ format:
     number-depth: 0
     syntax-definitions: [lean.xml]
     include-in-header: inpreamble.tex
-    include-before-body: thmdefs.tex
     monofont: JuliaMono
     keep-tex: false
