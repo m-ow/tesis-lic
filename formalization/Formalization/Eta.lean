@@ -1,4 +1,4 @@
-import Formalization.lambda
+import Formalization.Lambda
 
 set_option linter.style.header false
 

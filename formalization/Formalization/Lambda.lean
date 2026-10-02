@@ -1,4 +1,4 @@
-import Formalization.relations
+import Formalization.Relations
 
 set_option linter.style.header false
 
