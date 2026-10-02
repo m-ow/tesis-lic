@@ -1,8 +1,8 @@
-# Una prueba transicional de la confluencia de la reducción η
+## Una prueba transicional de la confluencia de la reducción η
 
 Tesis de licenciatura de Maximiliano Onofre Martínez.
 
-## Generar el PDF
+### Generar el PDF
 
 Se requieren Quarto, una distribución de LaTeX y la fuente JuliaMono.
 
