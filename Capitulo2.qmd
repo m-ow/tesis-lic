@@ -1,0 +1,252 @@
+# Cálculo $\lambda$
+
+Para representar términos del cálculo $\lambda$ utilizaremos la representación
+*locally nameless*. En ella, las variables ligadas se representan mediante
+índices de de Bruijn, mientras que las variables libres conservan un nombre.
+De esta manera, la sintaxis de los términos está dada por
+
+$$
+t ::= 
+\mathsf{bvar} \, i  \mid 
+\mathsf{fvar} \, x  \mid 
+\mathsf{abs}  \, t  \mid 
+\mathsf{app}  \, t \, t  
+$$
+
+donde $i \in \mathbb{N}$ es un índice de de Bruijn y 
+$x$ es el nombre de una variable libre. En Lean tomamos 
+los nombres como cadenas de caracteres:
+
+
+```lean 
+inductive trm : Type
+  | bvar : ℕ → trm
+  | fvar : String → trm
+  | abs  : trm → trm
+  | app  : trm → trm → trm
+```
+
+Para simplificar la escritura, usamos cadenas de caracteres para variables
+libres y naturales para variables ligadas:
+```lean 
+instance : Coe String trm where
+  coe := fvar
+
+instance (n : ℕ) : OfNat trm n where
+  ofNat := bvar n
+```
+
+Por ejemplo, el término $\lambda x. \, x \, y$ puede escribirse en Lean como 
+`abs (app 0 "y")`.
+
+### Variables libres
+
+El conjunto de variables libres de un término $t$, denotado por
+$\operatorname{fv} (t)$, se define recursivamente mediante
+$$
+\begin{array}{l c l}
+\operatorname{fv}(\mathsf{bvar}\, i) & \equiv & \emptyset \\ 
+\operatorname{fv}(\mathsf{fvar}\, x) & \equiv & \{x\} \\ 
+\operatorname{fv}(\mathsf{app}\, t_1\, t_2) & \equiv & \operatorname{fv}(t_1) \cup \operatorname{fv}(t_2) \\ 
+\operatorname{fv}(\mathsf{abs}\, t) & \equiv & \operatorname{fv}(t)
+\end{array}
+$$
+Su implementación en Lean es:
+
+```lean 
+def fv (t : trm) : Finset String :=
+  match t with
+  | bvar _    => ∅
+  | fvar x    => {x}
+  | app t₁ t₂ => fv t₁ ∪ fv t₂
+  | abs u     => fv u
+```
+
+## 2.1. Apertura 
+
+En la representación *locally nameless*, una abstracción tiene la forma
+$\mathsf{abs} \, t$, donde el cuerpo $t$ utiliza índices de de Bruijn para
+referirse a las variables ligadas. Para trabajar con este cuerpo resulta útil
+reemplazar las referencias a la abstracción exterior por una variable libre.
+A esta operación la llamaremos *apertura*.
+
+Para definirla, utilizamos una operación auxiliar
+$\{k\rightsquigarrow x\}\,t$, donde $k$ indica el índice
+que se reemplaza por la variable libre de nombre $x$.
+Al entrar en una abstracción, el parámetro $k$ aumenta en uno.
+La operación se define recursivamente por
+
+$$
+\begin{array}{l c l}
+\{k \rightsquigarrow x\} \, (\mathsf{bvar}\, i) & \equiv & \text{si } (i = k) \text{ entonces } (\mathsf{fvar}\, x) \text{ si no } (\mathsf{bvar}\, i) \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{fvar}\, y) & \equiv & \mathsf{fvar}\, y \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{app}\, t_1 \, t_2) & \equiv & \mathsf{app}\, (\{k \rightsquigarrow x \} \, t_1) \, (\{k \rightsquigarrow x\} \, t_2) \\ 
+\{k \rightsquigarrow x\} \, (\mathsf{abs}\, t) & \equiv & \mathsf{abs}\, (\{(k + 1) \rightsquigarrow x\} \, t)
+\end{array}
+$$
+
+En Lean:
+
+```lean 
+def open_rec (k : ℕ) (x : String) (t : trm) : trm :=
+  match t with
+  | bvar i    => if i = k then fvar x else bvar i
+  | fvar y    => fvar y
+  | app t₁ t₂ => app (open_rec k x t₁) (open_rec k x t₂)
+  | abs t     => abs (open_rec (k + 1) x t)
+
+notation "{" k " ~> " x "} " t => open_rec k x t
+```
+
+La apertura del cuerpo $t$ con una variable libre $x$ se define tomando
+$k=0$:
+$$
+t^x \equiv \{ 0 \rightsquigarrow x \} \, t
+$$
+
+En Lean:
+
+```lean 
+def open_var (t : trm) (x : String) : trm :=
+  {0 ~> x} t
+
+infixl:80 " ^ " => open_var
+```
+
+Así, $t^x$ representa el resultado
+de aplicar la apertura al cuerpo de una abstracción $\mathsf{abs} \, t$,
+utilizando la variable libre $x$.
+
+Por ejemplo, consideremos en Lean la abstracción `abs t`,
+con `t = app (abs (app 0 1)) 0`.
+Al abrir su cuerpo con el nombre `"x"`, obtenemos:
+
+```lean 
+example :
+  (app (abs (app 0 1)) 0) ^ "x" = (app (abs (app 0 "x")) "x") := rfl
+```
+
+El índice `0` que aparece dentro de la abstracción interior permanece
+sin cambios, pues hace referencia a dicha abstracción. En cambio,
+el índice `1` que aparece dentro de ella y el índice `0` exterior hacen
+referencia a la abstracción exterior y son reemplazados por `"x"`.
+
+## 2.2. Clausura local
+
+El tipo `trm` admite expresiones cuyos índices de de Bruijn
+no hacen referencia a ninguna abstracción, como ocurre
+en `bvar 0` y en `abs 1`.
+En el primer caso, el índice no se encuentra bajo ninguna
+abstracción y, en el segundo, no corresponde a la única
+abstracción presente, mientras que `abs 0` sí representa
+el término identidad $\lambda x.\,x$.
+
+Diremos que un término es localmente cerrado si todos los índices 
+de de Bruijn que aparecen en él se encuentran ligados por 
+alguna abstracción. La proposición $\mathsf{lc} \, t$ 
+expresa que el término $t$ es localmente cerrado. 
+Este predicado se define mediante las reglas
+
+$$
+\inferrule*[right=\textsc{lc-var}]
+  { }
+  {\mathsf{lc} \, (\mathsf{fvar}\,x)}
+\qquad
+\inferrule*[right=\textsc{lc-app}]
+  {\mathsf{lc} \, t_1 \\ \mathsf{lc} \, t_2}
+  {\mathsf{lc} \, (\mathsf{app} \, t_1 \, t_2)}
+\qquad
+\inferrule*[right=\textsc{lc-abs}]
+  {\forall x \notin L, \quad \mathsf{lc} \, (t^x)}
+  {\mathsf{lc} \, (\mathsf{abs}\,t)}
+$$
+
+donde $L$ es algún conjunto finito de nombres.
+
+En Lean, esta definición se expresa de la siguiente manera:
+
+```lean 
+inductive lc : trm → Prop
+  | lc_var (x : String) :
+      lc (fvar x)
+  | lc_app {t₁ t₂ : trm} :
+      lc t₁ → lc t₂ → lc (app t₁ t₂)
+  | lc_abs (L : Finset String) (t : trm) :
+      (∀ x ∉ L, lc (t ^ x)) →
+      lc (abs t)
+```
+
+El constructor `lc_var` establece que toda variable libre es 
+localmente cerrada. El constructor `lc_app` indica que una aplicación 
+es localmente cerrada cuando lo son sus dos componentes. 
+Por último, `lc_abs` emplea *cuantificación cofinita*: exige elegir 
+un conjunto finito `L` y demostrar que `t ^ x` es localmente 
+cerrado para todo nombre `x` que no pertenezca a `L`.
+La definición no incluye un constructor para términos de la forma `bvar i`,
+pues un índice aislado no está ligado por ninguna abstracción y, por tanto, 
+no es localmente cerrado.
+
+## 2.3. Cierre
+
+Mientras que la apertura reemplaza determinadas referencias
+ligadas por una variable libre, el cierre reemplaza las
+apariciones libres de un nombre por índices de de Bruijn.
+En particular, dado un término $t$
+y un nombre $x$, permite construir el cuerpo de una
+abstracción que liga esas apariciones de $x$.
+
+Para definirla, utilizamos una operación auxiliar
+$\{k \leftsquigarrow x \} \, t$, donde $k$ indica el índice de de Bruijn que
+debe asignarse a las variables libres con nombre $x$. Se define
+recursivamente por
+
+$$
+\begin{array}{l c l}
+\{k \leftsquigarrow x\} \, (\mathsf{bvar}\, i) & \equiv & \mathsf{bvar}\, i \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{fvar}\, y) & \equiv & \text{si } (x = y) \text{ entonces } (\mathsf{bvar}\, k) \text{ si no } (\mathsf{fvar}\, y) \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{app}\, t_1 \, t_2) & \equiv & \mathsf{app}\, (\{k \leftsquigarrow x \} \, t_1) \, (\{k \leftsquigarrow x\} \, t_2) \\ 
+\{k \leftsquigarrow x\} \, (\mathsf{abs}\, t) & \equiv & \mathsf{abs}\, (\{(k + 1) \leftsquigarrow x\} \, t)
+\end{array}
+$$
+
+En Lean:
+
+```lean 
+def close_var_rec (k : ℕ) (x : String) (t : trm) : trm :=
+  match t with
+  | bvar i    => bvar i
+  | fvar y    => if x = y then bvar k else fvar y
+  | app t₁ t₂ => app (close_var_rec k x t₁) (close_var_rec k x t₂)
+  | abs t     => abs (close_var_rec (k + 1) x t)
+
+notation "{" k " <~ " x "} " t => close_var_rec k x t
+```
+
+El cierre de un término $t$ respecto de una variable libre $x$ se define
+tomando $k=0$:
+$$
+{}^{\textbackslash x} t \equiv \{0 \leftsquigarrow x \} \, t
+$$
+En Lean:
+
+```lean 
+def close_var (t : trm) (x : String) : trm :=
+  {0 <~ x} t
+
+infixl:80 " ^* " => close_var
+```
+
+Así, ${}^{\textbackslash x} t$ reemplaza las variables libres con nombre $x$ por índices de
+de Bruijn que, al formar $\mathsf{abs} \, ({}^{\textbackslash x} t)$, hacen referencia a esta
+abstracción.
+
+Por ejemplo:
+
+```lean
+example :
+  (app (abs (app 0 "x")) "x") ^* "x" = (app (abs (app 0 1)) 0) := rfl
+```
+
+En este ejemplo, la aparición libre de `"x"` exterior se
+reemplaza por `0`, mientras que la situada dentro de la
+abstracción se reemplaza por `1`.
