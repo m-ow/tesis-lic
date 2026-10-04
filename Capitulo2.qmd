@@ -260,11 +260,11 @@ En este ejemplo, la aparición libre de `"x"` exterior se
 reemplaza por `0`, mientras que la situada dentro de la
 abstracción se reemplaza por `1`.
 
-\textbf{Lema 2.3.1.} Si $x\notin\operatorname{fv}(t)$, entonces
-$t=(t^x)^{\backslash x}$.
+\textbf{Lema 2.3.1.} Si $x\notin\operatorname{fv}(t)$,
+entonces $(t^x)^{\backslash x}=t$.
 
 ```lean 
-lemma open_close_var {x : String} {t : trm} :
-    x ∉ fv t → 
-    t = (t ^ x) ^\ x
+lemma close_open_var {x : String} {t : trm} :
+    x ∉ fv t →
+    (t ^ x) ^\ x = t
 ```
