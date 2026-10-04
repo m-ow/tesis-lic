@@ -61,9 +61,20 @@ notation "{" k " <~ " x "} " t => close_var_rec k x t
 def close_var (t : trm) (x : String) : trm :=
   {0 <~ x} t
 
-infixl:80 " ^* " => close_var
+infixl:80 " ^\\ " => close_var
 
 example :
-  (app (abs (app 0 "x")) "x") ^* "x" = (app (abs (app 0 1)) 0) := rfl
+  (app (abs (app 0 "x")) "x") ^\ "x" = (app (abs (app 0 1)) 0) := rfl
+
+lemma open_close (x : String) (t : trm) (k : ℕ) :
+    x ∉ fv t →
+    t = close_var_rec k x (open_rec k x t) := by
+  induction t generalizing k <;> grind [open_rec, close_var_rec, fv]
+
+lemma open_close_var {x : String} {t : trm} :
+    x ∉ fv t →
+    t = (t ^ x) ^\ x := by
+  intro hx
+  exact open_close x t 0 hx
 
 end trm

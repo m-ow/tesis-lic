@@ -225,7 +225,7 @@ notation "{" k " <~ " x "} " t => close_var_rec k x t
 El cierre de un término $t$ respecto de una variable libre $x$ se define
 tomando $k=0$:
 $$
-{}^{\textbackslash x} t \equiv \{0 \leftsquigarrow x \} \, t
+t^{\backslash x} \equiv \{0 \leftsquigarrow x \} \, t
 $$
 En Lean:
 
@@ -233,20 +233,30 @@ En Lean:
 def close_var (t : trm) (x : String) : trm :=
   {0 <~ x} t
 
-infixl:80 " ^* " => close_var
+infixl:80 " ^\\ " => close_var
 ```
 
-Así, ${}^{\textbackslash x} t$ reemplaza las variables libres con nombre $x$ por índices de
-de Bruijn que, al formar $\mathsf{abs} \, ({}^{\textbackslash x} t)$, hacen referencia a esta
+Así, $t^{\backslash x}$ reemplaza las variables libres con nombre $x$
+por índices de de Bruijn que, al formar
+$\mathsf{abs} \, (t^{\backslash x})$, hacen referencia a esta
 abstracción.
 
 Por ejemplo:
 
 ```lean
 example :
-  (app (abs (app 0 "x")) "x") ^* "x" = (app (abs (app 0 1)) 0) := rfl
+  (app (abs (app 0 "x")) "x") ^\ "x" = (app (abs (app 0 1)) 0) := rfl
 ```
 
 En este ejemplo, la aparición libre de `"x"` exterior se
 reemplaza por `0`, mientras que la situada dentro de la
 abstracción se reemplaza por `1`.
+
+\textbf{Lema 2.3.1.} Si $x\notin\operatorname{fv}(t)$, entonces
+$t=(t^x)^{\backslash x}$.
+
+```lean 
+lemma open_close_var {x : String} {t : trm} :
+    x ∉ fv t → 
+    t = (t ^ x) ^\ x
+```
