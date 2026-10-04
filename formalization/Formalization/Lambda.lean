@@ -23,6 +23,11 @@ def fv (t : trm) : Finset String :=
   | app t₁ t₂ => fv t₁ ∪ fv t₂
   | abs u     => fv u
 
+lemma exists_fresh : ∀ L : Finset String,
+    ∃ x, x ∉ L := by
+  intro L
+  exact Infinite.exists_notMem_finset L
+
 def open_rec (k : ℕ) (x : String) (t : trm) : trm :=
   match t with
   | bvar i    => if i = k then fvar x else bvar i

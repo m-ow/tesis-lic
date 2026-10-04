@@ -62,6 +62,14 @@ def fv (t : trm) : Finset String :=
   | abs u     => fv u
 ```
 
+\textbf{Lema 2.0.1.} Para todo conjunto finito de nombres $L$,
+existe $x\notin L$.
+
+```lean 
+lemma exists_fresh : ∀ L : Finset String,
+    ∃ x, x ∉ L
+```
+
 ## 2.1. Apertura 
 
 En la representación *locally nameless*, una abstracción tiene la forma
