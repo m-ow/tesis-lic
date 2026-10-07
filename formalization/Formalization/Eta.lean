@@ -21,13 +21,17 @@ inductive eta : relation trm
       eta (abs t) (abs t')
 
 lemma eta_lc_right {t t' : trm} :
-    eta t t' → lc t':= by
+    eta t t' → lc t' := by
   intro h
   induction h with
-  | eta_red ht => exact ht
-  | eta_app1 ht₂ hstep ih => exact lc.lc_app ih ht₂
-  | eta_app2 ht₁ hstep ih => exact lc.lc_app ht₁ ih
-  | eta_abs L hsteps ih => exact lc.lc_abs L _ ih
+  | eta_red ht =>
+      exact ht
+  | eta_app1 ht₂ hstep ih =>
+      exact lc.lc_app ih ht₂
+  | eta_app2 ht₁ hstep ih =>
+      exact lc.lc_app ht₁ ih
+  | eta_abs L hsteps ih =>
+      exact lc.lc_abs L _ ih
 
 lemma refl_app1 {t₁ t₁' t₂ : trm} :
     lc t₂ →
@@ -35,8 +39,10 @@ lemma refl_app1 {t₁ t₁' t₂ : trm} :
     clos_refl eta (app t₁ t₂) (app t₁' t₂) := by
   intro lc_t₂ h_red
   cases h_red with
-  | refl t₁ => exact .refl (t₁.app t₂)
-  | step t₁ t₁' h => exact .step (t₁.app t₂) (t₁'.app t₂) (.eta_app1 lc_t₂ h)
+  | refl t₁ =>
+      exact .refl (app t₁ t₂)
+  | step t₁ t₁' h =>
+      exact .step (app t₁ t₂) (app t₁' t₂) (.eta_app1 lc_t₂ h)
 
 lemma refl_app2 {t₁ t₂ t₂' : trm} :
     lc t₁ →
@@ -44,8 +50,10 @@ lemma refl_app2 {t₁ t₂ t₂' : trm} :
     clos_refl eta (app t₁ t₂) (app t₁ t₂') := by
   intro lc_t₁ h_red
   cases h_red with
-  | refl t₂ => exact .refl (t₁.app t₂)
-  | step t₂ t₂' h => exact .step (t₁.app t₂) (t₁.app t₂') (.eta_app2 lc_t₁ h)
+  | refl t₂ =>
+      exact .refl (app t₁ t₂)
+  | step t₂ t₂' h =>
+      exact .step (app t₁ t₂) (app t₁ t₂') (.eta_app2 lc_t₁ h)
 
 lemma eta_redex_body {L : Finset String} {t u : trm} :
     lc t →

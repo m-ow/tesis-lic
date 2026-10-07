@@ -47,16 +47,16 @@ lemma to_trans_refl {a b : X} {R : relation X} :
   | trans a b c hab hbc ih₁ ih₂ =>
       exact .trans a b c ih₁ ih₂
 
-lemma to_reflTrans {a b : X} {R : relation X} :
+lemma to_refl_trans {a b : X} {R : relation X} :
     clos_trans (clos_refl R) a b → clos_refl_trans R a b := by
   intro h
   induction h with
   | step a b hr =>
-    cases hr with
-    | refl a =>
-        exact .refl a
-    | step a b hab =>
-        exact .step a b hab
+      cases hr with
+      | refl a =>
+          exact .refl a
+      | step a b hab =>
+          exact .step a b hab
   | trans a b c hab hbc ih₁ ih₂ =>
       exact .trans a b c ih₁ ih₂
 
@@ -65,16 +65,18 @@ lemma clos_refl_trans_eq : ∀ R : relation X,
   intro R
   funext a b
   apply propext
-  exact ⟨to_trans_refl, to_reflTrans⟩
+  exact ⟨to_trans_refl, to_refl_trans⟩
 
 def diamond (R : relation X) : Prop :=
-  ∀ m m₁ m₂ : X, R m m₁ → R m m₂ → ∃ m₃ : X, R m₁ m₃ ∧ R m₂ m₃
+  ∀ m m₁ m₂, R m m₁ → R m m₂ →
+    ∃ m₃, R m₁ m₃ ∧ R m₂ m₃
 
 def confluent (R : relation X) : Prop :=
   diamond (clos_refl_trans R)
 
 lemma diamond_step_trans {R : relation X} (h : diamond R) :
-    ∀ a b c : X, clos_trans R a b → R a c → ∃ d : X, R b d ∧ clos_trans R c d := by
+    ∀ a b c, clos_trans R a b → R a c →
+    ∃ d, R b d ∧ clos_trans R c d := by
   intro a b c hab hac
   induction hab generalizing c with
   | step a b hab =>
