@@ -181,7 +181,8 @@ En Lean:
 
 ```lean
 def diamond (R : relation X) : Prop :=
-  ∀ m m₁ m₂ : X, R m m₁ → R m m₂ → ∃ m₃ : X, R m₁ m₃ ∧ R m₂ m₃
+  ∀ m m₁ m₂, R m m₁ → R m m₂ →
+    ∃ m₃, R m₁ m₃ ∧ R m₂ m₃
 ```
 
 Escribiendo $a \longrightarrow b$ en lugar de $R(a,b)$, 

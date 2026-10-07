@@ -21,4 +21,4 @@ format:
     syntax-definitions: [lean.xml]
     include-in-header: inpreamble.tex
     monofont: JuliaMono
-    keep-tex: false
+    keep-tex: true
