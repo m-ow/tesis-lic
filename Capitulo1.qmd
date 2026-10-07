@@ -125,6 +125,42 @@ inductive clos_refl_trans (R : relation X) : relation X
 \textbf{Lema 1.1.1.} La clausura reflexiva-transitiva de toda relación 
 es igual a la clausura transitiva de su clausura reflexiva.
 $$ R^* = (R^{=})^+ $$
+
+::: {.proof}
+
+- Para demostrar $R^* \subseteq(R^{=})^+$, procedemos por
+inducción sobre $R^*(a,b)$.
+
+  - En el caso de la regla \textsc{refl}, tenemos $a=b$:
+    obtenemos $R^{=}(a,a)$ mediante \textsc{refl}
+    y $(R^{=})^+(a,a)$ mediante \textsc{step}.
+  
+  - En el caso de \textsc{step}, tenemos $R(a,b)$,
+    que incorporamos primero a $R^{=}$ y después
+    a $(R^{=})^+$ mediante las respectivas reglas
+    \textsc{step}.
+  
+  - Finalmente, en el caso de \textsc{trans},
+    las hipótesis de inducción proporcionan
+    $(R^{=})^+(a,b)$ y $(R^{=})^+(b,c)$,
+    de donde obtenemos $(R^{=})^+(a,c)$
+    mediante \textsc{trans}.
+
+- Para demostrar $(R^{=})^+\subseteq R^*$, procedemos por
+  inducción sobre $(R^{=})^+(a,b)$.
+
+  - En el caso de \textsc{step}, tenemos $R^{=}(a,b)$.
+    Según se haya utilizado \textsc{refl} 
+    o \textsc{step} de $R^{=}$, hay dos posibilidades: 
+    $a=b$ o $R(a,b)$. Aplicando, respectivamente, \textsc{refl} o
+    \textsc{step} de $R^*$, obtenemos $R^*(a,b)$.
+
+  - Finalmente, en el caso de \textsc{trans},
+    las hipótesis de inducción proporcionan $R^*(a,b)$
+    y $R^*(b,c)$, de donde obtenemos $R^*(a,c)$
+    mediante \textsc{trans}.
+:::
+
 Su enunciado en Lean es:
 ```lean
 lemma clos_refl_trans_eq : ∀ R : relation X, 
