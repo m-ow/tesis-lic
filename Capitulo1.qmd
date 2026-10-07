@@ -215,6 +215,84 @@ def confluent (R : relation X) : Prop :=
 \textbf{Lema 1.2.1.} Si una relación $R$ tiene la propiedad del diamante,
 entonces su clausura transitiva $R^+$ también la tiene.
 
+::: {.proof}
+Sean $a$, $b$ y $c$ tales que $R^+(a,b)$ y $R^+(a,c)$.
+Tenemos dos sucesiones finitas de uno o más pasos de $R$ con origen en $a$. 
+Colocamos la primera en el borde superior de una cuadrícula
+y la segunda en el borde izquierdo.
+
+```{=latex}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.6cm, y=1.3cm]
+  \coordinate (a)  at (0,0);
+  \coordinate (a1) at (1,0);
+  \coordinate (a2) at (2,0);
+  \coordinate (b)  at (3,0);
+
+  \coordinate (c1) at (0,-1);
+  \coordinate (u)  at (1,-1);
+  \coordinate (v)  at (2,-1);
+  \coordinate (w)  at (3,-1);
+
+  \coordinate (c) at (0,-2);
+  \coordinate (s) at (1,-2);
+  \coordinate (t) at (2,-2);
+  \coordinate (d) at (3,-2);
+
+  \draw[->, thick] (a) -- (a1);
+  \draw[->, thick] (a1) -- (a2);
+  \draw[->, thick] (a2) -- (b);
+  \draw[->, thick] (a) -- (c1);
+  \draw[->, thick] (c1) -- (c);
+
+  \draw[->, dashed] (c1) -- (u);
+  \draw[->, dashed] (u) -- (v);
+  \draw[->, dashed] (v) -- (w);
+
+  \draw[->, dashed] (c) -- (s);
+  \draw[->, dashed] (s) -- (t);
+  \draw[->, dashed] (t) -- (d);
+
+  \draw[->, dashed] (a1) -- (u);
+  \draw[->, dashed] (a2) -- (v);
+  \draw[->, dashed] (b) -- (w);
+
+  \draw[->, dashed] (u) -- (s);
+  \draw[->, dashed] (v) -- (t);
+  \draw[->, dashed] (w) -- (d);
+
+  \fill (a)  circle (1.5pt) node[above left] {$a$};
+  \fill (a1) circle (1.5pt) node[above] {$a_1$};
+  \fill (a2) circle (1.5pt) node[above] {$a_2$};
+  \fill (b)  circle (1.5pt) node[above right] {$b$};
+
+  \fill (c1) circle (1.5pt) node[left] {$c_1$};
+  \fill (u)  circle (1.5pt);
+  \fill (v)  circle (1.5pt);
+  \fill (w)  circle (1.5pt);
+
+  \fill (c) circle (1.5pt) node[below left] {$c$};
+  \fill (s) circle (1.5pt);
+  \fill (t) circle (1.5pt);
+  \fill (d) circle (1.5pt) node[below right] {$d$};
+\end{tikzpicture}
+\end{figure}
+```
+
+En cada casilla, los bordes superior e izquierdo son dos
+pasos de $R$ con el mismo origen. Aplicando la propiedad
+del diamante de $R$, obtenemos los dos pasos restantes.
+
+Repetimos este procedimiento de izquierda a derecha y
+de arriba abajo, hasta completar la cuadrícula. 
+De esta manera, los bordes derecho e inferior proporcionan 
+sucesiones de uno o más pasos desde $b$ y desde $c$
+hasta el elemento $d$ situado en la esquina inferior derecha.
+Por tanto, $R^+(b,d)$ y $R^+(c,d)$.
+
+:::
+
 El enunciado correspondiente en Lean es:
 
 ```lean
