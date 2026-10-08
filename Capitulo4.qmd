@@ -92,9 +92,9 @@ a $t\longrightarrow t_1$.
     case eta_app2 z₁ lc_t r_z_z₁ =>
       use app t₁ z₁
       constructor
-      · apply refl_app2 (eta_lc_right r_t_t₁)
+      · apply refl_app2 (eta_regular r_t_t₁).2
         exact clos_refl.step z z₁ r_z_z₁
-      · apply refl_app1 (eta_lc_right r_z_z₁)
+      · apply refl_app1 (eta_regular r_z_z₁).2
         exact clos_refl.step t t₁ r_t_t₁
 ```
 
@@ -151,9 +151,9 @@ $m_1\longrightarrow^{=}m_3$ y $m_2\longrightarrow^{=}m_3$.
     case eta_app1 z₁ r_z_z₁ lc_t =>
       use app z₁ t₁
       constructor
-      · apply refl_app1 (eta_lc_right r_t_t₁)
+      · apply refl_app1 (eta_regular r_t_t₁).2
         exact clos_refl.step z z₁ r_z_z₁
-      · apply refl_app2 (eta_lc_right r_z_z₁)
+      · apply refl_app2 (eta_regular r_z_z₁).2
         exact clos_refl.step t t₁ r_t_t₁
     -- Caso 2.2
     case eta_app2 t₂ lc_z r_t_t₂ =>
@@ -233,7 +233,7 @@ aplicar la regla \textsc{eta-red} y obtener este paso.
       constructor
       · exact clos_refl.step t t' r_t_t'
       · apply clos_refl.step
-        exact eta.eta_red (eta_lc_right r_t_t')
+        exact eta.eta_red (eta_regular r_t_t').2
 ```
 
 \textbf{Caso 4.} La reducción $m\longrightarrow m_1$ tiene
@@ -296,7 +296,7 @@ Para la segunda, aplicamos directamente la regla
       use t'
       constructor
       · apply clos_refl.step
-        exact eta.eta_red (eta_lc_right r_m₂_t')
+        exact eta.eta_red (eta_regular r_m₂_t').2
       · exact clos_refl.step m₂ t' r_m₂_t'
 ```
 

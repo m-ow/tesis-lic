@@ -127,7 +127,7 @@ inductive eta : relation trm
       eta (abs t) (abs t')
 ```
 
-\textbf{Lema 3.0.1 (Regularidad).}
+\textbf{Lema 3.0.1 (Lema de regularidad).}
 Si $r\longrightarrow s$, entonces
 $\mathsf{lc}\,r$ y $\mathsf{lc}\,s$.
 
