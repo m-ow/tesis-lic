@@ -190,9 +190,30 @@ es localmente cerrada cuando lo son sus dos componentes.
 Por último, `lc_abs` emplea *cuantificación cofinita*: exige elegir 
 un conjunto finito `L` y demostrar que `t ^ x` es localmente 
 cerrado para todo nombre `x` que no pertenezca a `L`.
-La definición no incluye un constructor para términos de la forma `bvar i`,
-pues un índice aislado no está ligado por ninguna abstracción y, por tanto, 
-no es localmente cerrado.
+La definición no incluye un constructor para términos de la forma `bvar i`, pues un índice aislado no está ligado por ninguna abstracción y, por tanto, no es localmente cerrado.
+
+\textbf{Lema 2.2.1.} La apertura no modifica los términos
+localmente cerrados. Es decir, si $\mathsf{lc}\,t$, entonces
+$\{k\rightsquigarrow x\}\,t=t$ para todo índice $k$
+y todo nombre $x$.
+
+Esto se debe a que todos los índices de $t$ hacen referencia a abstracciones contenidas en el propio término, mientras que
+la apertura solo reemplaza referencias a abstracciones exteriores, por lo que deja $t$ sin cambios.
+
+Su enunciado en Lean es:
+
+```lean
+lemma open_rec_lc {t : trm} :
+    lc t →
+    ∀ k x, ({k ~> x} t) = t
+```
+
+En particular, si $t$ es localmente cerrado, entonces $t^x=t$.
+
+```lean 
+lemma open_var_lc {t : trm} {x : String} :
+    lc t → t ^ x = t 
+```
 
 ## 2.3. Cierre
 

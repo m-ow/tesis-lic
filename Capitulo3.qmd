@@ -123,17 +123,65 @@ inductive eta : relation trm
       eta t₂ t₂' →
       eta (app t₁ t₂) (app t₁ t₂')
   | eta_abs (L : Finset String) {t t' : trm} :
-      (∀ x, x ∉ L → eta (t ^ x) (t' ^ x)) →
+      (∀ x ∉ L, eta (t ^ x) (t' ^ x)) →
       eta (abs t) (abs t')
 ```
 
-\textbf{Lema 3.0.1.} Si $t \longrightarrow t'$, entonces
-$t'$ es localmente cerrado.
+\textbf{Lema 3.0.1 (Regularidad).}
+Si $r\longrightarrow s$, entonces
+$\mathsf{lc}\,r$ y $\mathsf{lc}\,s$.
 
-En Lean:
+::: {.proof}
+Demostramos primero que $\mathsf{lc}\,r$,
+por inducción sobre $r\longrightarrow s$.
+
+- En el caso de \textsc{eta-red}, la reducción tiene
+  la forma
+  $\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow t$,
+  con $t$ localmente cerrado.
+  Todos los índices de $t$ hacen referencia a abstracciones
+  contenidas en el propio término, mientras que el índice
+  $0$ que lo acompaña queda ligado por la abstracción exterior.
+  Por tanto, $\mathsf{abs}\,(\mathsf{app}\,t\,0)$
+  es localmente cerrado.
+
+- En el caso de \textsc{eta-app-1}, la reducción tiene
+  la forma
+  $\mathsf{app}\,t_1\,t_2
+  \longrightarrow\mathsf{app}\,t_1'\,t_2$,
+  con $t_1\longrightarrow t_1'$ y $t_2$ localmente cerrado.
+  Por hipótesis de inducción, $t_1$ es localmente cerrado.
+  Aplicando \textsc{lc-app}, concluimos que
+  $\mathsf{app}\,t_1\,t_2$ es localmente cerrado.
+
+- En el caso de \textsc{eta-app-2}, la reducción tiene
+  la forma
+  $\mathsf{app}\,t_1\,t_2
+  \longrightarrow\mathsf{app}\,t_1\,t_2'$,
+  con $t_2\longrightarrow t_2'$ y $t_1$ localmente cerrado.
+  Por hipótesis de inducción, $t_2$ es localmente cerrado.
+  Aplicando \textsc{lc-app}, concluimos que
+  $\mathsf{app}\,t_1\,t_2$ es localmente cerrado.
+
+- En el caso de \textsc{eta-abs}, la reducción tiene
+  la forma
+  $\mathsf{abs}\,t\longrightarrow\mathsf{abs}\,t'$,
+  con $t^x\longrightarrow t'^x$ para todo $x\notin L$,
+  donde $L$ es un conjunto finito de nombres.
+  Por hipótesis de inducción, $t^x$ es localmente
+  cerrado para todo $x\notin L$.
+  La regla \textsc{lc-abs} permite concluir que
+  $\mathsf{abs}\,t$ es localmente cerrado.
+
+La clausura local de $s$ se demuestra de manera análoga,
+por inducción sobre $r\longrightarrow s$.
+:::
+
+El enunciado correspondiente en Lean es:
+
 ```lean
-lemma eta_lc_right {t t' : trm} :
-    eta t t' → lc t'
+lemma eta_regular {r s : trm} :
+    eta r s → lc r ∧ lc s
 ```
 
 ## 3.1. Reglas de congruencia para la clausura reflexiva

@@ -54,6 +54,34 @@ inductive lc : trm → Prop
       (∀ x ∉ L, lc (t ^ x)) →
       lc (abs t)
 
+lemma open_rec_cancel {t : trm} {i j : ℕ} {x y : String} :
+    i ≠ j →
+    ({i ~> x} ({j ~> y} t)) = ({j ~> y} t) →
+    ({i ~> x} t) = t := by
+  induction t generalizing i j <;> grind [open_rec]
+
+lemma open_rec_lc {t : trm} :
+    lc t →
+    ∀ k x, ({k ~> x} t) = t := by
+  intro h
+  induction h with
+  | lc_var y =>
+      intro k x
+      rfl
+  | lc_app ht₁ ht₂ ih₁ ih₂ =>
+      intro k x
+      exact congrArg₂ app (ih₁ k x) (ih₂ k x)
+  | lc_abs L t hbody ih =>
+      intro k x
+      rcases exists_fresh L with ⟨y, hy⟩
+      apply congrArg abs
+      exact open_rec_cancel (by simp) (ih y hy (k + 1) x)
+
+lemma open_var_lc {t : trm} {x : String} :
+    lc t → t ^ x = t := by
+  intro ht
+  exact open_rec_lc ht 0 x
+
 def close_var_rec (k : ℕ) (x : String) (t : trm) : trm :=
   match t with
   | bvar i    => bvar i
@@ -73,7 +101,7 @@ example :
 
 lemma close_open (x : String) (t : trm) (k : ℕ) :
     x ∉ fv t →
-    close_var_rec k x (open_rec k x t) = t := by
+    ({k <~ x} ({k ~> x} t)) = t := by
   induction t generalizing k <;> grind [open_rec, close_var_rec, fv]
 
 lemma close_open_var {x : String} {t : trm} :

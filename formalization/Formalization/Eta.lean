@@ -17,21 +17,48 @@ inductive eta : relation trm
       eta t₂ t₂' →
       eta (app t₁ t₂) (app t₁ t₂')
   | eta_abs (L : Finset String) {t t' : trm} :
-      (∀ x, x ∉ L → eta (t ^ x) (t' ^ x)) →
+      (∀ x ∉ L, eta (t ^ x) (t' ^ x)) →
       eta (abs t) (abs t')
+
+lemma lc_eta_redex {t : trm} :
+    lc t → lc (abs (app t (bvar 0))) := by
+  intro ht
+  apply lc.lc_abs ∅
+  intro x hx
+  change lc (app (t ^ x) (fvar x))
+  rewrite [open_var_lc ht]
+  exact lc.lc_app ht (lc.lc_var x)
+
+lemma eta_lc_left {t t' : trm} :
+    eta t t' → lc t := by
+  intro h
+  induction h
+  case eta_red t ht =>
+    exact lc_eta_redex ht
+  case eta_app1 t₁ t₁' t₂ ht₂ hstep ih =>
+    exact lc.lc_app ih ht₂
+  case eta_app2 t₁ t₂ t₂' ht₁ hstep ih =>
+    exact lc.lc_app ht₁ ih
+  case eta_abs L t t' hsteps ih =>
+    exact lc.lc_abs L t ih
 
 lemma eta_lc_right {t t' : trm} :
     eta t t' → lc t' := by
   intro h
-  induction h with
-  | eta_red ht =>
-      exact ht
-  | eta_app1 ht₂ hstep ih =>
-      exact lc.lc_app ih ht₂
-  | eta_app2 ht₁ hstep ih =>
-      exact lc.lc_app ht₁ ih
-  | eta_abs L hsteps ih =>
-      exact lc.lc_abs L _ ih
+  induction h
+  case eta_red t ht =>
+    exact ht
+  case eta_app1 t₁ t₁' t₂ ht₂ hstep ih =>
+    exact lc.lc_app ih ht₂
+  case eta_app2 t₁ t₂ t₂' ht₁ hstep ih =>
+    exact lc.lc_app ht₁ ih
+  case eta_abs L t t' hsteps ih =>
+    exact lc.lc_abs L t' ih
+
+lemma eta_regular {r s : trm} :
+    eta r s → lc r ∧ lc s := by
+  intro h
+  exact ⟨eta_lc_left h, eta_lc_right h⟩
 
 lemma refl_app1 {t₁ t₁' t₂ : trm} :
     lc t₂ →
