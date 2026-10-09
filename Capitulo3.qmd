@@ -313,6 +313,38 @@ para todo $x\notin L$, entonces existe un término $t'$
 tal que $t\longrightarrow t'$ y
 $u=\mathsf{app}\,t'\,0$.
 
+::: {.proof}
+Elegimos un nombre nuevo $x$.
+Como $x\notin L$, por hipótesis tenemos
+$(\mathsf{app}\,t\,0)^x\longrightarrow u^x$.
+Como $t$ es localmente cerrado, al abrir
+$\mathsf{app}\,t\,0$ con $x$ obtenemos
+$\mathsf{app}\,t\,(\mathsf{fvar}\,x)$.
+Por tanto,
+$$
+\mathsf{app}\,t\,(\mathsf{fvar}\,x)\longrightarrow u^x.
+$$
+Como $\mathsf{fvar}\,x$ no se reduce,
+el paso se obtiene mediante \textsc{eta-app-1}.
+Por tanto, existe $t'$ tal que $t\longrightarrow t'$ y
+$$
+u^x=\mathsf{app}\,t'\,(\mathsf{fvar}\,x).
+$$
+
+Como $t\longrightarrow t'$, el Lema 3.0.2 garantiza
+que el nombre nuevo $x$ tampoco aparece libre en $t'$.
+Cerrando la igualdad anterior con $x$, obtenemos
+$$
+(u^x)^{\backslash x}
+=
+(\mathsf{app}\,t'\,(\mathsf{fvar}\,x))^{\backslash x}.
+$$
+Por el Lema 2.3.1, $(u^x)^{\backslash x}=u$.
+Además, como $x$ no aparece libre en $t'$, el cierre
+solo reemplaza $\mathsf{fvar}\,x$ por $0$ en la aplicación.
+Por tanto, $u=\mathsf{app}\,t'\,0$.
+:::
+
 Su enunciado en Lean es:
 
 ```lean

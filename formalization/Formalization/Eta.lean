@@ -93,7 +93,8 @@ lemma refl_app1 {t₁ t₁' t₂ : trm} :
   case refl =>
     exact clos_refl.refl (app t₁ t₂)
   case step hstep =>
-    exact clos_refl.step (app t₁ t₂) (app t₁' t₂) (eta.eta_app1 ht₂ hstep)
+    apply clos_refl.step (app t₁ t₂) (app t₁' t₂)
+    exact eta.eta_app1 ht₂ hstep
 
 lemma refl_app2 {t₁ t₂ t₂' : trm} :
     lc t₁ →
@@ -104,7 +105,8 @@ lemma refl_app2 {t₁ t₂ t₂' : trm} :
   case refl =>
     exact clos_refl.refl (app t₁ t₂)
   case step hstep =>
-    exact clos_refl.step (app t₁ t₂) (app t₁ t₂') (eta.eta_app2 ht₁ hstep)
+    apply clos_refl.step (app t₁ t₂) (app t₁ t₂')
+    exact eta.eta_app2 ht₁ hstep
 
 lemma eta_app_fvar_inv {t u : trm} {x : String} :
     eta (app t (fvar x)) u →
@@ -112,13 +114,34 @@ lemma eta_app_fvar_inv {t u : trm} {x : String} :
   intro h
   cases h
   case eta_app1 t' hstep lc_x =>
-    exact ⟨t', hstep, rfl⟩
+    use t'
   case eta_app2 u' ht hstep =>
     cases hstep
 
 lemma eta_redex_body {L : Finset String} {t u : trm} :
     lc t →
     (∀ x ∉ L, eta ((app t (bvar 0)) ^ x) (u ^ x)) →
-    ∃ t', eta t t' ∧ u = app t' (bvar 0) := sorry
+    ∃ t', eta t t' ∧ u = app t' (bvar 0) := by
+  intro ht hbody
+  rcases exists_fresh (L ∪ fv t ∪ fv u) with ⟨x, hx⟩
+  have hf : x ∉ L ∧ x ∉ fv t ∧ x ∉ fv u := by
+    grind
+  have hstep := hbody x hf.1
+  have hopen : (app t (bvar 0)) ^ x = app t (fvar x) := by
+    change app (t ^ x) (fvar x) = app t (fvar x)
+    rw [open_var_lc ht]
+  rewrite [hopen] at hstep
+  rcases eta_app_fvar_inv hstep with ⟨t', hstep', hu⟩
+  have ht' : lc t' := (eta_regular hstep').2
+  have hxt' : x ∉ fv t' := by
+    grind [eta_fv_eq]
+  have hx_app : x ∉ fv (app t' (bvar 0)) := by
+    grind [fv]
+  have hu' : u = app t' (bvar 0) := by
+    apply open_var_injective hf.2.2 hx_app
+    change u ^ x = app (t' ^ x) (fvar x)
+    rewrite [open_var_lc ht']
+    exact hu
+  use t'
 
 end trm
