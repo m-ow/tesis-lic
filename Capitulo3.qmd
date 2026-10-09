@@ -184,6 +184,29 @@ lemma eta_regular {r s : trm} :
     eta r s → lc r ∧ lc s
 ```
 
+\textbf{Lema 3.0.2.}
+La reducción $\eta$ no modifica el conjunto
+de nombres libres, es decir, si $r\longrightarrow s$,
+entonces $\operatorname{fv}(r)=\operatorname{fv}(s)$.
+
+En el paso
+$\mathsf{abs}\,(\mathsf{app}\,t\,0)\longrightarrow t$,
+se elimina la abstracción exterior junto con la aparición
+de la variable que liga, representada por el índice $0$.
+Como $t$ es localmente cerrado, ninguno de sus índices
+hace referencia a esa abstracción,
+así, el paso conserva los nombres libres.
+Las reglas de congruencia permiten realizar la reducción
+dentro de aplicaciones y abstracciones, conservando
+esta misma propiedad.
+
+Su enunciado en Lean es:
+
+```lean
+lemma eta_fv_eq {r s : trm} :
+    eta r s → fv r = fv s
+```
+
 ## 3.1. Reglas de congruencia para la clausura reflexiva
 
 Las reglas de congruencia de la reducción $\eta$ se extienden a su clausura reflexiva.
@@ -290,7 +313,7 @@ para todo $x\notin L$, entonces existe un término $t'$
 tal que $t\longrightarrow t'$ y
 $u=\mathsf{app}\,t'\,0$.
 
-En Lean:
+Su enunciado en Lean es:
 
 ```lean
 lemma eta_redex_body {L : Finset String} {t u : trm} :

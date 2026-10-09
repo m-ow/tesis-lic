@@ -70,6 +70,15 @@ lemma exists_fresh : ∀ L : Finset String,
     ∃ x, x ∉ L
 ```
 
+En las demostraciones necesitaremos elegir nombres que
+no aparezcan libres en ciertos términos ni pertenezcan
+a determinados conjuntos finitos.
+Como todos esos nombres forman un conjunto finito,
+el lema anterior garantiza que podemos elegir uno
+distinto de ellos.
+Nos referiremos a esta elección diciendo que tomamos
+un nombre nuevo.
+
 ## 2.1. Apertura 
 
 En la representación *locally nameless*, una abstracción tiene la forma
@@ -193,9 +202,7 @@ cerrado para todo nombre `x` que no pertenezca a `L`.
 La definición no incluye un constructor para términos de la forma `bvar i`, pues un índice aislado no está ligado por ninguna abstracción y, por tanto, no es localmente cerrado.
 
 \textbf{Lema 2.2.1.} La apertura no modifica los términos
-localmente cerrados. Es decir, si $\mathsf{lc}\,t$, entonces
-$\{k\rightsquigarrow x\}\,t=t$ para todo índice $k$
-y todo nombre $x$.
+localmente cerrados. Es decir, si $t$ es localmente cerrado, entonces $\{k\rightsquigarrow x\}\,t=t$ para todo índice $k$ y todo nombre $x$.
 
 Esto se debe a que todos los índices de $t$ hacen referencia a abstracciones contenidas en el propio término, mientras que
 la apertura solo reemplaza referencias a abstracciones exteriores, por lo que deja $t$ sin cambios.
@@ -208,7 +215,7 @@ lemma open_rec_lc {t : trm} :
     ∀ k x, ({k ~> x} t) = t
 ```
 
-En particular, si $t$ es localmente cerrado, entonces $t^x=t$.
+En particular, si $\mathsf{lc}\,t$, entonces $t^x=t$.
 
 ```lean 
 lemma open_var_lc {t : trm} {x : String} :
@@ -288,4 +295,26 @@ entonces $(t^x)^{\backslash x}=t$.
 lemma close_open_var {x : String} {t : trm} :
     x ∉ fv t →
     (t ^ x) ^\ x = t
+```
+
+\textbf{Lema 2.3.2.}
+Si $x$ no aparece libre en $t$ ni en $u$, la igualdad
+de sus aperturas $t^x=u^x$ implica que $t=u$.
+
+::: {.proof}
+Al cerrar ambos lados de $t^x=u^x$ con $x$, obtenemos
+$(t^x)^{\backslash x}=(u^x)^{\backslash x}$.
+Por el Lema 2.3.1, el lado izquierdo es $t$
+y el derecho es $u$.
+Por tanto, $t=u$.
+:::
+
+Su enunciado en Lean es:
+
+```lean 
+lemma open_var_injective {t u : trm} {x : String} :
+    x ∉ fv t →
+    x ∉ fv u →
+    t ^ x = u ^ x →
+    t = u 
 ```

@@ -45,6 +45,12 @@ infixl:80 " ^ " => open_var
 example :
   (app (abs (app 0 1)) 0) ^ "x" = (app (abs (app 0 "x")) "x") := rfl
 
+lemma mem_fv_open_rec {t : trm} {k : ℕ} {x y : String} :
+    x ≠ y →
+    (x ∈ fv ({k ~> y} t) ↔ x ∈ fv t) := by
+  intro hxy
+  induction t generalizing k <;> grind [open_rec, fv]
+
 inductive lc : trm → Prop
   | lc_var (x : String) :
       lc (fvar x)
@@ -64,18 +70,18 @@ lemma open_rec_lc {t : trm} :
     lc t →
     ∀ k x, ({k ~> x} t) = t := by
   intro h
-  induction h with
-  | lc_var y =>
-      intro k x
-      rfl
-  | lc_app ht₁ ht₂ ih₁ ih₂ =>
-      intro k x
-      exact congrArg₂ app (ih₁ k x) (ih₂ k x)
-  | lc_abs L t hbody ih =>
-      intro k x
-      rcases exists_fresh L with ⟨y, hy⟩
-      apply congrArg abs
-      exact open_rec_cancel (by simp) (ih y hy (k + 1) x)
+  induction h
+  case lc_var y =>
+    intro k x
+    rfl
+  case lc_app t₁ t₂ ht₁ ht₂ ih₁ ih₂ =>
+    intro k x
+    exact congrArg₂ app (ih₁ k x) (ih₂ k x)
+  case lc_abs L t hbody ih =>
+    intro k x
+    rcases exists_fresh L with ⟨y, hy⟩
+    apply congrArg abs
+    exact open_rec_cancel (by simp) (ih y hy (k + 1) x)
 
 lemma open_var_lc {t : trm} {x : String} :
     lc t → t ^ x = t := by
@@ -109,5 +115,16 @@ lemma close_open_var {x : String} {t : trm} :
     (t ^ x) ^\ x = t := by
   intro hx
   exact close_open x t 0 hx
+
+lemma open_var_injective {t u : trm} {x : String} :
+    x ∉ fv t →
+    x ∉ fv u →
+    t ^ x = u ^ x →
+    t = u := by
+  intro hxt hxu h
+  have hclose : (t ^ x) ^\ x = (u ^ x) ^\ x := by
+    rw [h]
+  rewrite [close_open_var hxt, close_open_var hxu] at hclose
+  exact hclose
 
 end trm
