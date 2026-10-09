@@ -291,6 +291,14 @@ abstracción se reemplaza por `1`.
 \textbf{Lema 2.3.1.} Si $x\notin\operatorname{fv}(t)$,
 entonces $(t^x)^{\backslash x}=t$.
 
+Como $x$ no aparece libre en $t$, todas las apariciones
+de $\mathsf{fvar}\,x$ en $t^x$ fueron introducidas por la apertura.
+Al cerrar con el mismo nombre, estas apariciones
+se sustituyen por los índices que había antes de abrir el término,
+por lo que se recupera $t$.
+
+Su enunciado en Lean es:
+
 ```lean 
 lemma close_open_var {x : String} {t : trm} :
     x ∉ fv t →
